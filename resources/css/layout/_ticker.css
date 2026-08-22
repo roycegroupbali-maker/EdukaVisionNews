@@ -1,0 +1,51 @@
+/* Ticker berita berjalan (breaking news) */
+
+  /* ===== BREAKING TICKER ===== */
+  .ticker{
+    background:var(--pulse);
+    color:#fff;
+    overflow:hidden;
+    position:relative;
+  }
+  .ticker .wrap{
+    display:flex; align-items:stretch;
+    height:42px;
+    padding:0;
+  }
+  .ticker-label{
+    background:var(--pulse-deep);
+    display:flex; align-items:center;
+    padding:0 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.12em;
+    font-weight:600;
+    flex-shrink:0;
+    gap:8px;
+  }
+  .ticker-label svg{width:13px; height:13px;}
+  .ticker-track{
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    flex:1;
+    mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .ticker-move{
+    display:flex;
+    gap:56px;
+    white-space:nowrap;
+    animation:tickmove 38s linear infinite;
+    padding-left:100%;
+  }
+  .ticker-move span{
+    font-size:13.5px; font-weight:500;
+  }
+  @keyframes tickmove{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-100%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-move{animation:none; padding-left:20px;}
+  }
+

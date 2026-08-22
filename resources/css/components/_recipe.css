@@ -1,0 +1,75 @@
+/* Kartu & feature resep masakan */
+
+  /* ===== RESEP MASAKAN ===== */
+  .recipe-feature{
+    display:grid;
+    grid-template-columns:0.95fr 1.05fr;
+    gap:0;
+    background:var(--ink);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:40px;
+  }
+  .recipe-feature-art{ aspect-ratio:auto; height:100%; min-height:340px; }
+  .recipe-feature-body{
+    padding:40px 44px;
+    color:var(--paper);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .recipe-feature-body .tag.resep{ background:rgba(255,255,255,0.12); color:#f0c9b0; width:fit-content; }
+  .recipe-feature-body .display{
+    font-size:32px;
+    color:var(--paper);
+    margin:16px 0 12px;
+  }
+  .recipe-feature-body p{
+    color:rgba(251,248,243,0.68);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:46ch;
+    margin-bottom:22px;
+  }
+  .recipe-meta{
+    display:flex;
+    gap:26px;
+  }
+  .recipe-meta-item{
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .recipe-meta-item .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:19px;
+    color:var(--gold);
+    font-weight:500;
+  }
+  .recipe-meta-item .lbl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(251,248,243,0.5);
+  }
+  .grid-3-recipe{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:26px;
+    padding-bottom:60px;
+  }
+  .recipe-card{
+    background:var(--paper-alt);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .recipe-card-art{ aspect-ratio:4/3; }
+  .recipe-card-body{ padding:20px 22px 24px; }
+  .recipe-time{
+    display:flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--rust);
+    margin-top:10px;
+  }
+  .recipe-time svg{ width:13px; height:13px; }
+

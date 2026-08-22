@@ -1,0 +1,145 @@
+/* ==========================================================================
+   ACCESSIBILITY TOOLS â€” tombol melayang + panel alat bantu disabilitas
+   ========================================================================== */
+
+/* ----- Tombol melayang ----- */
+.a11y-toggle{
+  position:fixed; bottom:26px; left:26px; z-index:121;
+  width:50px; height:50px; border-radius:50%;
+  background:var(--ink); color:var(--paper);
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--gold);
+  box-shadow:0 10px 26px rgba(0,0,0,.25);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.a11y-toggle:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.3); }
+.a11y-toggle.active{ background:var(--gold); color:var(--ink); }
+
+/* ----- Overlay ----- */
+.a11y-overlay{
+  position:fixed; inset:0; background:rgba(13,27,58,.45);
+  opacity:0; pointer-events:none; z-index:130; transition:opacity .25s ease;
+}
+.a11y-overlay.open{ opacity:1; pointer-events:auto; }
+
+/* ----- Panel ----- */
+.a11y-panel{
+  position:fixed; top:0; left:0; height:100vh; width:340px; max-width:88vw;
+  background:var(--paper); z-index:131;
+  box-shadow:8px 0 30px rgba(0,0,0,.25);
+  display:flex; flex-direction:column;
+  transform:translateX(-100%); transition:transform .28s ease;
+}
+.a11y-panel.open{ transform:translateX(0); }
+
+.a11y-panel-head{
+  background:var(--ink); color:var(--paper);
+  padding:20px 22px; display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+.a11y-panel-head h2{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+.a11y-close{
+  background:none; border:none; color:var(--paper); font-size:18px; line-height:1;
+  width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  transition:background .2s ease;
+}
+.a11y-close:hover{ background:rgba(255,255,255,.12); }
+
+.a11y-panel-body{
+  flex:1; overflow-y:auto; padding:22px;
+}
+.a11y-panel-body::-webkit-scrollbar{ width:6px; }
+.a11y-panel-body::-webkit-scrollbar-thumb{ background:var(--paper-line); border-radius:3px; }
+
+.a11y-group{ margin-bottom:24px; }
+.a11y-group h3{
+  font-family:'Fraunces', serif; font-size:15px; font-weight:600;
+  color:var(--ink); margin-bottom:10px;
+}
+
+.a11y-row{ display:grid; gap:10px; }
+.a11y-row-1{ grid-template-columns:1fr; }
+.a11y-row-2{ grid-template-columns:1fr 1fr; }
+.a11y-row-3{ grid-template-columns:1fr 1fr 1fr; }
+.a11y-row-4{ grid-template-columns:1fr 1fr; }
+
+.a11y-btn{
+  border:1.5px solid var(--paper-line); background:var(--paper);
+  border-radius:10px; padding:14px 8px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  font-family:'Inter', sans-serif; font-size:12.5px; font-weight:600; color:var(--charcoal);
+  transition:border-color .15s ease, background .15s ease, color .15s ease;
+}
+.a11y-btn:hover{ border-color:var(--gold); }
+.a11y-btn.active{
+  background:var(--ink); border-color:var(--ink); color:var(--paper);
+}
+.a11y-icon{ font-size:18px; line-height:1; }
+.a11y-icon-font{ font-family:'Fraunces', serif; font-size:16px; }
+
+.a11y-panel-foot{
+  flex-shrink:0; padding:16px 22px 22px; border-top:1px solid var(--paper-line);
+}
+.a11y-reset{
+  width:100%; background:var(--pulse); color:#fff; border:none; border-radius:10px;
+  padding:13px; display:flex; align-items:center; justify-content:center; gap:8px;
+  font-weight:700; font-size:14px; transition:background .15s ease;
+}
+.a11y-reset:hover{ background:var(--pulse-deep); }
+
+/* ----- Reading mask (garis fokus baca yang mengikuti kursor) ----- */
+.a11y-reading-mask{
+  position:fixed; left:0; width:100%; height:80px; z-index:115;
+  pointer-events:none; display:none;
+  box-shadow:0 -9999px 0 9999px rgba(13,27,58,.55), 0 9999px 0 9999px rgba(13,27,58,.55);
+  border-top:2px solid var(--gold); border-bottom:2px solid var(--gold);
+}
+.a11y-reading-mask.show{ display:block; }
+
+/* ==========================================================================
+   EFEK â€” diterapkan lewat class pada <body>
+   ========================================================================== */
+
+/* Ukuran huruf: skala lewat font-size root, dikendalikan lewat CSS var */
+body{ font-size:calc(16px * var(--a11y-font-scale, 1)); }
+
+/* Perataan teks */
+body.a11y-align-left main, body.a11y-align-left article, body.a11y-align-left p{ text-align:left; }
+body.a11y-align-center main, body.a11y-align-center article, body.a11y-align-center p{ text-align:center; }
+body.a11y-align-right main, body.a11y-align-right article, body.a11y-align-right p{ text-align:right; }
+body.a11y-align-justify main, body.a11y-align-justify article, body.a11y-align-justify p{ text-align:justify; }
+
+/* Tinggi baris */
+body.a11y-lineheight-tight p, body.a11y-lineheight-tight li{ line-height:1.25 !important; }
+body.a11y-lineheight-wide p, body.a11y-lineheight-wide li{ line-height:2 !important; }
+
+/* Jarak huruf */
+body.a11y-letterspacing-medium{ letter-spacing:0.03em; }
+body.a11y-letterspacing-wide{ letter-spacing:0.07em; }
+
+/* Saturasi rendah */
+body.a11y-lowcolor{ filter:saturate(.35); }
+
+/* Kontras tinggi */
+body.a11y-contrast{ filter:contrast(1.35) saturate(1.1); }
+body.a11y-lowcolor.a11y-contrast{ filter:saturate(.35) contrast(1.35); }
+
+/* Mode disleksia â€” font lebih mudah dibaca */
+body.a11y-dyslexia, body.a11y-dyslexia *{
+  font-family:'Lexend', 'Inter', sans-serif !important;
+  letter-spacing:0.02em !important;
+}
+
+/* Mode ADHD â€” kurangi gerakan & distraksi visual */
+body.a11y-adhd *{
+  animation:none !important;
+  transition:none !important;
+}
+body.a11y-adhd .topbar, body.a11y-adhd .mobile-ad-bar, body.a11y-adhd [class*="ad-slot"]{
+  opacity:.5;
+}
+
+@media (max-width:640px){
+  .a11y-toggle{ bottom:90px; left:16px; width:46px; height:46px; }
+  .a11y-panel{ width:100vw; max-width:100vw; }
+}

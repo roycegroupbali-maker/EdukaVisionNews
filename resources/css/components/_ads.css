@@ -1,0 +1,120 @@
+/* Semua unit iklan: leaderboard, rectangle, midpage, native, mobile sticky */
+
+  /* ===== AD UNITS ===== */
+  .ad-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted-2);
+    display:flex; align-items:center; gap:6px;
+  }
+  .ad-eyebrow::before{
+    content:"";
+    width:6px; height:6px; border-radius:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+  .ad-leaderboard{
+    background:linear-gradient(120deg,#eef0f3,#e2e6ec);
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    min-height:110px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    margin:22px 0 0;
+    padding:18px;
+    text-align:center;
+  }
+  .ad-leaderboard .ad-creative{
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    color:var(--muted);
+  }
+  .ad-leaderboard .ad-note{ font-size:11.5px; color:var(--muted-2); }
+
+  .trend-ad-grid{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:26px;
+    padding:52px 0;
+  }
+  .trend-widget{ background:var(--paper); border:1px solid var(--paper-line); border-radius:8px; padding:28px 30px; }
+  .trend-widget-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; }
+  .trend-widget-head h3{ font-size:21px; color:var(--ink); display:flex; align-items:baseline; gap:10px; }
+  .trend-widget-head h3 .bar{ width:5px; height:20px; background:var(--pulse); border-radius:2px; display:inline-block; }
+  .trend-tabs{ display:flex; gap:18px; border-bottom:1px solid var(--paper-line); margin-bottom:6px; }
+  .trend-tab{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    padding:8px 2px; color:var(--muted-2); font-weight:600; border:none; background:transparent;
+    border-bottom:2px solid transparent;
+  }
+  .trend-tab.active{ color:var(--pulse); border-color:var(--pulse); }
+  .trend-panel{ display:none; flex-direction:column; }
+  .trend-panel.active{ display:flex; }
+  .trend-item{ display:flex; gap:14px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--paper-line); }
+  .trend-item:last-child{ border-bottom:none; }
+  .trend-rank{ font-family:'Fraunces', serif; font-weight:700; font-size:21px; color:var(--gold-deep); width:24px; flex-shrink:0; }
+  .trend-title{ font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.35; }
+  .trend-title:hover{ color:var(--pulse); }
+
+  .ad-rect{
+    background:linear-gradient(150deg,#e9edf2,#dde3ea);
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+    min-height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    padding:24px; text-align:center;
+  }
+  .ad-rect .ad-creative{ font-family:'Fraunces', serif; font-size:18px; color:var(--muted); max-width:22ch; }
+  .ad-rect .ad-note{ font-size:11.5px; color:var(--muted-2); }
+  .ad-rect .ad-cta{
+    margin-top:6px; font-size:12.5px; font-weight:600; color:var(--pulse);
+    border:1px solid var(--pulse); padding:8px 16px; border-radius:100px;
+  }
+
+  .ad-midpage{
+    background:linear-gradient(120deg,#f4efe3,#eee7d6);
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    padding:32px; text-align:center;
+    margin:8px 0 56px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .ad-midpage .ad-creative{ font-family:'Fraunces', serif; font-size:19px; color:var(--muted); }
+
+  .ad-native{
+    border:1.5px dashed #c9b98a;
+    background:#fbf6e8;
+    border-radius:4px;
+    position:relative;
+    padding-bottom:10px;
+  }
+  .ad-native .card-art{ background:#f2e6bf; }
+  .tag.sponsor{ background:rgba(178,137,35,0.18); color:var(--gold-deep); }
+  .ad-native .ad-corner{
+    position:absolute; bottom:10px; right:12px;
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted-2);
+  }
+
+  .mobile-ad-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:150;
+    background:var(--ink); color:var(--paper);
+    display:none; align-items:center; justify-content:space-between;
+    padding:12px 18px; gap:12px;
+  }
+  .mobile-ad-bar .ad-eyebrow{ color:rgba(251,248,243,0.55); margin-bottom:2px; }
+  .mobile-ad-bar .ad-eyebrow::before{ background:var(--gold); }
+  .mobile-ad-bar-text{ font-size:12.5px; font-weight:500; }
+  .mobile-ad-cta{
+    background:var(--pulse); color:#fff; font-size:12px; font-weight:600;
+    padding:8px 14px; border-radius:100px; border:none; flex-shrink:0;
+  }
+  .mobile-ad-close{ background:none; border:none; color:rgba(251,248,243,0.6); font-size:18px; line-height:1; flex-shrink:0; padding:4px; }
+  @media (max-width:700px){ .mobile-ad-bar{ display:flex; } }
+
+  .ad-disclosure{
+    font-size:12px; color:rgba(251,248,243,0.45); line-height:1.6; max-width:70ch;
+    padding-top:18px; margin-top:18px; border-top:1px solid rgba(251,248,243,0.08);
+  }
+

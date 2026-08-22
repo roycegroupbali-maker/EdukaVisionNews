@@ -1,0 +1,101 @@
+/* Section hero / berita utama */
+
+  /* ===== HERO ===== */
+  .hero{ padding:44px 0 8px; }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:40px;
+  }
+  .feature-card{
+    display:block;
+  }
+  .feature-art{
+    aspect-ratio:16/10;
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:20px;
+    position:relative;
+  }
+  .bookmark-btn{
+    position:absolute; top:14px; right:14px; z-index:2;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(13,27,58,0.55);
+    backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; border:none;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .bookmark-btn:hover{ transform:scale(1.06); }
+  .bookmark-btn.saved{ background:var(--pulse); }
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:600;
+    padding:5px 10px;
+    border-radius:100px;
+  }
+  .tag.berita{ background:rgba(193,39,45,0.1); color:var(--pulse); }
+  .tag.lifestyle{ background:rgba(27,75,67,0.1); color:var(--teal); }
+  .tag.edukasi{ background:rgba(134,103,26,0.12); color:var(--gold-deep); }
+  .tag.resep{ background:rgba(168,70,30,0.12); color:var(--rust); }
+  .tag.olahraga{ background:rgba(44,95,138,0.1); color:var(--navy2); }
+  .tag.dunia{ background:rgba(91,75,138,0.12); color:var(--violet); }
+  .tag.bisnis{ background:rgba(13,27,58,0.1); color:var(--ink); }
+
+  .feature-headline{
+    font-size:38px;
+    margin:16px 0 12px;
+    color:var(--ink);
+  }
+  .feature-dek{
+    font-size:16px;
+    color:var(--muted);
+    line-height:1.55;
+    max-width:56ch;
+    margin-bottom:14px;
+  }
+  .byline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--muted-2);
+    letter-spacing:0.02em;
+  }
+
+  .side-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .side-item{
+    display:grid;
+    grid-template-columns:76px 1fr;
+    gap:16px;
+    padding:18px 0;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .side-item:first-child{ padding-top:0; }
+  .side-thumb{
+    width:76px; height:76px;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .side-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16.5px;
+    line-height:1.3;
+    color:var(--ink);
+    margin:3px 0 6px;
+  }
+  .side-item:hover .side-title{ color:var(--pulse); }
+  .side-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--muted-2);
+  }
+

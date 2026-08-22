@@ -1,0 +1,15 @@
+/* Tombol kembali ke atas */
+
+  /* ===== BACK TO TOP ===== */
+  .back-to-top{
+    position:fixed; bottom:26px; right:26px; z-index:120;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--ink); color:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    border:none;
+    box-shadow:0 10px 26px rgba(0,0,0,.25);
+    opacity:0; pointer-events:none; transform:translateY(10px);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .back-to-top.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
+

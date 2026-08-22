@@ -1,0 +1,41 @@
+/* Reading progress bar + override tema gelap (dark mode) */
+
+  /* ===== READING PROGRESS ===== */
+  .read-progress{
+    position:fixed; top:0; left:0; right:0; height:3px;
+    background:transparent; z-index:400;
+  }
+  .read-progress-bar{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--pulse), var(--gold));
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .read-progress-bar{ transition:width .08s linear; }
+  }
+
+  /* ===== DARK THEME OVERRIDES ===== */
+  body[data-theme="dark"]{
+    --paper:#15181d;
+    --paper-alt:#1b1f26;
+    --paper-line:#2a2f38;
+    --charcoal:#e8e5dc;
+    --muted:#a9a394;
+    --muted-2:#8b8576;
+  }
+  body[data-theme="dark"] .feature-headline,
+  body[data-theme="dark"] .card-title,
+  body[data-theme="dark"] .side-title,
+  body[data-theme="dark"] .section-title,
+  body[data-theme="dark"] .logo-text,
+  body[data-theme="dark"] .trend-title{ color:#f4f1ea; }
+  body[data-theme="dark"] .icon-btn{ border-color:var(--paper-line); }
+  body[data-theme="dark"] .ad-leaderboard,
+  body[data-theme="dark"] .ad-rect,
+  body[data-theme="dark"] .ad-midpage{
+    background:linear-gradient(150deg,#20242c,#191d24);
+    border-color:var(--paper-line);
+    color:var(--muted-2);
+  }
+  body[data-theme="dark"] .ad-native{ background:#221f14; border-color:#4a3f22; }
+  body[data-theme="dark"] .search-panel{ background:var(--paper); }
+

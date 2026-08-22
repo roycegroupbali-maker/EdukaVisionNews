@@ -1,0 +1,19 @@
+/* Garis pemisah dekoratif antar section (pulse divider) */
+
+  /* ===== SIGNATURE PULSE DIVIDER ===== */
+  .pulse-divider{
+    width:100%;
+    height:46px;
+    display:block;
+  }
+  .pulse-divider path{
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .pulse-divider circle{ fill:var(--pulse); }
+  .section-band{ background:var(--paper); }
+  .section-band.alt{ background:var(--paper-alt); }
+

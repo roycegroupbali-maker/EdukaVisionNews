@@ -1,0 +1,68 @@
+/* Form berlangganan newsletter */
+
+  /* ===== NEWSLETTER BAND ===== */
+  .newsletter{
+    background:var(--ink);
+    padding:64px 0;
+    margin-top:20px;
+  }
+  .newsletter .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
+  }
+  .newsletter h3{
+    font-size:30px;
+    color:var(--paper);
+    max-width:14ch;
+  }
+  .newsletter p{
+    color:rgba(251,248,243,0.6);
+    font-size:14.5px;
+    margin-top:10px;
+    max-width:40ch;
+  }
+  .newsletter-form{
+    display:flex;
+    gap:0;
+    flex-shrink:0;
+    background:rgba(251,248,243,0.08);
+    border:1px solid rgba(251,248,243,0.18);
+    border-radius:100px;
+    padding:5px;
+    min-width:380px;
+  }
+  .newsletter-form input{
+    flex:1;
+    background:transparent;
+    border:none;
+    padding:0 18px;
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+  }
+  .newsletter-form input::placeholder{ color:rgba(251,248,243,0.4); }
+  .newsletter-form input:focus{ outline:none; }
+  .newsletter-form button{
+    background:var(--pulse);
+    color:#fff;
+    border:none;
+    padding:0 22px;
+    height:44px;
+    border-radius:100px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .2s ease;
+    flex-shrink:0;
+  }
+  .newsletter-form button:hover{ background:var(--pulse-deep); }
+  .nl-success{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    color:var(--gold);
+    padding:12px 20px;
+    min-width:380px;
+  }
+

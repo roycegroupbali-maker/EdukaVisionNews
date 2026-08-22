@@ -1,0 +1,23 @@
+/* Layout khusus section Lifestyle / Edukasi (split 3 kolom) */
+
+  /* ===== LIFESTYLE / EDUKASI split layout ===== */
+  .split-3{
+    display:grid;
+    grid-template-columns:1.15fr 1fr 1fr;
+    gap:26px;
+    padding-bottom:56px;
+  }
+  .big-card .card-art{ aspect-ratio:4/3.1; }
+  .big-card .card-title{ font-size:23px; }
+  .stacked-card{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .stacked-card:first-child{ padding-top:0; }
+  .stacked-card:last-child{ border-bottom:none; }
+  .stacked-thumb{ width:110px; height:80px; border-radius:4px; overflow:hidden; }
+  .stack-col{ display:flex; flex-direction:column; }
+

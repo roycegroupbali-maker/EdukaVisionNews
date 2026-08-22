@@ -1,0 +1,41 @@
+/* Papan skor pertandingan olahraga */
+
+  /* ===== SCOREBOARD (OLAHRAGA) ===== */
+  .scoreboard{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 26px;
+    margin-bottom:26px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+  }
+  .score-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    border-right:1px solid rgba(251,248,243,0.1);
+  }
+  .score-item:last-child{ border-right:none; }
+  .score-team{ display:flex; flex-direction:column; gap:6px; }
+  .score-team .name{
+    font-size:13px; font-weight:600; color:var(--paper);
+  }
+  .score-league{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+    display:block;
+  }
+  .score-vs{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:22px;
+    font-weight:600;
+    color:var(--paper);
+    letter-spacing:0.02em;
+  }
+

@@ -1,0 +1,40 @@
+/* ==========================================================================
+   EdukaVisionNews — Site Stylesheet (entry point)
+   File ini HANYA berisi daftar import. Semua CSS asli sudah dipecah rapi
+   ke dalam folder base/, layout/, dan components/ di sebelahnya.
+   Urutan import di bawah ini SENGAJA dijaga: base -> layout -> components
+   -> responsive, supaya cascade CSS tetap benar.
+   ========================================================================== */
+
+/* Font Google (Fraunces, Inter, IBM Plex Mono) */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* 1. BASE — variabel warna, reset, tipografi dasar, dark mode */
+@import './base/_reset-base.css';
+@import './base/_progress-theme.css';
+
+/* 2. LAYOUT — kerangka halaman (header, footer, navigasi) */
+@import './layout/_topbar.css';
+@import './layout/_header.css';
+@import './layout/_search-overlay.css';
+@import './layout/_ticker.css';
+@import './layout/_category-strip.css';
+@import './layout/_divider.css';
+@import './layout/_footer.css';
+
+/* 3. COMPONENTS — blok konten yang bisa dipakai ulang */
+@import './components/_ads.css';
+@import './components/_hero.css';
+@import './components/_section-header.css';
+@import './components/_cards.css';
+@import './components/_lifestyle-layout.css';
+@import './components/_scoreboard.css';
+@import './components/_world-strip.css';
+@import './components/_recipe.css';
+@import './components/_poll.css';
+@import './components/_newsletter.css';
+@import './components/_back-to-top.css';
+@import './components/_accessibility.css';
+
+/* 4. RESPONSIVE — media query, WAJIB paling akhir */
+@import './_responsive.css';

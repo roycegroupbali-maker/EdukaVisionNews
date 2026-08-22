@@ -1,0 +1,47 @@
+/* Grid kartu berita standar */
+
+  /* ===== CARD GRID ===== */
+  .grid-4{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:26px;
+  }
+  .grid-4-foot{ padding-bottom:56px; }
+  .card{
+    display:flex;
+    flex-direction:column;
+  }
+  .card-art{
+    aspect-ratio:4/3;
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:14px;
+  }
+  .card-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+    line-height:1.28;
+    color:var(--ink);
+    margin:10px 0 8px;
+  }
+  .card:hover .card-title{ color:var(--pulse); }
+  .card-dek{
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:1.5;
+    margin-bottom:10px;
+  }
+
+  .load-more-row{ display:flex; justify-content:center; padding:34px 0 56px; }
+  .btn-load-more{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:.06em; text-transform:uppercase; font-weight:600;
+    color:var(--ink); background:transparent;
+    border:1.5px solid var(--ink); border-radius:100px;
+    padding:13px 30px;
+    transition:background .2s ease, color .2s ease;
+  }
+  .btn-load-more:hover{ background:var(--ink); color:var(--paper); }
+  .btn-load-more:disabled{ opacity:.5; cursor:default; background:transparent; color:var(--ink); }
+

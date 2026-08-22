@@ -1,0 +1,10 @@
+/* Layout strip section Dunia / Internasional */
+
+  /* ===== DUNIA / INTERNASIONAL map strip ===== */
+  .world-strip{
+    display:grid;
+    grid-template-columns:1.3fr 1fr 1fr;
+    gap:26px;
+    padding-bottom:56px;
+  }
+

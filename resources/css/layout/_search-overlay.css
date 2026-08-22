@@ -1,0 +1,50 @@
+/* Overlay pencarian artikel */
+
+  /* ===== SEARCH OVERLAY ===== */
+  .search-overlay{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(13,27,58,0.72);
+    backdrop-filter:blur(4px);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:100px 20px;
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .search-overlay.open{ opacity:1; pointer-events:auto; }
+  .search-panel{
+    width:100%; max-width:620px;
+    background:var(--paper);
+    border-radius:10px;
+    padding:26px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.35);
+  }
+  .search-panel-head{
+    display:flex; align-items:center; gap:12px;
+    border-bottom:1px solid var(--paper-line);
+    padding-bottom:16px; margin-bottom:6px;
+  }
+  .search-panel-head svg{ flex-shrink:0; color:var(--muted-2); }
+  .search-panel-head input{
+    flex:1; border:none; background:transparent; outline:none;
+    font-family:'Fraunces', serif; font-size:19px; color:var(--ink);
+  }
+  .search-panel-head input::placeholder{ color:var(--muted-2); font-family:'Inter',sans-serif; font-size:15px;}
+  .search-close{
+    border:none; background:none; color:var(--muted-2);
+    width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%;
+  }
+  .search-close:hover{ background:var(--paper-alt); }
+  .search-results{ max-height:360px; overflow-y:auto; padding-top:8px; }
+  .search-result-item{
+    display:flex; align-items:baseline; gap:10px;
+    padding:11px 8px; border-radius:6px;
+    font-size:14.5px; font-weight:500; color:var(--ink);
+  }
+  .search-result-item:hover{ background:var(--paper-alt); }
+  .search-result-cat{
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--pulse);
+    flex-shrink:0;
+  }
+  .search-empty, .search-hint{ color:var(--muted-2); font-size:13.5px; padding:14px 8px; }
+

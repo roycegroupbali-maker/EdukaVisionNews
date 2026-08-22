@@ -1,0 +1,204 @@
+<?php
+    $isEdit = $isEdit ?? false;
+    $action = $isEdit ? route('admin.articles.update', $article) : route('admin.articles.store');
+?>
+
+<?php if (isset($component)) { $__componentOriginale0f1cdd055772eb1d4a99981c240763e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale0f1cdd055772eb1d4a99981c240763e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin-layout','data' => ['pageTitle' => $isEdit ? 'Edit Berita' : 'Tulis Berita Baru','pageSubtitle' => 'Pilih kategori lalu isi konten beritanya']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('admin-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['page-title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isEdit ? 'Edit Berita' : 'Tulis Berita Baru'),'page-subtitle' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Pilih kategori lalu isi konten beritanya')]); ?>
+
+  <form method="POST" action="<?php echo e($action); ?>">
+    <?php echo csrf_field(); ?>
+    <?php if($isEdit): ?> <?php echo method_field('PUT'); ?> <?php endif; ?>
+
+    <div class="form-grid">
+      <div>
+        <div class="form-card">
+          <h3>Konten Berita</h3>
+
+          <div class="field">
+            <label for="titleInput">Judul Berita</label>
+            <input type="text" id="titleInput" name="title" value="<?php echo e(old('title', $article->title)); ?>" required maxlength="255" placeholder="Judul berita yang menarik…">
+            <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div class="field">
+            <label for="slugInput">Slug URL <span style="font-weight:400; color:var(--muted-2);">(opsional, otomatis dari judul)</span></label>
+            <input type="text" id="slugInput" name="slug" value="<?php echo e(old('slug', $article->slug)); ?>" maxlength="255" placeholder="judul-berita-otomatis">
+            <?php $__errorArgs = ['slug'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div class="field">
+            <label for="excerptInput">Ringkasan / Excerpt</label>
+            <textarea id="excerptInput" name="excerpt" required maxlength="500" style="min-height:80px;" placeholder="Ringkasan singkat yang tampil di daftar berita…"><?php echo e(old('excerpt', $article->excerpt)); ?></textarea>
+            <?php $__errorArgs = ['excerpt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div class="field">
+            <label for="contentInput">Isi Berita</label>
+            <textarea id="contentInput" name="content" required style="min-height:320px;" placeholder="Tulis isi berita di sini. Pisahkan tiap paragraf dengan baris kosong."><?php echo e(old('content', $article->content)); ?></textarea>
+            <div class="field-hint">Pisahkan paragraf dengan baris kosong (Enter dua kali) agar tampil rapi di halaman berita.</div>
+            <?php $__errorArgs = ['content'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Khusus Resep Masakan <span style="font-weight:400; font-size:12.5px; color:var(--muted-2);">(isi jika kategori Resep Masakan)</span></h3>
+          <div class="form-row">
+            <div class="field">
+              <label for="recipeMinutes">Waktu Masak (menit)</label>
+              <input type="number" id="recipeMinutes" name="recipe_minutes" min="1" max="600" value="<?php echo e(old('recipe_minutes', $article->recipe_minutes)); ?>">
+            </div>
+            <div class="field">
+              <label for="recipeServings">Porsi</label>
+              <input type="number" id="recipeServings" name="recipe_servings" min="1" max="100" value="<?php echo e(old('recipe_servings', $article->recipe_servings)); ?>">
+            </div>
+          </div>
+          <div class="field">
+            <label for="recipeDifficulty">Tingkat Kesulitan</label>
+            <input type="text" id="recipeDifficulty" name="recipe_difficulty" maxlength="50" value="<?php echo e(old('recipe_difficulty', $article->recipe_difficulty)); ?>" placeholder="Mudah / Sedang / Sulit">
+          </div>
+        </div>
+      </div>
+
+      <div class="sticky-side">
+        <div class="form-card">
+          <h3>Kategori &amp; Publikasi</h3>
+
+          <div class="field">
+            <label for="categorySelect">Kategori</label>
+            <select id="categorySelect" name="category_id" required>
+              <option value="">— Pilih kategori —</option>
+              <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($cat->id); ?>" <?php if((string) old('category_id', $article->category_id) === (string) $cat->id): echo 'selected'; endif; ?>><?php echo e($cat->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+            <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div class="field">
+            <label for="subcategoryInput">Label Sub-kategori <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
+            <input type="text" id="subcategoryInput" name="subcategory" maxlength="100" value="<?php echo e(old('subcategory', $article->subcategory)); ?>" placeholder="mis. Ekonomi, Sains">
+          </div>
+
+          <div class="field">
+            <label for="authorInput">Penulis</label>
+            <input type="text" id="authorInput" name="author" maxlength="100" value="<?php echo e(old('author', $article->author)); ?>" placeholder="Redaksi EdukaVisionNews">
+          </div>
+
+          <div class="field">
+            <label for="readMinutes">Estimasi Baca (menit)</label>
+            <input type="number" id="readMinutes" name="read_minutes" min="1" max="60" value="<?php echo e(old('read_minutes', $article->read_minutes)); ?>">
+          </div>
+
+          <div class="field">
+            <label for="publishedAt">Jadwal Tayang</label>
+            <input type="datetime-local" id="publishedAt" name="published_at" value="<?php echo e(old('published_at', optional($article->published_at)->format('Y-m-d\TH:i'))); ?>">
+            <div class="field-hint">Kosongkan &amp; centang "Tayangkan sekarang" untuk publikasi langsung, atau isi tanggal untuk dijadwalkan.</div>
+          </div>
+
+          <div class="field checkbox-field">
+            <input type="checkbox" id="publishNow" name="publish_now" value="1">
+            <label for="publishNow" style="margin:0;">Tayangkan sekarang</label>
+          </div>
+          <div class="field checkbox-field">
+            <input type="checkbox" id="isFeatured" name="is_featured" value="1" <?php if(old('is_featured', $article->is_featured)): echo 'checked'; endif; ?>>
+            <label for="isFeatured" style="margin:0;">Jadikan berita headline (hero)</label>
+          </div>
+          <div class="field checkbox-field">
+            <input type="checkbox" id="isSponsored" name="is_sponsored" value="1" <?php if(old('is_sponsored', $article->is_sponsored)): echo 'checked'; endif; ?>>
+            <label for="isSponsored" style="margin:0;">Tandai sebagai Konten Bersponsor</label>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Gambar Artikel (Generatif)</h3>
+          <div class="art-preview">
+            <svg id="artPreviewSvg" viewBox="0 0 300 225" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="225" fill="<?php echo e(old('art_color1', $article->art_color1)); ?>"/>
+            </svg>
+          </div>
+
+          <div class="field">
+            <label>Warna</label>
+            <div class="color-row">
+              <input type="color" id="artColor1" name="art_color1" value="<?php echo e(old('art_color1', $article->art_color1)); ?>">
+              <input type="color" id="artColor2" name="art_color2" value="<?php echo e(old('art_color2', $article->art_color2)); ?>">
+              <span class="field-hint" style="margin:0;">Warna dasar &amp; aksen</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Pola</label>
+            <div class="pattern-grid">
+              <?php $__currentLoopData = ['wave' => 'Gelombang', 'circles' => 'Lingkaran', 'triangle' => 'Segitiga', 'grid' => 'Kotak', 'dots' => 'Titik', 'arrow' => 'Panah']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <label class="pattern-option">
+                  <input type="radio" name="art_pattern" value="<?php echo e($val); ?>" <?php if(old('art_pattern', $article->art_pattern) === $val): echo 'checked'; endif; ?>>
+                  <span class="pattern-box"><?php echo e($label); ?></span>
+                </label>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="<?php echo e(route('admin.articles.index')); ?>" class="btn btn-ghost">Batal</a>
+          <button type="submit" class="btn btn-accent"><?php echo e($isEdit ? 'Simpan Perubahan' : 'Simpan Berita'); ?></button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
+<?php $attributes = $__attributesOriginale0f1cdd055772eb1d4a99981c240763e; ?>
+<?php unset($__attributesOriginale0f1cdd055772eb1d4a99981c240763e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
+<?php $component = $__componentOriginale0f1cdd055772eb1d4a99981c240763e; ?>
+<?php unset($__componentOriginale0f1cdd055772eb1d4a99981c240763e); ?>
+<?php endif; ?>
+<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/articles/form.blade.php ENDPATH**/ ?>
