@@ -100,22 +100,26 @@
    EFEK â€” diterapkan lewat class pada <body>
    ========================================================================== */
 
-/* Ukuran huruf: skala lewat font-size root, dikendalikan lewat CSS var */
-body{ font-size:calc(16px * var(--a11y-font-scale, 1)); }
+/* Ukuran huruf: pakai zoom supaya membesarkan SEMUA elemen apa pun
+   satuan CSS yang dipakai (site ini pakai px di banyak tempat lewat
+   Tailwind, jadi font-size relatif di body saja tidak akan bekerja). */
+body{ zoom:var(--a11y-font-scale, 1); }
 
-/* Perataan teks */
-body.a11y-align-left main, body.a11y-align-left article, body.a11y-align-left p{ text-align:left; }
-body.a11y-align-center main, body.a11y-align-center article, body.a11y-align-center p{ text-align:center; }
-body.a11y-align-right main, body.a11y-align-right article, body.a11y-align-right p{ text-align:right; }
-body.a11y-align-justify main, body.a11y-align-justify article, body.a11y-align-justify p{ text-align:justify; }
+/* Perataan teks — sasar semua elemen teks umum & pakai !important supaya
+   menang lawan utility class Tailwind (text-left/center/right dst). */
+body.a11y-align-left main, body.a11y-align-left article, body.a11y-align-left p, body.a11y-align-left li, body.a11y-align-left h1, body.a11y-align-left h2, body.a11y-align-left h3, body.a11y-align-left h4, body.a11y-align-left h5, body.a11y-align-left h6, body.a11y-align-left blockquote, body.a11y-align-left span{ text-align:left !important; }
+body.a11y-align-center main, body.a11y-align-center article, body.a11y-align-center p, body.a11y-align-center li, body.a11y-align-center h1, body.a11y-align-center h2, body.a11y-align-center h3, body.a11y-align-center h4, body.a11y-align-center h5, body.a11y-align-center h6, body.a11y-align-center blockquote, body.a11y-align-center span{ text-align:center !important; }
+body.a11y-align-right main, body.a11y-align-right article, body.a11y-align-right p, body.a11y-align-right li, body.a11y-align-right h1, body.a11y-align-right h2, body.a11y-align-right h3, body.a11y-align-right h4, body.a11y-align-right h5, body.a11y-align-right h6, body.a11y-align-right blockquote, body.a11y-align-right span{ text-align:right !important; }
+body.a11y-align-justify main, body.a11y-align-justify article, body.a11y-align-justify p, body.a11y-align-justify li, body.a11y-align-justify blockquote{ text-align:justify !important; }
 
 /* Tinggi baris */
 body.a11y-lineheight-tight p, body.a11y-lineheight-tight li{ line-height:1.25 !important; }
 body.a11y-lineheight-wide p, body.a11y-lineheight-wide li{ line-height:2 !important; }
 
-/* Jarak huruf */
-body.a11y-letterspacing-medium{ letter-spacing:0.03em; }
-body.a11y-letterspacing-wide{ letter-spacing:0.07em; }
+/* Jarak huruf — sasar elemen teks & pakai !important, bukan cuma di body,
+   supaya tidak kalah spesifisitas dari class Tailwind (tracking-*). */
+body.a11y-letterspacing-medium p, body.a11y-letterspacing-medium li, body.a11y-letterspacing-medium h1, body.a11y-letterspacing-medium h2, body.a11y-letterspacing-medium h3, body.a11y-letterspacing-medium h4, body.a11y-letterspacing-medium span, body.a11y-letterspacing-medium a{ letter-spacing:0.03em !important; }
+body.a11y-letterspacing-wide p, body.a11y-letterspacing-wide li, body.a11y-letterspacing-wide h1, body.a11y-letterspacing-wide h2, body.a11y-letterspacing-wide h3, body.a11y-letterspacing-wide h4, body.a11y-letterspacing-wide span, body.a11y-letterspacing-wide a{ letter-spacing:0.07em !important; }
 
 /* Saturasi rendah */
 body.a11y-lowcolor{ filter:saturate(.35); }
@@ -137,6 +141,11 @@ body.a11y-adhd *{
 }
 body.a11y-adhd .topbar, body.a11y-adhd .mobile-ad-bar, body.a11y-adhd [class*="ad-slot"]{
   opacity:.5;
+}
+body.a11y-adhd *:focus,
+body.a11y-adhd *:focus-visible{
+  outline:3px solid var(--gold) !important;
+  outline-offset:2px !important;
 }
 
 @media (max-width:640px){

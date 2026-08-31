@@ -80,7 +80,7 @@ class AdController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:150'],
             'slot' => ['required', 'string', 'in:'.implode(',', array_keys(Ad::SLOTS))],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:20480'],
             'target_url' => ['nullable', 'url', 'max:255'],
             'cta_text' => ['nullable', 'string', 'max:50'],
             'advertiser' => ['nullable', 'string', 'max:150'],

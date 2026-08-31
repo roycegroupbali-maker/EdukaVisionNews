@@ -125,6 +125,35 @@ export function initAccessibilityWidget() {
   panel.querySelectorAll('[data-toggle]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const key = btn.dataset.toggle;
+
+      // ADHD Mode = preset yang menyalakan beberapa fitur lain sekaligus,
+      // bukan cuma satu class kosong (biar efeknya kerasa di layar).
+      if (key === 'adhd') {
+        const turningOn = !prefs.adhd;
+        if (turningOn) {
+          updatePrefs({
+            adhd: true,
+            readingmask: true,
+            lowcolor: true,
+            align: 'left',
+            lineheight: 'wide',
+            letterspacing: 'medium',
+            fontScale: Math.max(prefs.fontScale, 1.1),
+          });
+        } else {
+          updatePrefs({
+            adhd: false,
+            readingmask: false,
+            lowcolor: false,
+            align: null,
+            lineheight: null,
+            letterspacing: 'normal',
+            fontScale: 1,
+          });
+        }
+        return;
+      }
+
       updatePrefs({ [key]: !prefs[key] });
     });
   });
