@@ -42,10 +42,11 @@
       <div class="footer-col">
         <h4>Tentang Kami</h4>
         <ul>
-          <li><a href="#">Redaksi</a></li>
+          <li><a href="{{ route('pages.about') }}">Tentang Kami</a></li>
+          <li><a href="{{ route('pages.redaksi') }}">Redaksi</a></li>
           <li><a href="#">Karier</a></li>
-          <li><a href="#">Pedoman Media Siber</a></li>
-          <li><a href="#">Kontak</a></li>
+          <li><a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a></li>
+          <li><a href="{{ route('pages.redaksi') }}">Kontak</a></li>
         </ul>
       </div>
       <div class="footer-col">

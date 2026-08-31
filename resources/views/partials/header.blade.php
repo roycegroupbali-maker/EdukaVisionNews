@@ -33,9 +33,9 @@
   <div class="wrap">
     <div class="pulse-dot"><i></i> {{ now()->translatedFormat('l, d F Y') }} · Denpasar, 29°C Cerah Berawan · <span class="live-clock" id="liveClock">--:--:--</span> WITA</div>
     <div class="topbar-links">
-      <span>Redaksi berita</span>
-      <span>Pedoman Media Siber</span>
-      <span>Indeks</span>
+      <a href="{{ route('pages.redaksi') }}">Redaksi berita</a>
+      <a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a>
+      <a href="{{ route('pages.about') }}">Tentang Kami</a>
     </div>
   </div>
 </div>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,11 @@ Route::get('/', [ArticleController::class, 'home'])->name('home');
 Route::get('/cari', [ArticleController::class, 'search'])->name('search');
 Route::get('/kategori/{slug}', [ArticleController::class, 'category'])->name('category.show');
 Route::get('/berita/{article:slug}', [ArticleController::class, 'show'])->name('article.show');
+
+// Halaman statis: Tentang Kami, Redaksi, dan Pedoman Media Siber (data dummy).
+Route::get('/tentang-kami', [PageController::class, 'about'])->name('pages.about');
+Route::get('/redaksi', [PageController::class, 'redaksi'])->name('pages.redaksi');
+Route::get('/pedoman-media-siber', [PageController::class, 'pedomanMediaSiber'])->name('pages.pedoman');
 
 // Tautan klik iklan publik — hitung klik lalu teruskan ke target_url pengiklan.
 Route::get('/iklan/{ad}/klik', AdClickController::class)->name('ads.click');
