@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
@@ -13,7 +14,8 @@ class Article extends Model
 
     protected $fillable = [
         'category_id', 'title', 'slug', 'subcategory', 'excerpt', 'content',
-        'author', 'read_minutes', 'views', 'art_color1', 'art_color2', 'art_pattern',
+        'author', 'read_minutes', 'views', 'shares', 'art_color1', 'art_color2', 'art_pattern',
+        'image_path', 'image_caption', 'image_source', 'image_alt', 'tags',
         'recipe_minutes', 'recipe_servings', 'recipe_difficulty',
         'is_featured', 'is_sponsored', 'published_at',
     ];
@@ -54,5 +56,30 @@ class Article extends Model
     public function getReadableDateAttribute(): string
     {
         return $this->published_at?->translatedFormat('d F Y, H:i') ?? '';
+    }
+
+    /**
+     * URL publik foto berita yang diunggah admin, atau null kalau belum ada
+     * (artinya masih memakai art generatif dari partials.art).
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
+    }
+
+    /**
+     * Pecah string tag (dipisah koma) jadi array bersih untuk ditampilkan
+     * sebagai chip/pill di akhir artikel, seperti portal berita pada umumnya.
+     *
+     * @return array<int, string>
+     */
+    public function getTagsArrayAttribute(): array
+    {
+        return collect(explode(',', (string) $this->tags))
+            ->map(fn ($t) => trim($t))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 }

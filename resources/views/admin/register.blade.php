@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Admin — EdukaVisionNews</title>
+<title>Daftar Admin — EdukaVisionNews</title>
 <meta name="robots" content="noindex, nofollow">
 @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
 </head>
@@ -16,35 +16,36 @@
       <span class="logo-text">Eduka<span class="accent">Vision</span>News</span>
     </div>
 
-    <h1>Login Panel Admin</h1>
-    <p class="sub">Khusus redaksi &amp; pengelola iklan EdukaVisionNews. Masuk untuk mengelola berita dan slot iklan.</p>
+    <h1>Daftar Akun Admin</h1>
+    <p class="sub">Khusus redaksi &amp; pengelola iklan EdukaVisionNews. Akun baru perlu dikonfirmasi/diaktifkan dulu oleh admin lain sebelum bisa dipakai untuk masuk.</p>
 
-    @if(session('status'))
-      <div class="admin-flash success" style="margin-bottom:16px;">{{ session('status') }}</div>
-    @endif
     @if($errors->any())
       <div class="admin-flash error" style="margin-bottom:16px;">{{ $errors->first() }}</div>
     @endif
 
-    <form method="POST" action="{{ route('admin.login.attempt') }}">
+    <form method="POST" action="{{ route('admin.register.attempt') }}">
       @csrf
       <div class="field">
+        <label for="name">Nama</label>
+        <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus placeholder="Nama lengkap">
+      </div>
+      <div class="field">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="admin@edukavisionnews.test">
+        <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="admin@edukavisionnews.test">
       </div>
       <div class="field">
         <label for="password">Kata Sandi</label>
         <input type="password" id="password" name="password" required placeholder="••••••••">
       </div>
-      <div class="field checkbox-field">
-        <input type="checkbox" id="remember" name="remember">
-        <label for="remember" style="margin:0;">Ingat saya di perangkat ini</label>
+      <div class="field">
+        <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="••••••••">
       </div>
-      <button type="submit" class="btn btn-accent btn-block">Masuk ke Panel Admin</button>
+      <button type="submit" class="btn btn-accent btn-block">Daftar Akun</button>
     </form>
 
     <p class="admin-auth-foot">
-      Belum punya akun? <a href="{{ route('admin.register') }}">Daftar di sini</a>.
+      Sudah punya akun? <a href="{{ route('admin.login') }}">Masuk di sini</a>.
     </p>
     <p class="admin-auth-foot">© {{ now()->year }} EdukaVisionNews Media Group.</p>
   </div>

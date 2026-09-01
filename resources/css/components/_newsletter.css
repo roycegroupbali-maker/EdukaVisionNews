@@ -65,4 +65,21 @@
     padding:12px 20px;
     min-width:380px;
   }
+  .newsletter-cta-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    background:var(--pulse);
+    color:#fff;
+    border:none;
+    padding:0 26px;
+    height:52px;
+    border-radius:100px;
+    font-weight:600;
+    font-size:14.5px;
+    white-space:nowrap;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .newsletter-cta-btn:hover{ background:var(--pulse-deep); transform:translateY(-1px); }
 

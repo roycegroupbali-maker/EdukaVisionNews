@@ -21,6 +21,17 @@
       <div class="stat-value">{{ $articlesPerCategory->count() }}</div>
       <div class="stat-note">Rubrik yang tersedia</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Pengajuan Berita</div>
+      <div class="stat-value">{{ $pendingSubmissions }}</div>
+      <div class="stat-note">
+        @if($pendingSubmissions > 0)
+          <a href="{{ route('admin.news-submissions.index') }}">Menunggu ditinjau &rarr;</a>
+        @else
+          Tidak ada yang menunggu
+        @endif
+      </div>
+    </div>
   </div>
 
   <div class="form-grid">
@@ -56,6 +67,22 @@
                 <a href="{{ route('admin.articles.edit', $a) }}" style="font-weight:600; color:var(--ink);">{{ $a->title }}</a>
               </div>
               <div class="cbr-count" style="font-size:12.5px; color:var(--muted);">{{ number_format($a->views) }} views</div>
+            </div>
+          @empty
+            <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>
+          @endforelse
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Berita Paling Banyak Dibagikan</h2></div>
+        <div class="panel-body">
+          @forelse($mostShared as $a)
+            <div class="category-bar-row">
+              <div style="flex:1;">
+                <a href="{{ route('admin.articles.edit', $a) }}" style="font-weight:600; color:var(--ink);">{{ $a->title }}</a>
+              </div>
+              <div class="cbr-count" style="font-size:12.5px; color:var(--muted);">{{ number_format($a->shares) }} share</div>
             </div>
           @empty
             <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>

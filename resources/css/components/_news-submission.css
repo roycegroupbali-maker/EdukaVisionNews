@@ -1,0 +1,97 @@
+/* Halaman publik "Ajukan Berita" — form pengajuan berita dari pembaca */
+
+  .news-submission-lead{
+    font-size:15.5px;
+    color:var(--muted);
+    line-height:1.6;
+    max-width:64ch;
+    margin-bottom:30px;
+  }
+
+  .ns-alert{
+    font-family:'Inter', sans-serif;
+    font-size:13.5px;
+    line-height:1.6;
+    padding:14px 18px;
+    border-radius:8px;
+    margin-bottom:24px;
+  }
+  .ns-alert-success{
+    background:rgba(27,75,67,0.1);
+    color:var(--teal);
+    border:1px solid rgba(27,75,67,0.25);
+  }
+  .ns-alert-error{
+    background:rgba(193,39,45,0.08);
+    color:var(--pulse-deep);
+    border:1px solid rgba(193,39,45,0.25);
+  }
+  .ns-alert-error ul{ margin:8px 0 0 18px; }
+
+  .ns-form{
+    background:var(--paper-alt);
+    border:1px solid var(--paper-line);
+    border-radius:12px;
+    padding:30px;
+    margin-bottom:48px;
+  }
+  .ns-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  .ns-field{ margin-bottom:18px; }
+  .ns-field label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .ns-optional{ text-transform:none; letter-spacing:0; font-weight:400; }
+  .ns-field input[type="text"],
+  .ns-field input[type="email"],
+  .ns-field textarea{
+    width:100%;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+    padding:12px 14px;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  .ns-field input[type="file"]{
+    width:100%;
+    font-family:'Inter', sans-serif;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+  .ns-field textarea{
+    min-height:180px;
+    resize:vertical;
+  }
+  .ns-field input:focus,
+  .ns-field textarea:focus{
+    outline:none;
+    border-color:var(--pulse);
+  }
+  .ns-hint{
+    font-size:12px;
+    color:var(--muted-2);
+    margin-top:6px;
+  }
+  .ns-submit-btn{
+    background:var(--pulse);
+    color:#fff;
+    border:none;
+    padding:0 28px;
+    height:48px;
+    border-radius:100px;
+    font-weight:600;
+    font-size:14.5px;
+    transition:background .2s ease;
+  }
+  .ns-submit-btn:hover{ background:var(--pulse-deep); }

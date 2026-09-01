@@ -22,6 +22,7 @@ class AdminUserSeeder extends Seeder
                 'name' => 'Admin EdukaVisionNews',
                 'password' => Hash::make('admin123'),
                 'is_admin' => true,
+                'is_active' => true,
                 'email_verified_at' => now(),
             ]
         );

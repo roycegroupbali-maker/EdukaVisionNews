@@ -6,6 +6,7 @@
 <title>{{ $pageTitle ?? 'EdukaVisionNews — Denyut Kabar Hari Ini' }}</title>
 <meta name="description" content="{{ $pageDescription ?? 'Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.' }}">
 <meta name="theme-color" content="#0D1B3A">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="canonical" href="{{ url()->current() }}">
 <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
@@ -33,9 +34,9 @@
   <div class="wrap">
     <div class="pulse-dot"><i></i> {{ now()->translatedFormat('l, d F Y') }} · Denpasar, 29°C Cerah Berawan · <span class="live-clock" id="liveClock">--:--:--</span> WITA</div>
     <div class="topbar-links">
-      <a href="{{ route('pages.redaksi') }}">Redaksi berita</a>
-      <a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a>
-      <a href="{{ route('pages.about') }}">Tentang Kami</a>
+      <span>Redaksi berita</span>
+      <span>Pedoman Media Siber</span>
+      <span>Indeks</span>
     </div>
   </div>
 </div>
@@ -59,7 +60,7 @@
       <button class="icon-btn" aria-label="Cari artikel" id="searchBtn" title="Cari artikel">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
-      <a href="#" class="btn-subscribe">Berlangganan</a>
+      <a href="{{ route('news-submission.create') }}" class="btn-subscribe">Ajukan Berita</a>
     </div>
   </div>
 </header>

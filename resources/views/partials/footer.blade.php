@@ -1,14 +1,11 @@
-<!-- ============ NEWSLETTER ============ -->
+<!-- ============ AJUKAN BERITA ============ -->
 <section class="newsletter">
   <div class="wrap">
     <div>
-      <h3 class="display">Ikuti denyut kabar setiap pagi</h3>
-      <p>Ringkasan berita nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep pilihan langsung ke kotak masuk kamu, setiap hari pukul 6 pagi.</p>
+      <h3 class="display">Punya info atau kejadian penting?</h3>
+      <p>Kirim usulan berita, laporan warga, atau info kejadian di sekitarmu. Tim redaksi kami akan meninjau setiap pengajuan yang masuk.</p>
     </div>
-    <form class="newsletter-form" id="newsletterForm">
-      <input type="email" id="newsletterEmail" placeholder="Alamat email kamu" aria-label="Alamat email" required>
-      <button type="submit">Berlangganan</button>
-    </form>
+    <a href="{{ route('news-submission.create') }}" class="newsletter-cta-btn">Ajukan Berita Sekarang</a>
   </div>
 </section>
 
@@ -42,11 +39,10 @@
       <div class="footer-col">
         <h4>Tentang Kami</h4>
         <ul>
-          <li><a href="{{ route('pages.about') }}">Tentang Kami</a></li>
-          <li><a href="{{ route('pages.redaksi') }}">Redaksi</a></li>
+          <li><a href="#">Redaksi</a></li>
           <li><a href="#">Karier</a></li>
-          <li><a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a></li>
-          <li><a href="{{ route('pages.redaksi') }}">Kontak</a></li>
+          <li><a href="#">Pedoman Media Siber</a></li>
+          <li><a href="#">Kontak</a></li>
         </ul>
       </div>
       <div class="footer-col">

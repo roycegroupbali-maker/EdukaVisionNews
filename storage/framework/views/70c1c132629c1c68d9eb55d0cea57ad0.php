@@ -35,22 +35,45 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
         Kategori
       </a>
+      <a href="<?php echo e(route('admin.news-submissions.index')); ?>" class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => request()->routeIs('admin.news-submissions.*')]); ?>" style="display:flex; align-items:center; justify-content:space-between;">
+        <span style="display:flex; align-items:center; gap:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 7l8 6 8-6"/></svg>
+          Pengajuan Berita
+        </span>
+        <?php $__pendingSubs = \App\Models\NewsSubmission::status(\App\Models\NewsSubmission::STATUS_PENDING)->count(); ?>
+        <?php if($__pendingSubs > 0): ?>
+          <span class="badge badge-red" style="font-size:10.5px;"><?php echo e($__pendingSubs); ?></span>
+        <?php endif; ?>
+      </a>
 
       <div class="admin-nav-label">Monetisasi</div>
       <a href="<?php echo e(route('admin.ads.index')); ?>" class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => request()->routeIs('admin.ads.*')]); ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
         Iklan / Ads
       </a>
+
+      <div class="admin-nav-label">Pengaturan</div>
+      <a href="<?php echo e(route('admin.users.index')); ?>" class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => request()->routeIs('admin.users.*')]); ?>" style="display:flex; align-items:center; justify-content:space-between;">
+        <span style="display:flex; align-items:center; gap:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Akun Admin
+        </span>
+        <?php $__pendingAdmins = \App\Models\User::where('is_admin', true)->where('is_active', false)->count(); ?>
+        <?php if($__pendingAdmins > 0): ?>
+          <span class="badge badge-red" style="font-size:10.5px;"><?php echo e($__pendingAdmins); ?></span>
+        <?php endif; ?>
+      </a>
     </nav>
 
     <div class="admin-sidebar-foot">
-      <div class="admin-user-chip">
+      <a href="<?php echo e(route('admin.account.edit')); ?>" class="admin-user-chip" class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => request()->routeIs('admin.account.*')]); ?>">
         <div class="admin-user-avatar"><?php echo e(strtoupper(substr(auth()->user()->name ?? 'A', 0, 1))); ?></div>
         <div>
           <div class="admin-user-name"><?php echo e(auth()->user()->name); ?></div>
           <div class="admin-user-role">Administrator</div>
         </div>
-      </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto; flex-shrink:0; opacity:.5;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      </a>
       <form method="POST" action="<?php echo e(route('admin.logout')); ?>">
         <?php echo csrf_field(); ?>
         <button type="submit" class="btn btn-ghost btn-sm btn-block">Keluar</button>

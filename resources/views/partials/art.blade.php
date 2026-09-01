@@ -13,6 +13,14 @@
     $c2 = $article->art_color2;
     $pattern = $article->art_pattern;
 @endphp
+@if($article->image_url)
+  <img
+    src="{{ $article->image_url }}"
+    alt="{{ $article->image_alt ?: $article->title }}"
+    loading="lazy"
+    style="width:100%; height:100%; object-fit:cover; display:block;"
+  >
+@else
 <svg viewBox="{{ $vb }}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
   <rect width="{{ $vw }}" height="{{ $vh }}" fill="{{ $c1 }}"/>
   @switch($pattern)
@@ -39,3 +47,4 @@
       <path d="M0 {{ $vh * 0.75 }} L{{ $vw * 0.2 }} {{ $vh * 0.53 }} L{{ $vw * 0.37 }} {{ $vh * 0.67 }} L{{ $vw * 0.6 }} {{ $vh * 0.35 }} L{{ $vw }} {{ $vh * 0.58 }}" stroke="{{ $c2 }}" stroke-width="2" fill="none" opacity="0.55"/>
   @endswitch
 </svg>
+@endif

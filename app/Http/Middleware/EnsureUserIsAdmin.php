@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureUserIsAdmin
 {
     /**
-     * Pastikan user yang login adalah admin. Kalau bukan, tendang keluar
-     * ke halaman login admin dengan pesan yang jelas.
+     * Pastikan user yang login adalah admin DAN sudah aktif. Kalau tidak,
+     * tendang keluar ke halaman login admin dengan pesan yang jelas.
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -22,6 +22,14 @@ class EnsureUserIsAdmin
             return redirect()
                 ->route('admin.login')
                 ->withErrors(['email' => 'Akun ini tidak memiliki akses ke panel admin.']);
+        }
+
+        if (! $user->is_active) {
+            auth()->logout();
+
+            return redirect()
+                ->route('admin.login')
+                ->withErrors(['email' => 'Akun Anda belum diaktifkan oleh admin lain.']);
         }
 
         return $next($request);

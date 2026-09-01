@@ -156,7 +156,13 @@ button, input, select, textarea{font-family:inherit;}
 .admin-nav-label{ font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:14px 12px 6px; }
 
 .admin-sidebar-foot{ padding:16px; border-top:1px solid rgba(255,255,255,0.08); }
-.admin-user-chip{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.admin-user-chip{
+  display:flex; align-items:center; gap:10px; margin-bottom:12px;
+  padding:8px; border-radius:8px; margin-left:-8px; margin-right:-8px; width:calc(100% + 16px);
+  transition:background .15s ease;
+}
+.admin-user-chip:hover{ background:rgba(255,255,255,0.06); }
+.admin-user-chip.active{ background:rgba(255,255,255,0.08); }
 .admin-user-avatar{
   width:32px; height:32px; border-radius:50%; background:var(--gold);
   display:flex; align-items:center; justify-content:center;
@@ -166,6 +172,13 @@ button, input, select, textarea{font-family:inherit;}
 .admin-user-role{ font-size:11px; color:rgba(255,255,255,0.5); }
 .admin-sidebar-foot form{ width:100%; }
 .admin-sidebar-foot .btn{ width:100%; }
+
+.lock-badge{
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(193,39,45,0.1); color:var(--pulse);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:16px;
+}
 
 .admin-main{ flex:1; min-width:0; display:flex; flex-direction:column; }
 .admin-topbar{

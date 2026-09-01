@@ -27,10 +27,12 @@
       <table class="admin-table">
         <thead>
           <tr>
+            <th></th>
             <th>Judul</th>
             <th>Kategori</th>
             <th>Status</th>
             <th>Views</th>
+            <th>Share</th>
             <th>Tanggal</th>
             <th>Aksi</th>
           </tr>
@@ -38,6 +40,11 @@
         <tbody>
           @forelse($articles as $article)
             <tr>
+              <td style="width:52px;">
+                <div style="width:48px; height:36px; border-radius:4px; overflow:hidden; background:var(--paper-alt);">
+                  @include('partials.art', ['article' => $article, 'viewbox' => '0 0 48 36'])
+                </div>
+              </td>
               <td class="title-cell">
                 <a href="{{ route('admin.articles.edit', $article) }}">{{ $article->title }}</a>
                 <div class="sub">oleh {{ $article->author }}</div>
@@ -54,6 +61,7 @@
                 @endif
               </td>
               <td>{{ number_format($article->views) }}</td>
+              <td>{{ number_format($article->shares) }}</td>
               <td>{{ $article->created_at->translatedFormat('d M Y') }}</td>
               <td>
                 <div class="row-actions">
@@ -70,7 +78,7 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="6"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
+            <tr><td colspan="8"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
           @endforelse
         </tbody>
       </table>

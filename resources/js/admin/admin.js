@@ -11,19 +11,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Preview gambar iklan sebelum diupload
-  const imageInput = document.getElementById('adImageInput');
-  const imagePreview = document.getElementById('adImagePreview');
-  if (imageInput && imagePreview) {
-    imageInput.addEventListener('change', () => {
-      const file = imageInput.files && imageInput.files[0];
+  // Preview gambar sebelum diupload (dipakai form iklan & form artikel)
+  function bindImagePreview(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (!input || !preview) return;
+    input.addEventListener('change', () => {
+      const file = input.files && input.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (e) => {
-        imagePreview.src = e.target.result;
-        imagePreview.style.display = 'block';
+        preview.src = e.target.result;
+        preview.style.display = 'block';
       };
       reader.readAsDataURL(file);
+    });
+  }
+  bindImagePreview('adImageInput', 'adImagePreview');
+  bindImagePreview('articleImageInput', 'articleImagePreview');
+
+  // Kalau admin memilih gambar baru untuk artikel, otomatis lepas centang
+  // "hapus gambar" supaya tidak ada dua instruksi yang bertabrakan.
+  const articleImageInput = document.getElementById('articleImageInput');
+  const removeImageCheckbox = document.getElementById('removeImage');
+  if (articleImageInput && removeImageCheckbox) {
+    articleImageInput.addEventListener('change', () => {
+      if (articleImageInput.files && articleImageInput.files[0]) {
+        removeImageCheckbox.checked = false;
+      }
     });
   }
 

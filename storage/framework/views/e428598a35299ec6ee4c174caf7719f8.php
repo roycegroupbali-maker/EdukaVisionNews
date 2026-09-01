@@ -30,6 +30,17 @@
       <div class="stat-value"><?php echo e($articlesPerCategory->count()); ?></div>
       <div class="stat-note">Rubrik yang tersedia</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Pengajuan Berita</div>
+      <div class="stat-value"><?php echo e($pendingSubmissions); ?></div>
+      <div class="stat-note">
+        <?php if($pendingSubmissions > 0): ?>
+          <a href="<?php echo e(route('admin.news-submissions.index')); ?>">Menunggu ditinjau &rarr;</a>
+        <?php else: ?>
+          Tidak ada yang menunggu
+        <?php endif; ?>
+      </div>
+    </div>
   </div>
 
   <div class="form-grid">
@@ -66,6 +77,22 @@
                 <a href="<?php echo e(route('admin.articles.edit', $a)); ?>" style="font-weight:600; color:var(--ink);"><?php echo e($a->title); ?></a>
               </div>
               <div class="cbr-count" style="font-size:12.5px; color:var(--muted);"><?php echo e(number_format($a->views)); ?> views</div>
+            </div>
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Berita Paling Banyak Dibagikan</h2></div>
+        <div class="panel-body">
+          <?php $__empty_1 = true; $__currentLoopData = $mostShared; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $a): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="category-bar-row">
+              <div style="flex:1;">
+                <a href="<?php echo e(route('admin.articles.edit', $a)); ?>" style="font-weight:600; color:var(--ink);"><?php echo e($a->title); ?></a>
+              </div>
+              <div class="cbr-count" style="font-size:12.5px; color:var(--muted);"><?php echo e(number_format($a->shares)); ?> share</div>
             </div>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>

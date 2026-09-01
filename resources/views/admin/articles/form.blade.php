@@ -5,7 +5,7 @@
 
 <x-admin-layout :page-title="$isEdit ? 'Edit Berita' : 'Tulis Berita Baru'" :page-subtitle="'Pilih kategori lalu isi konten beritanya'">
 
-  <form method="POST" action="{{ $action }}">
+  <form method="POST" action="{{ $action }}" enctype="multipart/form-data">
     @csrf
     @if($isEdit) @method('PUT') @endif
 
@@ -110,7 +110,56 @@
         </div>
 
         <div class="form-card">
-          <h3>Gambar Artikel (Generatif)</h3>
+          <h3>Foto Berita <span style="font-weight:400; font-size:12.5px; color:var(--muted-2);">(opsional — dipakai menggantikan gambar generatif di bawah)</span></h3>
+
+          <div class="field">
+            <label for="articleImageInput">Gambar Berita</label>
+            @if($isEdit && $article->image_path)
+              <img id="articleImagePreview" src="{{ $article->image_url }}" alt="{{ $article->image_alt ?: $article->title }}" class="ad-image-preview">
+            @else
+              <img id="articleImagePreview" src="" alt="" class="ad-image-preview" style="display:none;">
+            @endif
+            <input type="file" id="articleImageInput" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
+            <div class="field-hint">Format JPG/PNG/WEBP/GIF, maksimal 8MB. Rasio disarankan 16:9.</div>
+            @error('image')<div class="field-error">{{ $message }}</div>@enderror
+
+            @if($isEdit && $article->image_path)
+              <div class="field checkbox-field" style="margin-top:10px;">
+                <input type="checkbox" id="removeImage" name="remove_image" value="1">
+                <label for="removeImage" style="margin:0;">Hapus gambar ini &amp; pakai gambar generatif lagi</label>
+              </div>
+            @endif
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="imageCaption">Keterangan Gambar <span style="font-weight:400; color:var(--muted-2);">(caption)</span></label>
+              <input type="text" id="imageCaption" name="image_caption" value="{{ old('image_caption', $article->image_caption) }}" maxlength="255" placeholder="mis. Warga memadati lokasi kejadian, Selasa (1/9).">
+              @error('image_caption')<div class="field-error">{{ $message }}</div>@enderror
+            </div>
+            <div class="field">
+              <label for="imageSource">Sumber / Kredit Foto</label>
+              <input type="text" id="imageSource" name="image_source" value="{{ old('image_source', $article->image_source) }}" maxlength="150" placeholder="mis. Foto: Antara / Dok. Istimewa">
+              @error('image_source')<div class="field-error">{{ $message }}</div>@enderror
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="imageAlt">Teks Alternatif (Alt Text) <span style="font-weight:400; color:var(--muted-2);">(untuk SEO &amp; aksesibilitas)</span></label>
+            <input type="text" id="imageAlt" name="image_alt" value="{{ old('image_alt', $article->image_alt) }}" maxlength="255" placeholder="mis. Petugas BPBD mengevakuasi warga terdampak banjir di Sanur">
+            @error('image_alt')<div class="field-error">{{ $message }}</div>@enderror
+          </div>
+
+          <div class="field">
+            <label for="tagsInput">Tag Berita <span style="font-weight:400; color:var(--muted-2);">(pisahkan dengan koma)</span></label>
+            <input type="text" id="tagsInput" name="tags" value="{{ old('tags', $article->tags) }}" maxlength="500" placeholder="mis. banjir, sanur, bencana alam, denpasar">
+            <div class="field-hint">Tag akan ditampilkan sebagai chip di akhir halaman berita, seperti portal berita pada umumnya.</div>
+            @error('tags')<div class="field-error">{{ $message }}</div>@enderror
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Gambar Artikel (Generatif) <span style="font-weight:400; font-size:12.5px; color:var(--muted-2);">(dipakai kalau tidak ada foto di atas)</span></h3>
           <div class="art-preview">
             <svg id="artPreviewSvg" viewBox="0 0 300 225" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
               <rect width="300" height="225" fill="{{ old('art_color1', $article->art_color1) }}"/>

@@ -6,6 +6,14 @@
     $c2 = $article->art_color2;
     $pattern = $article->art_pattern;
 ?>
+<?php if($article->image_url): ?>
+  <img
+    src="<?php echo e($article->image_url); ?>"
+    alt="<?php echo e($article->image_alt ?: $article->title); ?>"
+    loading="lazy"
+    style="width:100%; height:100%; object-fit:cover; display:block;"
+  >
+<?php else: ?>
 <svg viewBox="<?php echo e($vb); ?>" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
   <rect width="<?php echo e($vw); ?>" height="<?php echo e($vh); ?>" fill="<?php echo e($c1); ?>"/>
   <?php switch($pattern):
@@ -32,4 +40,5 @@
       <path d="M0 <?php echo e($vh * 0.75); ?> L<?php echo e($vw * 0.2); ?> <?php echo e($vh * 0.53); ?> L<?php echo e($vw * 0.37); ?> <?php echo e($vh * 0.67); ?> L<?php echo e($vw * 0.6); ?> <?php echo e($vh * 0.35); ?> L<?php echo e($vw); ?> <?php echo e($vh * 0.58); ?>" stroke="<?php echo e($c2); ?>" stroke-width="2" fill="none" opacity="0.55"/>
   <?php endswitch; ?>
 </svg>
+<?php endif; ?>
 <?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/partials/art.blade.php ENDPATH**/ ?>

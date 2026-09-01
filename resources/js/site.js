@@ -15,11 +15,11 @@ import { initPoll } from './modules/poll.js';
 import {
   initLoadMore,
   initBackToTop,
-  initNewsletterForm,
   initBookmarkButton,
   initMobileAdDismiss,
 } from './modules/misc-widgets.js';
 import { initAccessibilityWidget } from './modules/accessibility.js';
+import { initArticleShare } from './modules/article-share.js';
 
 function initSite() {
   initReadingProgress();
@@ -31,10 +31,10 @@ function initSite() {
   initPoll();
   initLoadMore();
   initBackToTop();
-  initNewsletterForm();
   initBookmarkButton();
   initMobileAdDismiss();
   initAccessibilityWidget();
+  initArticleShare();
 }
 
 if (document.readyState === 'loading') {

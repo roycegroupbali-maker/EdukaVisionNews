@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -61,6 +62,10 @@ class ArticleController extends Controller
         $data = $this->validated($request);
         $data['slug'] = $this->uniqueSlug($data['title'], $request->input('slug'));
 
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('articles', 'public');
+        }
+
         Article::create($data);
 
         return redirect()->route('admin.articles.index')->with('status', 'Berita berhasil dipublikasikan/disimpan.');
@@ -88,6 +93,16 @@ class ArticleController extends Controller
             $data['slug'] = $article->slug;
         }
 
+        if ($request->hasFile('image')) {
+            if ($article->image_path) {
+                Storage::disk('public')->delete($article->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('articles', 'public');
+        } elseif ($request->boolean('remove_image') && $article->image_path) {
+            Storage::disk('public')->delete($article->image_path);
+            $data['image_path'] = null;
+        }
+
         $article->update($data);
 
         return redirect()->route('admin.articles.index')->with('status', 'Perubahan berita berhasil disimpan.');
@@ -95,6 +110,10 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): RedirectResponse
     {
+        if ($article->image_path) {
+            Storage::disk('public')->delete($article->image_path);
+        }
+
         $article->delete();
 
         return back()->with('status', 'Berita berhasil dihapus.');
@@ -121,6 +140,12 @@ class ArticleController extends Controller
             'content' => ['required', 'string'],
             'author' => ['nullable', 'string', 'max:100'],
             'read_minutes' => ['nullable', 'integer', 'min:1', 'max:60'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:8192'],
+            'remove_image' => ['nullable', 'boolean'],
+            'image_caption' => ['nullable', 'string', 'max:255'],
+            'image_source' => ['nullable', 'string', 'max:150'],
+            'image_alt' => ['nullable', 'string', 'max:255'],
+            'tags' => ['nullable', 'string', 'max:500'],
             'art_color1' => ['required', 'string', 'max:20'],
             'art_color2' => ['required', 'string', 'max:20'],
             'art_pattern' => ['required', Rule::in(self::PATTERNS)],
@@ -142,7 +167,7 @@ class ArticleController extends Controller
             $data['published_at'] = now();
         }
 
-        unset($data['publish_now']);
+        unset($data['publish_now'], $data['image'], $data['remove_image']);
 
         return $data;
     }

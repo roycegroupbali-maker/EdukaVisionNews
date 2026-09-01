@@ -33,6 +33,8 @@
 @import './components/_recipe.css';
 @import './components/_poll.css';
 @import './components/_newsletter.css';
+@import './components/_share-tags.css';
+@import './components/_news-submission.css';
 @import './components/_back-to-top.css';
 @import './components/_accessibility.css';
 

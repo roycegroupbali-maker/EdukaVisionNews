@@ -28,21 +28,6 @@ export function initBackToTop() {
   backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-export function initNewsletterForm() {
-  const nlForm = document.getElementById('newsletterForm');
-  if (!nlForm) return;
-
-  nlForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const emailInput = document.getElementById('newsletterEmail');
-    const email = emailInput ? emailInput.value.trim() : '';
-    nlForm.outerHTML =
-      '<div class="nl-success">✓ Terima kasih sudah mendaftar dengan ' +
-      (email || 'alamat kamu') +
-      '. Ringkasan berita akan mulai dikirim ke email tersebut.</div>';
-  });
-}
-
 export function initBookmarkButton() {
   const bookmarkBtn = document.getElementById('bookmarkBtn');
   if (!bookmarkBtn) return;
