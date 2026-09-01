@@ -82,13 +82,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/pengajuan-berita/{newsSubmission}/status', [AdminNewsSubmissionController::class, 'updateStatus'])->name('news-submissions.update-status');
         Route::delete('/pengajuan-berita/{newsSubmission}', [AdminNewsSubmissionController::class, 'destroy'])->name('news-submissions.destroy');
 
-        // Manajemen akun admin: konfirmasi (aktifkan) akun baru & nonaktifkan akun.
-        // Nama route sengaja "users" (jamak) supaya tidak bentrok dengan
-        // "admin.account.*" di bawah yang khusus profil akun sendiri.
-        Route::get('/pengguna-admin', [AdminUserController::class, 'index'])->name('users.index');
-        Route::patch('/pengguna-admin/{account}/toggle-active', [AdminUserController::class, 'toggleActive'])
-            ->name('users.toggle-active');
-
         // Pengaturan Akun — dikunci lewat konfirmasi ulang kata sandi.
         // Layar "Akses Terbatas" muncul kalau sesi konfirmasi belum ada/sudah kedaluwarsa.
         Route::get('/akun/verifikasi', [AdminAccountController::class, 'showConfirmPassword'])->name('account.confirm-password');
@@ -97,6 +90,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(RequirePassword::using('admin.account.confirm-password', 900))->group(function () {
             Route::get('/akun', [AdminAccountController::class, 'edit'])->name('account.edit');
             Route::put('/akun', [AdminAccountController::class, 'update'])->name('account.update');
+
+            // Manajemen akun admin (aktifkan/nonaktifkan) — sensitif karena bisa
+            // mengubah akses admin lain, jadi dikunci konfirmasi ulang kata sandi
+            // yang sama seperti Pengaturan Akun.
+            Route::get('/pengguna-admin', [AdminUserController::class, 'index'])->name('users.index');
+            Route::patch('/pengguna-admin/{account}/toggle-active', [AdminUserController::class, 'toggleActive'])
+                ->name('users.toggle-active');
         });
     });
 });

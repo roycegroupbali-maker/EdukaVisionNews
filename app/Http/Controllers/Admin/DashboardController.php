@@ -21,6 +21,8 @@ class DashboardController extends Controller
         $pendingSubmissions = NewsSubmission::status(NewsSubmission::STATUS_PENDING)->count();
 
         $articlesPerCategory = Category::withCount('articles')
+            ->withSum('articles', 'views')
+            ->withSum('articles', 'shares')
             ->orderBy('sort_order')
             ->get();
 

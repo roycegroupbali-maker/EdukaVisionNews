@@ -60,7 +60,7 @@
       <button class="icon-btn" aria-label="Cari artikel" id="searchBtn" title="Cari artikel">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
-      <a href="{{ route('news-submission.create') }}" class="btn-subscribe">Ajukan Berita</a>
+      <a href="{{ route('news-submission.create') }}" class="btn-subscribe">Permohonan Berita</a>
     </div>
   </div>
 </header>

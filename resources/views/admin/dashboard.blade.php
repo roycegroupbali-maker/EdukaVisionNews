@@ -61,12 +61,16 @@
       <div class="panel">
         <div class="panel-head"><h2>Berita Paling Banyak Dibaca</h2></div>
         <div class="panel-body">
+          @php $maxViews = max(1, $mostViewed->max('views')); @endphp
           @forelse($mostViewed as $a)
             <div class="category-bar-row">
-              <div style="flex:1;">
+              <div class="cbr-name" style="flex:0 0 40%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                 <a href="{{ route('admin.articles.edit', $a) }}" style="font-weight:600; color:var(--ink);">{{ $a->title }}</a>
               </div>
-              <div class="cbr-count" style="font-size:12.5px; color:var(--muted);">{{ number_format($a->views) }} views</div>
+              <div class="category-bar-track">
+                <div class="category-bar-fill" style="width:{{ max(6, ($a->views / $maxViews) * 100) }}%; background:var(--pulse);"></div>
+              </div>
+              <div class="category-bar-count" style="width:56px;">{{ number_format($a->views) }}</div>
             </div>
           @empty
             <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>
@@ -77,12 +81,16 @@
       <div class="panel">
         <div class="panel-head"><h2>Berita Paling Banyak Dibagikan</h2></div>
         <div class="panel-body">
+          @php $maxShares = max(1, $mostShared->max('shares')); @endphp
           @forelse($mostShared as $a)
             <div class="category-bar-row">
-              <div style="flex:1;">
+              <div class="cbr-name" style="flex:0 0 40%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                 <a href="{{ route('admin.articles.edit', $a) }}" style="font-weight:600; color:var(--ink);">{{ $a->title }}</a>
               </div>
-              <div class="cbr-count" style="font-size:12.5px; color:var(--muted);">{{ number_format($a->shares) }} share</div>
+              <div class="category-bar-track">
+                <div class="category-bar-fill" style="width:{{ max(6, ($a->shares / $maxShares) * 100) }}%; background:var(--gold);"></div>
+              </div>
+              <div class="category-bar-count" style="width:56px;">{{ number_format($a->shares) }}</div>
             </div>
           @empty
             <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada data.</p>
@@ -105,6 +113,23 @@
               <div class="category-bar-count">{{ $cat->articles_count }}</div>
             </div>
           @endforeach
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Total Views per Kategori</h2></div>
+        <div class="panel-body">
+          @php $maxCatViews = max(1, $articlesPerCategory->max('articles_sum_views')); @endphp
+          @foreach($articlesPerCategory as $cat)
+            <div class="category-bar-row">
+              <div class="cbr-name">{{ $cat->name }}</div>
+              <div class="category-bar-track">
+                <div class="category-bar-fill" style="width:{{ ($cat->articles_sum_views ?? 0) > 0 ? max(6, ($cat->articles_sum_views / $maxCatViews) * 100) : 0 }}%; background:var(--pulse);"></div>
+              </div>
+              <div class="category-bar-count" style="width:56px;">{{ number_format($cat->articles_sum_views ?? 0) }}</div>
+            </div>
+          @endforeach
+          <p style="font-size:11.5px; color:var(--muted-2); margin-top:10px;">Total dibaca dari seluruh berita di tiap kategori, dihitung real-time dari kunjungan pembaca.</p>
         </div>
       </div>
 
