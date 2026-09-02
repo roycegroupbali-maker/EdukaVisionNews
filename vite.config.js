@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/site.js',
                 'resources/css/admin/admin.css',
                 'resources/js/admin/admin.js',
+                'resources/js/admin/dashboard-charts.js',
             ],
             refresh: true,
             fonts: [

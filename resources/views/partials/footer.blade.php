@@ -5,7 +5,7 @@
       <h3 class="display">Punya info atau kejadian penting?</h3>
       <p>Kirim usulan berita, laporan warga, atau info kejadian di sekitarmu. Tim redaksi kami akan meninjau setiap pengajuan yang masuk.</p>
     </div>
-    <a href="{{ route('news-submission.create') }}" class="newsletter-cta-btn">Ajukan Berita Sekarang</a>
+    <a href="{{ route('news-submission.create') }}" class="newsletter-cta-btn">Permohonan Berita</a>
   </div>
 </section>
 
@@ -39,9 +39,9 @@
       <div class="footer-col">
         <h4>Tentang Kami</h4>
         <ul>
-          <li><a href="#">Redaksi</a></li>
+          <li><a href="{{ route('pages.redaksi') }}">Redaksi berita</a></li>
           <li><a href="#">Karier</a></li>
-          <li><a href="#">Pedoman Media Siber</a></li>
+          <li><a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a></li>
           <li><a href="#">Kontak</a></li>
         </ul>
       </div>

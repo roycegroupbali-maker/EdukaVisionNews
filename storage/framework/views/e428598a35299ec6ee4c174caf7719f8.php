@@ -43,6 +43,15 @@
     </div>
   </div>
 
+  <div class="panel" style="margin-bottom:22px;">
+    <div class="panel-head"><h2>Grafik Views &amp; Shares per Kategori</h2></div>
+    <div class="panel-body">
+      <div style="position:relative; height:280px;">
+        <canvas id="chartViewsPerCategory"></canvas>
+      </div>
+    </div>
+  </div>
+
   <div class="form-grid">
     <div>
       <div class="panel">
@@ -65,6 +74,15 @@
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <p style="color:var(--muted); font-size:13.5px; padding:14px 0;">Belum ada berita.</p>
           <?php endif; ?>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Grafik Berita Paling Banyak Dibaca</h2></div>
+        <div class="panel-body">
+          <div style="position:relative; height:260px;">
+            <canvas id="chartMostViewed"></canvas>
+          </div>
         </div>
       </div>
 
@@ -144,6 +162,15 @@
       </div>
 
       <div class="panel">
+        <div class="panel-head"><h2>Komposisi Views per Kategori</h2></div>
+        <div class="panel-body">
+          <div style="position:relative; height:240px;">
+            <canvas id="chartCategoryDonut"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
         <div class="panel-head"><h2>Aksi Cepat</h2></div>
         <div class="panel-body" style="display:flex; flex-direction:column; gap:10px; padding-bottom:20px;">
           <a href="<?php echo e(route('admin.articles.create')); ?>" class="btn btn-primary btn-block">+ Tulis Berita Baru</a>
@@ -154,6 +181,18 @@
     </div>
   </div>
 
+  <script type="application/json" id="dashboard-chart-data">
+    <?php echo json_encode([
+      'categoryLabels' => $articlesPerCategory->pluck('name'),
+      'categoryViews'  => $articlesPerCategory->pluck('articles_sum_views')->map(fn ($v) => (int) ($v ?? 0)),
+      'categoryShares' => $articlesPerCategory->pluck('articles_sum_shares')->map(fn ($v) => (int) ($v ?? 0)),
+      'mostViewedTitles' => $mostViewed->pluck('title'),
+      'mostViewedViews'  => $mostViewed->pluck('views'),
+    ]); ?>
+
+  </script>
+  <?php echo app('Illuminate\Foundation\Vite')(['resources/js/admin/dashboard-charts.js']); ?>
+
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
@@ -163,5 +202,4 @@
 <?php if (isset($__componentOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
 <?php $component = $__componentOriginale0f1cdd055772eb1d4a99981c240763e; ?>
 <?php unset($__componentOriginale0f1cdd055772eb1d4a99981c240763e); ?>
-<?php endif; ?>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
+<?php endif; ?>-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
