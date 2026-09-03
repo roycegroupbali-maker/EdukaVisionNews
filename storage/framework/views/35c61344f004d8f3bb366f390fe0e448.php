@@ -40,8 +40,8 @@
         <h4>Tentang Kami</h4>
         <ul>
           <li><a href="<?php echo e(route('pages.redaksi')); ?>">Redaksi berita</a></li>
-          <li><a href="#">Karier</a></li>
           <li><a href="<?php echo e(route('pages.pedoman')); ?>">Pedoman Media Siber</a></li>
+          <li><a href="<?php echo e(route('pages.about')); ?>">Tentang kami</a></li>
           <li><a href="#">Kontak</a></li>
         </ul>
       </div>

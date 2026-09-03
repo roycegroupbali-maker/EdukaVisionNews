@@ -36,7 +36,7 @@
     <div class="topbar-links">
       <a href="<?php echo e(route('pages.redaksi')); ?>">Redaksi berita</a>
       <a href="<?php echo e(route('pages.pedoman')); ?>">Pedoman Media Siber</a>
-      <a>Indeks</a>
+      <a href="<?php echo e(route('pages.about')); ?>">Tentang kami</a>
     </div>
   </div>
 </div>
@@ -90,7 +90,17 @@
     <div class="ticker-track">
       <div class="ticker-move">
         <?php $__currentLoopData = $latest; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <span><a href="<?php echo e(route('article.show', $t->slug)); ?>"><?php echo e($t->title); ?></a></span>
+          <?php
+            $tickerHref = $t->url ?? ($t->slug ? route('article.show', $t->slug) : null);
+          ?>
+          <span>
+            <?php if($tickerHref): ?>
+              <a href="<?php echo e($tickerHref); ?>"><?php echo e($t->title); ?></a>
+            <?php else: ?>
+              <?php echo e($t->title); ?>
+
+            <?php endif; ?>
+          </span>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
       </div>
     </div>
@@ -105,5 +115,4 @@
       <a href="<?php echo e(route('category.show', $navCat->slug)); ?>" class="<?php echo \Illuminate\Support\Arr::toCssClasses(['active' => (isset($category) && $category->id === $navCat->id)]); ?>"><?php echo e($navCat->name); ?></a>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
   </div>
-</div>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/partials/header.blade.php ENDPATH**/ ?>
+</div><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/partials/header.blade.php ENDPATH**/ ?>

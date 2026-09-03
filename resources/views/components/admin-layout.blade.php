@@ -46,6 +46,11 @@
         @endif
       </a>
 
+      <a href="{{ route('admin.running-texts.index') }}" @class(['active' => request()->routeIs('admin.running-texts.*')])>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h13"/></svg>
+        Running Text
+      </a>
+
       <div class="admin-nav-label">Monetisasi</div>
       <a href="{{ route('admin.ads.index') }}" @class(['active' => request()->routeIs('admin.ads.*')])>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>

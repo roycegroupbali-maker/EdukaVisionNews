@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\NewsSubmissionController as AdminNewsSubmissionController;
+use App\Http\Controllers\Admin\RunningTextController as AdminRunningTextController;
 use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleShareController;
@@ -73,6 +74,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('articles.toggle-featured');
 
         Route::resource('categories', AdminCategoryController::class)->except(['show', 'create', 'edit']);
+
+        Route::resource('running-texts', AdminRunningTextController::class)->except(['show', 'create', 'edit']);
+        Route::patch('/running-texts/{runningText}/toggle-active', [AdminRunningTextController::class, 'toggleActive'])
+            ->name('running-texts.toggle-active');
 
         Route::resource('ads', AdController::class)->except(['show']);
         Route::patch('/ads/{ad}/toggle-active', [AdController::class, 'toggleActive'])->name('ads.toggle-active');

@@ -36,7 +36,7 @@
     <div class="topbar-links">
       <a href="{{ route('pages.redaksi') }}">Redaksi berita</a>
       <a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a>
-      <a>Indeks</a>
+      <a href="{{ route('pages.about') }}">Tentang kami</a>
     </div>
   </div>
 </div>
@@ -90,7 +90,16 @@
     <div class="ticker-track">
       <div class="ticker-move">
         @foreach($latest as $t)
-          <span><a href="{{ route('article.show', $t->slug) }}">{{ $t->title }}</a></span>
+          @php
+            $tickerHref = $t->url ?? ($t->slug ? route('article.show', $t->slug) : null);
+          @endphp
+          <span>
+            @if($tickerHref)
+              <a href="{{ $tickerHref }}">{{ $t->title }}</a>
+            @else
+              {{ $t->title }}
+            @endif
+          </span>
         @endforeach
       </div>
     </div>
