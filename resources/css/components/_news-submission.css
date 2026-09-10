@@ -64,6 +64,7 @@
   .ns-optional{ text-transform:none; letter-spacing:0; font-weight:400; }
   .ns-field input[type="text"],
   .ns-field input[type="email"],
+  .ns-field input[type="tel"],
   .ns-field textarea{
     width:100%;
     background:var(--paper);
