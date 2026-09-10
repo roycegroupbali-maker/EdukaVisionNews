@@ -45,7 +45,7 @@
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td valign="middle" width="40">
-                  <img src="<?php echo e(asset('images/logo-icon.png')); ?>" width="34" height="34" alt="EdukaVisionNews" style="display:block; border-radius:3px;">
+                  <img src="<?php echo e($message->embed(public_path('images/logo-icon.png'))); ?>" width="34" height="34" alt="EdukaVisionNews" style="display:block; border-radius:3px;">
                 </td>
                 <td valign="middle" style="padding-left:12px;">
                   <span style="font-family:'Georgia','Times New Roman',serif; font-size:19px; font-weight:700; color:#FFFFFF; letter-spacing:0.2px;">Eduka<span style="color:#D2A63B;">Vision</span>News</span><br>
@@ -99,5 +99,4 @@
   </tr>
 </table>
 </body>
-</html>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/emails/layout.blade.php ENDPATH**/ ?>
+</html><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/emails/layout.blade.php ENDPATH**/ ?>

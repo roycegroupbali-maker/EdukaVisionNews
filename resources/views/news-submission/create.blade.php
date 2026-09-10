@@ -14,6 +14,9 @@
       Punya info, kejadian, atau kegiatan yang menurutmu layak diberitakan? Isi formulir di bawah ini.
       Tim redaksi kami akan meninjau setiap pengajuan yang masuk sebelum diangkat menjadi berita.
     </p>
+    <p class="news-submission-lead" style="margin-top:-18px;">
+      Sudah pernah mengirim usulan berita? <a href="{{ route('news-submission.track') }}" class="ns-track-link">Lacak status pengajuanmu di sini &rarr;</a>
+    </p>
 
     @if(session('status'))
       <div class="ns-alert ns-alert-success">{{ session('status') }}</div>

@@ -4,6 +4,7 @@
     <div>
       <h3 class="display">Punya info atau kejadian penting?</h3>
       <p>Kirim usulan berita, laporan warga, atau info kejadian di sekitarmu. Tim redaksi kami akan meninjau setiap pengajuan yang masuk.</p>
+      <a href="<?php echo e(route('news-submission.track')); ?>" class="ns-track-link" style="display:inline-block; margin-top:8px; font-size:13px;">Sudah punya nomor tiket? Lacak status pengajuanmu &rarr;</a>
     </div>
     <a href="<?php echo e(route('news-submission.create')); ?>" class="newsletter-cta-btn">Permohonan Berita</a>
   </div>
@@ -92,5 +93,4 @@
 </div>
 
 </body>
-</html>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/partials/footer.blade.php ENDPATH**/ ?>
+</html><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/partials/footer.blade.php ENDPATH**/ ?>

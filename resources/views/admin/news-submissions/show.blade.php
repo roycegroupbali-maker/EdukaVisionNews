@@ -19,6 +19,7 @@
         <h3>{{ $submission->title }}</h3>
 
         <div style="display:flex; gap:10px; align-items:center; margin:4px 0 20px;">
+          <span class="sub" style="font-size:12.5px; font-weight:600;">Tiket #{{ str_pad($submission->id, 5, '0', STR_PAD_LEFT) }}</span>
           <span class="badge {{ $badgeClass }}">{{ $submission->status_label }}</span>
           <span class="sub" style="font-size:12.5px; color:var(--muted-2);">Dikirim {{ $submission->created_at->translatedFormat('d F Y, H:i') }}</span>
         </div>

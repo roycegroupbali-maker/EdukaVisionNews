@@ -75,4 +75,41 @@ class NewsSubmissionController extends Controller
             ->route('news-submission.create')
             ->with('status', 'Terima kasih! Usulan berita kamu sudah kami terima dan akan ditinjau oleh redaksi. Konfirmasi juga sudah kami kirim ke email kamu.');
     }
+
+    /**
+     * Halaman publik untuk melacak status pengajuan berita menggunakan
+     * nomor tiket + email. Kedua data ini harus cocok agar orang lain
+     * tidak bisa mengintip pengajuan orang lain hanya dengan menebak ID.
+     */
+    public function track(Request $request): View
+    {
+        $categories = Category::orderBy('sort_order')->get();
+        $submission = null;
+        $notFound = false;
+
+        if ($request->filled('ticket') || $request->filled('email')) {
+            $validated = $request->validate([
+                'ticket' => ['required', 'string', 'max:20'],
+                'email' => ['required', 'email', 'max:150'],
+            ], [
+                'ticket.required' => 'Nomor tiket wajib diisi.',
+                'email.required' => 'Email wajib diisi.',
+            ]);
+
+            // Nomor tiket ditampilkan sebagai "#00001", jadi bersihkan dulu
+            // supaya "00001", "#00001", maupun "1" tetap bisa dicari.
+            $ticketId = ltrim(preg_replace('/[^0-9]/', '', $validated['ticket']), '0');
+            $ticketId = $ticketId === '' ? 0 : (int) $ticketId;
+
+            $submission = NewsSubmission::where('id', $ticketId)
+                ->whereRaw('LOWER(email) = ?', [strtolower($validated['email'])])
+                ->first();
+
+            if (! $submission) {
+                $notFound = true;
+            }
+        }
+
+        return view('news-submission.track', compact('submission', 'notFound', 'categories'));
+    }
 }

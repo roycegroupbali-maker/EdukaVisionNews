@@ -24,6 +24,7 @@
       <table class="admin-table">
         <thead>
           <tr>
+            <th>Tiket</th>
             <th>Judul Usulan</th>
             <th>Pengirim</th>
             <th>Status</th>
@@ -34,6 +35,7 @@
         <tbody>
           @forelse($submissions as $submission)
             <tr>
+              <td class="sub">#{{ str_pad($submission->id, 5, '0', STR_PAD_LEFT) }}</td>
               <td class="title-cell">
                 <a href="{{ route('admin.news-submissions.show', $submission) }}">{{ $submission->title }}</a>
                 @if($submission->image_path)<div class="sub">📎 dengan lampiran foto</div>@endif
@@ -66,7 +68,7 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="5"><div class="empty-state"><h3>Belum ada pengajuan berita</h3><p>Usulan berita yang dikirim pembaca lewat formulir "Ajukan Berita" akan muncul di sini.</p></div></td></tr>
+            <tr><td colspan="6"><div class="empty-state"><h3>Belum ada pengajuan berita</h3><p>Usulan berita yang dikirim pembaca lewat formulir "Ajukan Berita" akan muncul di sini.</p></div></td></tr>
           @endforelse
         </tbody>
       </table>

@@ -14,6 +14,9 @@
       Punya info, kejadian, atau kegiatan yang menurutmu layak diberitakan? Isi formulir di bawah ini.
       Tim redaksi kami akan meninjau setiap pengajuan yang masuk sebelum diangkat menjadi berita.
     </p>
+    <p class="news-submission-lead" style="margin-top:-18px;">
+      Sudah pernah mengirim usulan berita? <a href="<?php echo e(route('news-submission.track')); ?>" class="ns-track-link">Lacak status pengajuanmu di sini &rarr;</a>
+    </p>
 
     <?php if(session('status')): ?>
       <div class="ns-alert ns-alert-success"><?php echo e(session('status')); ?></div>
@@ -73,5 +76,4 @@
   </div>
 </section>
 
-<?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/news-submission/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/news-submission/create.blade.php ENDPATH**/ ?>

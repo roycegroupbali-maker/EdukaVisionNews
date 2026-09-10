@@ -36,6 +36,9 @@ Route::post('/berita/{article:slug}/bagikan-salin', [ArticleShareController::cla
 Route::get('/ajukan-berita', [NewsSubmissionController::class, 'create'])->name('news-submission.create');
 Route::post('/ajukan-berita', [NewsSubmissionController::class, 'store'])->name('news-submission.store');
 
+// Lacak status pengajuan berita menggunakan nomor tiket + email.
+Route::get('/lacak-berita', [NewsSubmissionController::class, 'track'])->name('news-submission.track');
+
 // Halaman statis: Tentang Kami, Redaksi, dan Pedoman Media Siber.
 Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
