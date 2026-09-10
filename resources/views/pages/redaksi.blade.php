@@ -20,7 +20,7 @@
 
     <span class="tag">Redaksi</span>
     <h1 class="display" style="font-size:clamp(28px,4vw,44px); line-height:1.15; margin:14px 0 12px;">Susunan Redaksi</h1>
-    <p class="feature-dek" style="font-size:18px; margin-bottom:30px;">EdukaVisionNews diterbitkan oleh PT Eduka Vision Media Nusantara, dikelola oleh tim redaksi yang tunduk pada Kode Etik Jurnalistik dan Pedoman Pemberitaan Media Siber Dewan Pers.</p>
+    <p class="feature-dek" style="font-size:18px; margin-bottom:30px;">EdukaVisionNews dikelola oleh tim redaksi yang tunduk pada Kode Etik Jurnalistik dan Pedoman Pemberitaan Media Siber Dewan Pers.</p>
 
     <div class="redaksi-list" style="font-family:'IBM Plex Mono',monospace; font-size:14px;">
       @foreach($struktur as $blok)
