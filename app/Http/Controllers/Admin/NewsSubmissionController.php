@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewsSubmissionStatusUpdated;
 use App\Models\NewsSubmission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Throwable;
 
 class NewsSubmissionController extends Controller
 {
@@ -36,7 +40,18 @@ class NewsSubmissionController extends Controller
     public function show(NewsSubmission $newsSubmission): View
     {
         if ($newsSubmission->status === NewsSubmission::STATUS_PENDING) {
+            $previousStatus = $newsSubmission->status;
             $newsSubmission->update(['status' => NewsSubmission::STATUS_REVIEWED]);
+
+            try {
+                Mail::to($newsSubmission->email)->send(
+                    new NewsSubmissionStatusUpdated($newsSubmission, $previousStatus)
+                );
+            } catch (Throwable $e) {
+                Log::warning('Gagal mengirim email update status permohonan berita: '.$e->getMessage(), [
+                    'submission_id' => $newsSubmission->id,
+                ]);
+            }
         }
 
         return view('admin.news-submissions.show', ['submission' => $newsSubmission]);
@@ -49,9 +64,27 @@ class NewsSubmissionController extends Controller
             'admin_note' => ['nullable', 'string', 'max:2000'],
         ]);
 
+        $previousStatus = $newsSubmission->status;
+
         $newsSubmission->update($data);
 
-        return back()->with('status', 'Status pengajuan berita berhasil diperbarui.');
+        $statusChanged = $previousStatus !== $newsSubmission->status;
+
+        if ($statusChanged) {
+            try {
+                Mail::to($newsSubmission->email)->send(
+                    new NewsSubmissionStatusUpdated($newsSubmission, $previousStatus)
+                );
+            } catch (Throwable $e) {
+                Log::warning('Gagal mengirim email update status permohonan berita: '.$e->getMessage(), [
+                    'submission_id' => $newsSubmission->id,
+                ]);
+            }
+        }
+
+        return back()->with('status', $statusChanged
+            ? 'Status pengajuan berita berhasil diperbarui dan notifikasi sudah dikirim ke email pengirim.'
+            : 'Catatan pengajuan berita berhasil disimpan.');
     }
 
     public function destroy(NewsSubmission $newsSubmission): RedirectResponse

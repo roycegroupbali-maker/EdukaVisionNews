@@ -48,6 +48,10 @@
           <label>Email</label>
           <p><a href="mailto:{{ $submission->email }}">{{ $submission->email }}</a></p>
         </div>
+        <div class="field">
+          <label>Nomor Telepon</label>
+          <p>@if($submission->phone)<a href="tel:{{ $submission->phone }}">{{ $submission->phone }}</a>@else <span style="color:var(--muted-2);">—</span>@endif</p>
+        </div>
       </div>
 
       <div class="form-card">

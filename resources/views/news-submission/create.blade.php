@@ -45,6 +45,12 @@
       </div>
 
       <div class="ns-field">
+        <label for="nsPhone">Nomor Telepon / WhatsApp</label>
+        <input type="tel" id="nsPhone" name="phone" value="{{ old('phone') }}" required maxlength="20" placeholder="mis. 081234567890">
+        <div class="ns-hint">Dipakai tim redaksi untuk menghubungimu jika diperlukan konfirmasi lebih lanjut.</div>
+      </div>
+
+      <div class="ns-field">
         <label for="nsTitle">Judul Usulan Berita</label>
         <input type="text" id="nsTitle" name="title" value="{{ old('title') }}" required maxlength="255" placeholder="mis. Banjir Rendam Permukiman di Kelurahan Sanur">
       </div>

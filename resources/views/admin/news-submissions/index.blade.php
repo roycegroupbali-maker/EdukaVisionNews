@@ -41,6 +41,7 @@
               <td>
                 {{ $submission->name }}
                 <div class="sub">{{ $submission->email }}</div>
+                @if($submission->phone)<div class="sub">{{ $submission->phone }}</div>@endif
               </td>
               <td>
                 @php
