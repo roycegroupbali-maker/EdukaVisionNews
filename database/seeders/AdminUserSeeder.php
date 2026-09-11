@@ -17,7 +17,7 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@edukavisionnews.test'],
+            ['email' => 'edukavisionid@gmail.com'],
             [
                 'name' => 'Admin EdukaVisionNews',
                 'password' => Hash::make('admin123'),

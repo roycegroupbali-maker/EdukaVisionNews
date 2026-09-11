@@ -1,6 +1,6 @@
 <?php $__env->startSection('title', 'Usulan Berita Diterima — EdukaVisionNews'); ?>
 <?php $__env->startSection('eyebrow', 'Konfirmasi Permohonan Berita'); ?>
-<?php $__env->startSection('preheader', 'Usulan berita "'.$submission->title.'" sudah kami terima dan akan ditinjau oleh tim redaksi.'); ?>
+<?php $__env->startSection('preheader', 'Usulan berita "'.e($submission->title).'" sudah kami terima dan akan ditinjau oleh tim redaksi.'); ?>
 
 <?php $__env->startSection('content'); ?>
 
@@ -75,5 +75,4 @@
   </table>
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('emails.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/emails/news-submission/received.blade.php ENDPATH**/ ?>

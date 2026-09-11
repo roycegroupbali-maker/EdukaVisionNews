@@ -1,6 +1,6 @@
 <?php $__env->startSection('title', 'Permohonan Berita Baru — EdukaVisionNews'); ?>
 <?php $__env->startSection('eyebrow', 'Notifikasi Admin'); ?>
-<?php $__env->startSection('preheader', 'Permohonan berita baru masuk dari '.$submission->name.': "'.$submission->title.'"'); ?>
+<?php $__env->startSection('preheader', 'Permohonan berita baru masuk dari '.e($submission->name).': "'.e($submission->title).'"'); ?>
 
 <?php $__env->startSection('content'); ?>
 
@@ -86,6 +86,4 @@
   </table>
 
 <?php $__env->stopSection(); ?>
-
-
 <?php echo $__env->make('emails.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/emails/news-submission/admin-notification.blade.php ENDPATH**/ ?>
