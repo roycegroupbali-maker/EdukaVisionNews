@@ -36,7 +36,9 @@
                 @else
                   <div class="row-actions">
                     <form method="POST" action="{{ route('admin.users.toggle-active', $account) }}"
-                      @unless($account->is_active) data-confirm="Aktifkan akun admin &quot;{{ $account->name }}&quot;? Akun ini akan bisa masuk ke panel admin." @endunless>
+                      data-confirm="{{ $account->is_active
+                        ? 'Nonaktifkan akun admin "'.$account->name.'"? Akun ini akan langsung kehilangan akses ke panel admin.'
+                        : 'Aktifkan akun admin "'.$account->name.'"? Akun ini akan bisa masuk ke panel admin.' }}">
                       @csrf @method('PATCH')
                       <button type="submit" class="btn {{ $account->is_active ? 'btn-ghost' : 'btn-accent' }} btn-sm">
                         {{ $account->is_active ? 'Nonaktifkan' : 'Aktifkan' }}

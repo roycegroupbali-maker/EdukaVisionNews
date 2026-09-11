@@ -28,9 +28,9 @@ class CategoryController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $data['slug'] = $data['slug'] ?: Str::slug($data['name']);
-        $data['tag_class'] = $data['tag_class'] ?: 'berita';
-        $data['bar_color'] = $data['bar_color'] ?: 'var(--red)';
+        $data['slug'] = $data['slug'] ?? '' ?: Str::slug($data['name']);
+        $data['tag_class'] = $data['tag_class'] ?? '' ?: 'berita';
+        $data['bar_color'] = $data['bar_color'] ?? '' ?: 'var(--red)';
         $data['sort_order'] = $data['sort_order'] ?? (Category::max('sort_order') + 1);
 
         Category::create($data);

@@ -22,7 +22,7 @@
     ],
     'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => url()->current()],
     'articleSection' => $article->category->name,
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+], JSON_UNESCAPED_UNICODE) !!}
 </script>
 
 <div class="section-band">

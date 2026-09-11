@@ -32,7 +32,7 @@
 <!-- ============ TOP UTILITY BAR ============ -->
 <div class="topbar">
   <div class="wrap">
-    <div class="pulse-dot"><i></i> {{ now()->translatedFormat('l, d F Y') }} · Denpasar, 29°C Cerah Berawan · <span class="live-clock" id="liveClock">--:--:--</span> WITA</div>
+    <div class="pulse-dot"><i></i> {{ now()->translatedFormat('l, d F Y') }} · Denpasar, 29°C Cerah Berawan · <span class="live-clock" id="liveClock">--:--:--</span> <span id="liveClockZone">WITA</span></div>
     <div class="topbar-links">
       <a href="{{ route('pages.redaksi') }}">Redaksi berita</a>
       <a href="{{ route('pages.pedoman') }}">Pedoman Media Siber</a>

@@ -8,6 +8,18 @@ export function initSearch() {
 
   if (!searchBtn || !searchOverlay || !searchInput || !searchResults || !searchClose) return;
 
+  // Judul/kategori diambil dari textContent kartu di halaman, jadi bisa berisi
+  // karakter HTML kalau judul artikel memuat karakter seperti < atau &.
+  // Wajib di-escape sebelum ditulis lewat innerHTML supaya tidak jadi celah XSS.
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function buildIndex() {
     const els = document.querySelectorAll(
       'a.card, a.side-item, a.feature-card, a.recipe-card, a.stacked-card, a.recipe-feature'
@@ -53,7 +65,7 @@ export function initSearch() {
     if (matches.length === 0) {
       searchResults.innerHTML =
         '<p class="search-empty">Tidak ditemukan artikel yang cocok dengan "' +
-        q.replace(/</g, '&lt;') +
+        escapeHtml(q) +
         '".</p>';
       return;
     }
@@ -63,9 +75,9 @@ export function initSearch() {
           '<a href="' +
           m.href +
           '" class="search-result-item"><span class="search-result-cat">' +
-          m.cat +
+          escapeHtml(m.cat) +
           '</span><span>' +
-          m.title +
+          escapeHtml(m.title) +
           '</span></a>'
       )
       .join('');

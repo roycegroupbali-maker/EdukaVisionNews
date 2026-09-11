@@ -158,8 +158,8 @@ class ArticleController extends Controller
             'publish_now' => ['nullable', 'boolean'],
         ]);
 
-        $data['author'] = $data['author'] ?: 'Redaksi EdukaVisionNews';
-        $data['read_minutes'] = $data['read_minutes'] ?: 4;
+        $data['author'] = $data['author'] ?? '' ?: 'Redaksi EdukaVisionNews';
+        $data['read_minutes'] = $data['read_minutes'] ?? '' ?: 4;
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_sponsored'] = $request->boolean('is_sponsored');
 

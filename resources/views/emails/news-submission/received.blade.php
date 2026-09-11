@@ -2,7 +2,7 @@
 
 @section('title', 'Usulan Berita Diterima — EdukaVisionNews')
 @section('eyebrow', 'Konfirmasi Permohonan Berita')
-@section('preheader', 'Usulan berita "'.$submission->title.'" sudah kami terima dan akan ditinjau oleh tim redaksi.')
+@section('preheader', 'Usulan berita "'.e($submission->title).'" sudah kami terima dan akan ditinjau oleh tim redaksi.')
 
 @section('content')
 

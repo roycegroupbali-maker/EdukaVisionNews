@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         // Halaman-halaman publik yang punya slot iklan dapat variabel $ads
         // berisi satu iklan aktif per slot: leaderboard, rectangle, midpage, mobile_bar.
         View::composer(
-            ['home', 'categories.show', 'articles.show', 'search'],
+            ['home', 'categories.show', 'articles.show', 'search', 'pages.tentang-kami', 'pages.redaksi', 'pages.pedoman-media-siber'],
             function ($view) {
                 $view->with('ads', Ad::activeBySlot());
             }

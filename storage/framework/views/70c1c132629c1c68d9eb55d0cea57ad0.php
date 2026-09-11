@@ -11,13 +11,18 @@
 
 <div class="admin-shell">
 
-  <aside class="admin-sidebar">
+  <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop"></div>
+
+  <aside class="admin-sidebar" id="adminSidebar">
     <div class="admin-sidebar-brand">
       <img src="<?php echo e(asset('images/logo-icon.png')); ?>" alt="EdukaVisionNews" class="admin-sidebar-logo-img">
       <div>
         <span class="logo-text">Eduka<span class="accent">Vision</span>News</span>
         <small>Panel Admin</small>
       </div>
+      <button type="button" class="admin-sidebar-close" id="adminSidebarClose" aria-label="Tutup menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
     </div>
 
     <nav class="admin-nav">
@@ -88,13 +93,18 @@
 
   <div class="admin-main">
     <div class="admin-topbar">
-      <div>
-        <h1><?php echo e($pageTitle ?? 'Dashboard'); ?></h1>
-        <?php if(isset($pageSubtitle)): ?><p><?php echo e($pageSubtitle); ?></p><?php endif; ?>
+      <div class="admin-topbar-left">
+        <button type="button" class="admin-menu-toggle" id="adminMenuToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="adminSidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div>
+          <h1><?php echo e($pageTitle ?? 'Dashboard'); ?></h1>
+          <?php if(isset($pageSubtitle)): ?><p><?php echo e($pageSubtitle); ?></p><?php endif; ?>
+        </div>
       </div>
       <a href="<?php echo e(route('home')); ?>" target="_blank" class="admin-view-site">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
-        Lihat Situs
+        <span>Lihat Situs</span>
       </a>
     </div>
 
@@ -114,5 +124,4 @@
 </div>
 
 </body>
-</html>
-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/components/admin-layout.blade.php ENDPATH**/ ?>
+</html><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/components/admin-layout.blade.php ENDPATH**/ ?>

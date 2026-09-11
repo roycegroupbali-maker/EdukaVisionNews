@@ -2,7 +2,7 @@
 
 @section('title', 'Permohonan Berita Baru — EdukaVisionNews')
 @section('eyebrow', 'Notifikasi Admin')
-@section('preheader', 'Permohonan berita baru masuk dari '.$submission->name.': "'.$submission->title.'"')
+@section('preheader', 'Permohonan berita baru masuk dari '.e($submission->name).': "'.e($submission->title).'"')
 
 @section('content')
 
@@ -88,4 +88,3 @@
   </table>
 
 @endsection
-

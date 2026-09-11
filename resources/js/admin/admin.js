@@ -1,6 +1,51 @@
 // EdukaVisionNews — Admin panel JS (ringan, tanpa framework)
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Sidebar mobile (off-canvas drawer): buka/tutup lewat tombol hamburger,
+  // tombol X di dalam sidebar, klik backdrop, tombol Escape, atau saat
+  // memilih salah satu menu navigasi.
+  const sidebar = document.getElementById('adminSidebar');
+  const backdrop = document.getElementById('adminSidebarBackdrop');
+  const menuToggle = document.getElementById('adminMenuToggle');
+  const sidebarClose = document.getElementById('adminSidebarClose');
+
+  function openSidebar() {
+    if (!sidebar || !backdrop) return;
+    sidebar.classList.add('is-open');
+    backdrop.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSidebar() {
+    if (!sidebar || !backdrop) return;
+    sidebar.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
+    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+    });
+  }
+  if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+  if (backdrop) backdrop.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+  // Tutup drawer begitu memilih menu, biar tidak nutupin halaman berikutnya
+  if (sidebar) {
+    sidebar.querySelectorAll('a, button[type="submit"]').forEach((el) => {
+      el.addEventListener('click', closeSidebar);
+    });
+  }
+  // Kalau layar dibesarkan lagi ke ukuran desktop, pastikan state drawer direset
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 980) closeSidebar();
+  });
+
   // Konfirmasi sebelum menghapus data (berita, kategori, iklan)
   document.querySelectorAll('[data-confirm]').forEach((form) => {
     form.addEventListener('submit', (e) => {

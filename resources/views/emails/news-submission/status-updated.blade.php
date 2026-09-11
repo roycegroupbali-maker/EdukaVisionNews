@@ -18,7 +18,7 @@
 
 @section('title', 'Update Status Usulan Berita — EdukaVisionNews')
 @section('eyebrow', 'Update Status Permohonan Berita')
-@section('preheader', 'Status usulan berita "'.$submission->title.'" diperbarui menjadi '.$submission->status_label.'.')
+@section('preheader', 'Status usulan berita "'.e($submission->title).'" diperbarui menjadi '.$submission->status_label.'.')
 
 @section('content')
 
