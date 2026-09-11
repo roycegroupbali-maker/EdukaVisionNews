@@ -19,7 +19,10 @@
     </p>
 
     @if(session('status'))
-      <div class="ns-alert ns-alert-success">{{ session('status') }}</div>
+      <div class="ns-alert ns-alert-success">
+        {{ session('status') }}
+        <strong style="color:#d92626;">Pastikan juga cek folder Spam/Promosi di email kamu ya.</strong>
+      </div>
     @endif
 
     @if($errors->any())

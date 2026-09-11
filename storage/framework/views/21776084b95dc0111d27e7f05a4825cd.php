@@ -19,7 +19,11 @@
     </p>
 
     <?php if(session('status')): ?>
-      <div class="ns-alert ns-alert-success"><?php echo e(session('status')); ?></div>
+      <div class="ns-alert ns-alert-success">
+        <?php echo e(session('status')); ?>
+
+        <strong style="color:#d92626;">Pastikan juga cek folder Spam/Promosi di email kamu ya.</strong>
+      </div>
     <?php endif; ?>
 
     <?php if($errors->any()): ?>
