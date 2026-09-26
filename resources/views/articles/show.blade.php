@@ -73,8 +73,19 @@
       </button>
     </div>
 
+    {{-- Gambar utama. Jika image_link diisi, gambar bisa diklik dan membuka tautan di tab baru. --}}
     <div class="feature-art" style="aspect-ratio:16/9; margin-bottom:{{ $article->image_url && $article->image_caption ? '8px' : '26px' }}; border-radius:10px; overflow:hidden;">
-      @include('partials.art', ['article' => $article, 'viewbox' => '0 0 640 400'])
+      @if($article->image_link)
+        <a href="{{ $article->image_link }}"
+           target="_blank"
+           rel="noopener noreferrer nofollow{{ $article->is_sponsored ? ' sponsored' : '' }}"
+           title="Buka tautan"
+           style="display:block; width:100%; height:100%; cursor:pointer;">
+          @include('partials.art', ['article' => $article, 'viewbox' => '0 0 640 400'])
+        </a>
+      @else
+        @include('partials.art', ['article' => $article, 'viewbox' => '0 0 640 400'])
+      @endif
     </div>
 
     @if($article->image_url && ($article->image_caption || $article->image_source))
@@ -89,6 +100,46 @@
         <p style="margin-bottom:20px;">{{ $p }}</p>
       @endforeach
     </div>
+
+    {{-- Video YouTube. Awalnya hanya thumbnail + tombol play (ringan); pemutar YouTube baru dimuat saat diklik. --}}
+    @if($article->youtube_id)
+      @php $ytId = $article->youtube_id; @endphp
+      <div class="article-video" style="margin:26px 0; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#000;">
+        {{-- href = fallback kalau JavaScript mati: buka video di YouTube --}}
+        <a href="https://www.youtube.com/watch?v={{ $ytId }}"
+           target="_blank" rel="noopener noreferrer"
+           class="yt-facade"
+           data-yt-id="{{ $ytId }}"
+           data-yt-title="Video: {{ $article->title }}"
+           aria-label="Putar video: {{ $article->title }}"
+           style="position:relative; display:block; width:100%; height:100%; cursor:pointer;">
+          <img src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/hqdefault.jpg';"
+               alt="" loading="lazy"
+               style="width:100%; height:100%; object-fit:cover; display:block;">
+          <span style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 68 48" width="68" height="48" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3S12.8.3 7.5 1.7a8.5 8.5 0 0 0-6 6C0 13 0 24 0 24s0 11 1.5 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg>
+          </span>
+        </a>
+      </div>
+      <script>
+        document.querySelectorAll('.yt-facade').forEach(function (link) {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            var box = link.parentNode;
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube-nocookie.com/embed/' + link.dataset.ytId + '?autoplay=1&rel=0';
+            iframe.title = link.dataset.ytTitle;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+            iframe.allowFullscreen = true;
+            iframe.style.cssText = 'width:100%;height:100%;border:0;';
+            box.removeChild(link);
+            box.appendChild(iframe);
+          });
+        });
+      </script>
+    @endif
 
     @if($article->category->slug === 'resep' && ($article->recipe_minutes || $article->recipe_servings))
       <div class="recipe-meta" style="margin-top:10px;">

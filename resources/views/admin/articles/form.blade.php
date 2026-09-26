@@ -38,6 +38,23 @@
             <div class="field-hint">Pisahkan paragraf dengan baris kosong (Enter dua kali) agar tampil rapi di halaman berita.</div>
             @error('content')<div class="field-error">{{ $message }}</div>@enderror
           </div>
+
+          <div class="field">
+            <label for="youtubeUrl">Video YouTube <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
+            <input type="url" id="youtubeUrl" name="youtube_url" maxlength="255" value="{{ old('youtube_url', $article->youtube_url) }}" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx">
+            <div class="field-hint">Video akan disematkan (embed) di bawah isi berita. Mendukung link youtube.com/watch, youtu.be, dan Shorts.</div>
+            <div id="ytPreview" style="display:none; margin-top:10px;">
+              <div style="position:relative; aspect-ratio:16/9; max-width:320px; border-radius:8px; overflow:hidden; background:#000;">
+                <img id="ytPreviewImg" alt="Preview thumbnail video" style="width:100%; height:100%; object-fit:cover; display:block;">
+                <span style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+                  <svg viewBox="0 0 68 48" width="48" height="34" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3S12.8.3 7.5 1.7a8.5 8.5 0 0 0-6 6C0 13 0 24 0 24s0 11 1.5 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg>
+                </span>
+              </div>
+              <div class="field-hint" style="margin-top:6px;">Preview thumbnail video. Jika tidak ada foto berita, thumbnail ini juga dipakai sebagai gambar utama dan gambar di daftar berita.</div>
+            </div>
+            <div id="ytPreviewError" class="field-error" style="display:none;">Link ini belum dikenali sebagai video YouTube. Pastikan formatnya youtube.com/watch?v=…, youtu.be/…, atau youtube.com/shorts/…</div>
+            @error('youtube_url')<div class="field-error">{{ $message }}</div>@enderror
+          </div>
         </div>
 
         <div class="form-card">
@@ -151,6 +168,13 @@
           </div>
 
           <div class="field">
+            <label for="imageLink">Tautan Gambar <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
+            <input type="url" id="imageLink" name="image_link" maxlength="500" value="{{ old('image_link', $article->image_link) }}" placeholder="https://contoh.com/halaman-tujuan">
+            <div class="field-hint">Jika diisi, gambar berita bisa diklik dan akan membuka tautan ini di tab baru.</div>
+            @error('image_link')<div class="field-error">{{ $message }}</div>@enderror
+          </div>
+
+          <div class="field">
             <label for="tagsInput">Tag Berita <span style="font-weight:400; color:var(--muted-2);">(pisahkan dengan koma)</span></label>
             <input type="text" id="tagsInput" name="tags" value="{{ old('tags', $article->tags) }}" maxlength="500" placeholder="mis. banjir, sanur, bencana alam, denpasar">
             <div class="field-hint">Tag akan ditampilkan sebagai chip di akhir halaman berita, seperti portal berita pada umumnya.</div>
@@ -195,5 +219,36 @@
       </div>
     </div>
   </form>
+
+  <script>
+    (function () {
+      var input = document.getElementById('youtubeUrl');
+      var box = document.getElementById('ytPreview');
+      var img = document.getElementById('ytPreviewImg');
+      var err = document.getElementById('ytPreviewError');
+      if (!input || !box || !img || !err) return;
+
+      // Pola yang sama dengan accessor getYoutubeIdAttribute() di model Article
+      var pattern = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/))([A-Za-z0-9_-]{11})/;
+
+      function update() {
+        var value = input.value.trim();
+        var match = value.match(pattern);
+
+        if (match) {
+          img.src = 'https://i.ytimg.com/vi/' + match[1] + '/hqdefault.jpg';
+          box.style.display = 'block';
+          err.style.display = 'none';
+        } else {
+          img.removeAttribute('src');
+          box.style.display = 'none';
+          err.style.display = value ? 'block' : 'none';
+        }
+      }
+
+      input.addEventListener('input', update);
+      update(); // tampilkan preview saat halaman edit dibuka
+    })();
+  </script>
 
 </x-admin-layout>

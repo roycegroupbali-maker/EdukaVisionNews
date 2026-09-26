@@ -145,6 +145,8 @@ class ArticleController extends Controller
             'image_caption' => ['nullable', 'string', 'max:255'],
             'image_source' => ['nullable', 'string', 'max:150'],
             'image_alt' => ['nullable', 'string', 'max:255'],
+            'image_link' => ['nullable', 'url', 'max:500', 'regex:~^https?://~i'],
+            'youtube_url' => ['nullable', 'url', 'max:255', 'regex:~^https?://((www|m|music)\.)?(youtube\.com|youtu\.be)/~i'],
             'tags' => ['nullable', 'string', 'max:500'],
             'art_color1' => ['required', 'string', 'max:20'],
             'art_color2' => ['required', 'string', 'max:20'],
@@ -156,6 +158,11 @@ class ArticleController extends Controller
             'is_sponsored' => ['nullable', 'boolean'],
             'published_at' => ['nullable', 'date'],
             'publish_now' => ['nullable', 'boolean'],
+        ], [
+            'youtube_url.url' => 'Format URL YouTube tidak valid.',
+            'youtube_url.regex' => 'URL harus berasal dari youtube.com atau youtu.be.',
+            'image_link.url' => 'Format tautan gambar tidak valid.',
+            'image_link.regex' => 'Tautan harus diawali http:// atau https://.',
         ]);
 
         $data['author'] = $data['author'] ?? '' ?: 'Redaksi EdukaVisionNews';

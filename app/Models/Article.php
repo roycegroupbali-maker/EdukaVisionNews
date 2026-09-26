@@ -16,6 +16,7 @@ class Article extends Model
         'category_id', 'title', 'slug', 'subcategory', 'excerpt', 'content',
         'author', 'read_minutes', 'views', 'shares', 'art_color1', 'art_color2', 'art_pattern',
         'image_path', 'image_caption', 'image_source', 'image_alt', 'tags',
+        'youtube_url', 'image_link',
         'recipe_minutes', 'recipe_servings', 'recipe_difficulty',
         'is_featured', 'is_sponsored', 'published_at',
     ];
@@ -65,6 +66,33 @@ class Article extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
+    }
+
+    /**
+     * Ambil ID video YouTube (11 karakter) dari berbagai format URL:
+     * watch?v=, youtu.be/, embed/, shorts/, live/
+     * Mengembalikan null kalau URL kosong atau formatnya tidak dikenali.
+     */
+    public function getYoutubeIdAttribute(): ?string
+    {
+        if (! $this->youtube_url) {
+            return null;
+        }
+
+        $pattern = '~(?:youtu\.be/|youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/|v/))([A-Za-z0-9_-]{11})~';
+
+        return preg_match($pattern, $this->youtube_url, $m) ? $m[1] : null;
+    }
+
+    /**
+     * URL thumbnail video YouTube (hqdefault selalu tersedia untuk semua video).
+     * Dipakai sebagai gambar cadangan kalau berita tidak punya foto unggahan.
+     */
+    public function getYoutubeThumbnailAttribute(): ?string
+    {
+        $id = $this->youtube_id;
+
+        return $id ? "https://i.ytimg.com/vi/{$id}/hqdefault.jpg" : null;
     }
 
     /**

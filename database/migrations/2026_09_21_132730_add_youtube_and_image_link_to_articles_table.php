@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('articles', function (Blueprint $table) {
+            // URL video YouTube yang disematkan (embed) di bawah isi berita
+            $table->string('youtube_url')->nullable();
+
+            // Tautan tujuan saat gambar berita diklik
+            $table->string('image_link', 500)->nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('articles', function (Blueprint $table) {
+            $table->dropColumn(['youtube_url', 'image_link']);
+        });
+    }
+};
