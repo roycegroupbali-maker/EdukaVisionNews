@@ -278,6 +278,8 @@ table.admin-table tr:hover td{ background:#fbfaf7; }
 }
 .filter-bar input[type="text"]{ min-width:220px; }
 
+table.admin-table tfoot td{ border-bottom:none; border-top:1.5px solid var(--paper-line); }
+
 .pagination-wrap{ margin-top:18px; font-size:13px; }
 .pagination-wrap nav ul{ display:flex; gap:6px; list-style:none; flex-wrap:wrap; }
 .pagination-wrap a, .pagination-wrap span{ display:inline-flex; padding:7px 12px; border-radius:6px; border:1px solid var(--paper-line); color:var(--ink); }

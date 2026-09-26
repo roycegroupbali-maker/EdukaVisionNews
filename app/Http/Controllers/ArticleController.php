@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleStat;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -77,6 +78,7 @@ class ArticleController extends Controller
         abort_unless($article->published_at && $article->published_at->lte(now()), 404);
 
         $article->increment('views');
+        ArticleStat::hit($article->id, 'views');
         $article->load('category');
 
         $related = Article::published()

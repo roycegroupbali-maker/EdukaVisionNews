@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleStat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class ArticleShareController extends Controller
         abort_unless(in_array($platform, self::NETWORKS, true), 404);
 
         $article->increment('shares');
+        ArticleStat::hit($article->id, 'shares');
 
         $url = route('article.show', $article->slug);
         $title = $article->title;
@@ -39,6 +41,7 @@ class ArticleShareController extends Controller
     public function copy(Article $article): JsonResponse
     {
         $article->increment('shares');
+        ArticleStat::hit($article->id, 'shares');
 
         return response()->json([
             'ok' => true,

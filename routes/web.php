@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\NewsSubmissionController as AdminNewsSubmissionController;
 use App\Http\Controllers\Admin\RunningTextController as AdminRunningTextController;
+use App\Http\Controllers\Admin\StatReportController as AdminStatReportController;
 use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleShareController;
@@ -75,6 +76,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('articles', AdminArticleController::class)->except(['show']);
         Route::patch('/articles/{article}/toggle-featured', [AdminArticleController::class, 'toggleFeatured'])
             ->name('articles.toggle-featured');
+
+        // Laporan Statistik: akumulasi views & share per minggu/bulan/tahun + export.
+        Route::get('/laporan-statistik', [AdminStatReportController::class, 'index'])->name('stats.index');
+        Route::get('/laporan-statistik/export/excel', [AdminStatReportController::class, 'exportExcel'])->name('stats.export.excel');
+        Route::get('/laporan-statistik/export/pdf', [AdminStatReportController::class, 'exportPdf'])->name('stats.export.pdf');
 
         Route::resource('categories', AdminCategoryController::class)->except(['show', 'create', 'edit']);
 

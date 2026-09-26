@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/css/admin/admin.css',
                 'resources/js/admin/admin.js',
                 'resources/js/admin/dashboard-charts.js',
+                'resources/js/admin/stat-report-chart.js',
             ],
             refresh: true,
             fonts: [
