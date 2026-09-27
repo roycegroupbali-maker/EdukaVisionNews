@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $totalArticles = Article::count();
         $publishedArticles = Article::published()->count();
         $draftArticles = $totalArticles - $publishedArticles;
+        $pendingReview = Article::status(Article::STATUS_PENDING)->count();
         $totalAds = Ad::count();
         $activeAds = Ad::active()->count();
         $pendingSubmissions = NewsSubmission::status(NewsSubmission::STATUS_PENDING)->count();
@@ -42,7 +43,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-            'totalArticles', 'publishedArticles', 'draftArticles',
+            'totalArticles', 'publishedArticles', 'draftArticles', 'pendingReview',
             'totalAds', 'activeAds', 'pendingSubmissions', 'articlesPerCategory',
             'latestArticles', 'mostViewed', 'mostShared'
         ));

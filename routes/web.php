@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\NewsSubmissionController as AdminNewsSubmissionController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\RunningTextController as AdminRunningTextController;
 use App\Http\Controllers\Admin\StatReportController as AdminStatReportController;
 use App\Http\Controllers\AdClickController;
@@ -77,6 +78,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/articles/{article}/toggle-featured', [AdminArticleController::class, 'toggleFeatured'])
             ->name('articles.toggle-featured');
 
+        // Alur verifikasi berita: editor/jabatan berizin "articles.publish"
+        // menyetujui (ACC) atau mengembalikan (revisi) berita yang diajukan wartawan.
+        Route::middleware('permission:articles.publish')->group(function () {
+            Route::patch('/articles/{article}/approve', [AdminArticleController::class, 'approve'])->name('articles.approve');
+            Route::patch('/articles/{article}/reject', [AdminArticleController::class, 'reject'])->name('articles.reject');
+        });
+
         // Laporan Statistik: akumulasi views & share per minggu/bulan/tahun + export.
         Route::get('/laporan-statistik', [AdminStatReportController::class, 'index'])->name('stats.index');
         Route::get('/laporan-statistik/export/excel', [AdminStatReportController::class, 'exportExcel'])->name('stats.export.excel');
@@ -105,12 +113,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/akun', [AdminAccountController::class, 'edit'])->name('account.edit');
             Route::put('/akun', [AdminAccountController::class, 'update'])->name('account.update');
 
-            // Manajemen akun admin (aktifkan/nonaktifkan) — sensitif karena bisa
-            // mengubah akses admin lain, jadi dikunci konfirmasi ulang kata sandi
-            // yang sama seperti Pengaturan Akun.
-            Route::get('/pengguna-admin', [AdminUserController::class, 'index'])->name('users.index');
-            Route::patch('/pengguna-admin/{account}/toggle-active', [AdminUserController::class, 'toggleActive'])
-                ->name('users.toggle-active');
+            // Manajemen akun admin (aktifkan/nonaktifkan/atur jabatan) — sensitif
+            // karena bisa mengubah akses admin lain, jadi dikunci konfirmasi ulang
+            // kata sandi yang sama seperti Pengaturan Akun. Mengatur jabatan butuh
+            // izin "users.manage" tersendiri.
+            Route::middleware('permission:users.manage')->group(function () {
+                Route::get('/pengguna-admin', [AdminUserController::class, 'index'])->name('users.index');
+                Route::patch('/pengguna-admin/{account}/toggle-active', [AdminUserController::class, 'toggleActive'])
+                    ->name('users.toggle-active');
+                Route::patch('/pengguna-admin/{account}/role', [AdminUserController::class, 'updateRole'])
+                    ->name('users.update-role');
+                // Akses khusus per akun (override dari default jabatan) —
+                // dicek isSuperAdmin() lagi di controller karena lebih sensitif
+                // daripada sekadar aktif/nonaktifkan atau ganti jabatan.
+                Route::get('/pengguna-admin/{account}/akses', [AdminUserController::class, 'access'])
+                    ->name('users.access');
+                Route::patch('/pengguna-admin/{account}/akses', [AdminUserController::class, 'updateAccess'])
+                    ->name('users.update-access');
+            });
+
+            // Manajemen Jabatan (custom role) & hak aksesnya — admin menentukan
+            // jabatan apa saja yang ada dan sampai mana akses tiap jabatan.
+            Route::middleware('permission:roles.manage')->group(function () {
+                Route::resource('roles', AdminRoleController::class)->except(['show']);
+            });
         });
     });
 });

@@ -1,6 +1,8 @@
 <?php
     $isEdit = $isEdit ?? false;
     $action = $isEdit ? route('admin.articles.update', $article) : route('admin.articles.store');
+    $me = auth()->user();
+    $canPublish = $me->hasPermission('articles.publish');
 ?>
 
 <?php if (isset($component)) { $__componentOriginale0f1cdd055772eb1d4a99981c240763e = $component; } ?>
@@ -14,9 +16,22 @@
 <?php endif; ?>
 <?php $component->withAttributes(['page-title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isEdit ? 'Edit Berita' : 'Tulis Berita Baru'),'page-subtitle' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Pilih kategori lalu isi konten beritanya')]); ?>
 
-  <form method="POST" action="<?php echo e($action); ?>" enctype="multipart/form-data">
+  <?php if($isEdit && $article->status === \App\Models\Article::STATUS_REVISION && $article->review_note): ?>
+    <div class="admin-flash error">
+      <strong>Catatan revisi dari editor:</strong> <?php echo e($article->review_note); ?>
+
+    </div>
+  <?php endif; ?>
+  <?php if($isEdit && $article->status === \App\Models\Article::STATUS_PENDING): ?>
+    <div class="admin-flash" style="background:rgba(27,75,67,0.10); color:var(--teal); border-color:rgba(27,75,67,0.25);">
+      Berita ini sedang <strong>menunggu tinjauan editor</strong>. Anda masih bisa mengubahnya, tapi tidak perlu mengajukan ulang kecuali diminta.
+    </div>
+  <?php endif; ?>
+
+  <form method="POST" action="<?php echo e($action); ?>" enctype="multipart/form-data" id="articleForm">
     <?php echo csrf_field(); ?>
     <?php if($isEdit): ?> <?php echo method_field('PUT'); ?> <?php endif; ?>
+    <input type="hidden" name="workflow_action" id="workflowAction" value="draft">
 
     <div class="form-grid">
       <div>
@@ -157,16 +172,22 @@ unset($__errorArgs, $__bag); ?>
             <input type="number" id="readMinutes" name="read_minutes" min="1" max="60" value="<?php echo e(old('read_minutes', $article->read_minutes)); ?>">
           </div>
 
-          <div class="field">
-            <label for="publishedAt">Jadwal Tayang</label>
-            <input type="datetime-local" id="publishedAt" name="published_at" value="<?php echo e(old('published_at', optional($article->published_at)->format('Y-m-d\TH:i'))); ?>">
-            <div class="field-hint">Kosongkan &amp; centang "Tayangkan sekarang" untuk publikasi langsung, atau isi tanggal untuk dijadwalkan.</div>
-          </div>
+          <?php if($canPublish): ?>
+            <div class="field">
+              <label for="publishedAt">Jadwal Tayang</label>
+              <input type="datetime-local" id="publishedAt" name="published_at" value="<?php echo e(old('published_at', optional($article->published_at)->format('Y-m-d\TH:i'))); ?>">
+              <div class="field-hint">Kosongkan &amp; centang "Tayangkan sekarang" untuk publikasi langsung, atau isi tanggal untuk dijadwalkan.</div>
+            </div>
 
-          <div class="field checkbox-field">
-            <input type="checkbox" id="publishNow" name="publish_now" value="1">
-            <label for="publishNow" style="margin:0;">Tayangkan sekarang</label>
-          </div>
+            <div class="field checkbox-field">
+              <input type="checkbox" id="publishNow" name="publish_now" value="1">
+              <label for="publishNow" style="margin:0;">Tayangkan sekarang</label>
+            </div>
+          <?php else: ?>
+            <div class="field">
+              <div class="field-hint">Jabatan Anda tidak bisa menayangkan berita langsung. Ajukan berita ini untuk ditinjau editor — berita akan tayang setelah disetujui.</div>
+            </div>
+          <?php endif; ?>
           <div class="field checkbox-field">
             <input type="checkbox" id="isFeatured" name="is_featured" value="1" <?php if(old('is_featured', $article->is_featured)): echo 'checked'; endif; ?>>
             <label for="isFeatured" style="margin:0;">Jadikan berita headline (hero)</label>
@@ -307,7 +328,13 @@ unset($__errorArgs, $__bag); ?>
 
         <div class="form-actions">
           <a href="<?php echo e(route('admin.articles.index')); ?>" class="btn btn-ghost">Batal</a>
-          <button type="submit" class="btn btn-accent"><?php echo e($isEdit ? 'Simpan Perubahan' : 'Simpan Berita'); ?></button>
+          <?php if($canPublish): ?>
+            <button type="submit" class="btn btn-ghost" onclick="document.getElementById('workflowAction').value='draft';">Simpan sebagai Draf</button>
+            <button type="submit" class="btn btn-accent" onclick="document.getElementById('workflowAction').value='publish';">Simpan & Tayangkan</button>
+          <?php else: ?>
+            <button type="submit" class="btn btn-ghost" onclick="document.getElementById('workflowAction').value='draft';">Simpan sebagai Draf</button>
+            <button type="submit" class="btn btn-accent" onclick="document.getElementById('workflowAction').value='submit';">Ajukan untuk Ditinjau</button>
+          <?php endif; ?>
         </div>
       </div>
     </div>

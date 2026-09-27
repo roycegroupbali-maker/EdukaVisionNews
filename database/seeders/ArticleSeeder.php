@@ -33,6 +33,7 @@ class ArticleSeeder extends Seeder
                     'recipe_difficulty' => $a['recipe_difficulty'] ?? null,
                     'is_featured' => $a['featured'] ?? false,
                     'is_sponsored' => $a['sponsored'] ?? false,
+                    'status' => Article::STATUS_PUBLISHED,
                     'published_at' => now()->subHours($i * 3 + random_int(1, 2)),
                 ]
             );

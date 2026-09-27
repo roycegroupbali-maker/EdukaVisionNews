@@ -1,13 +1,13 @@
 <?php if (isset($component)) { $__componentOriginale0f1cdd055772eb1d4a99981c240763e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale0f1cdd055772eb1d4a99981c240763e = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin-layout','data' => ['pageTitle' => 'Akun Admin','pageSubtitle' => 'Konfirmasi pendaftaran akun admin baru, lalu aktifkan atau nonaktifkan akun kapan saja']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin-layout','data' => ['pageTitle' => 'Akun Admin','pageSubtitle' => 'Konfirmasi pendaftaran akun baru, atur jabatan, lalu aktifkan atau nonaktifkan akun kapan saja']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('admin-layout'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['page-title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Akun Admin'),'page-subtitle' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Konfirmasi pendaftaran akun admin baru, lalu aktifkan atau nonaktifkan akun kapan saja')]); ?>
+<?php $component->withAttributes(['page-title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Akun Admin'),'page-subtitle' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Konfirmasi pendaftaran akun baru, atur jabatan, lalu aktifkan atau nonaktifkan akun kapan saja')]); ?>
 
   <div class="panel">
     <div class="table-wrap">
@@ -16,6 +16,7 @@
           <tr>
             <th>Nama</th>
             <th>Email</th>
+            <th>Jabatan</th>
             <th>Status</th>
             <th>Terdaftar</th>
             <th>Aksi</th>
@@ -31,7 +32,32 @@
                   <div class="sub">Ini akun Anda</div>
                 <?php endif; ?>
               </td>
-              <td><?php echo e($account->email); ?></td>
+              <td>
+                <?php if(auth()->user()->isSuperAdmin()): ?>
+                  <a href="<?php echo e(route('admin.users.access', $account)); ?>"><?php echo e($account->email); ?></a>
+                <?php else: ?>
+                  <?php echo e($account->email); ?>
+
+                <?php endif; ?>
+                <?php if($account->hasCustomAccess()): ?>
+                  <div class="sub" style="color:var(--gold-deep);">Akses khusus</div>
+                <?php endif; ?>
+              </td>
+              <td>
+                <?php if($account->id === auth()->id() && ! auth()->user()->isSuperAdmin()): ?>
+                  <span class="badge badge-gray"><?php echo e($account->role_name); ?></span>
+                <?php else: ?>
+                  <form method="POST" action="<?php echo e(route('admin.users.update-role', $account)); ?>" style="display:inline-block;">
+                    <?php echo csrf_field(); ?> <?php echo method_field('PATCH'); ?>
+                    <select name="role_id" onchange="this.form.submit()" style="min-width:160px;">
+                      <option value="">— Tanpa jabatan —</option>
+                      <?php $__currentLoopData = $roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($role->id); ?>" <?php if($account->role_id === $role->id): echo 'selected'; endif; ?>><?php echo e($role->name); ?></option>
+                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                  </form>
+                <?php endif; ?>
+              </td>
               <td>
                 <?php if($account->is_active): ?>
                   <span class="badge badge-green">Aktif</span>
@@ -47,8 +73,8 @@
                   <div class="row-actions">
                     <form method="POST" action="<?php echo e(route('admin.users.toggle-active', $account)); ?>"
                       data-confirm="<?php echo e($account->is_active
-                        ? 'Nonaktifkan akun admin "'.$account->name.'"? Akun ini akan langsung kehilangan akses ke panel admin.'
-                        : 'Aktifkan akun admin "'.$account->name.'"? Akun ini akan bisa masuk ke panel admin.'); ?>">
+                        ? 'Nonaktifkan akun \"'.$account->name.'\"? Akun ini akan langsung kehilangan akses ke panel admin.'
+                        : 'Aktifkan akun \"'.$account->name.'\"? Akun ini akan bisa masuk ke panel admin.'); ?>">
                       <?php echo csrf_field(); ?> <?php echo method_field('PATCH'); ?>
                       <button type="submit" class="btn <?php echo e($account->is_active ? 'btn-ghost' : 'btn-accent'); ?> btn-sm">
                         <?php echo e($account->is_active ? 'Nonaktifkan' : 'Aktifkan'); ?>
@@ -60,12 +86,16 @@
               </td>
             </tr>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-            <tr><td colspan="5"><div class="empty-state">Belum ada akun admin.</div></td></tr>
+            <tr><td colspan="6"><div class="empty-state">Belum ada akun.</div></td></tr>
           <?php endif; ?>
         </tbody>
       </table>
     </div>
   </div>
+
+  <p style="font-size:12.5px; color:var(--muted-2); margin-top:14px;">
+    Jabatan menentukan hak akses tiap akun di panel — kelola daftar jabatan &amp; hak aksesnya di menu <a href="<?php echo e(route('admin.roles.index')); ?>">Jabatan</a>.
+  </p>
 
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
@@ -76,4 +106,5 @@
 <?php if (isset($__componentOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
 <?php $component = $__componentOriginale0f1cdd055772eb1d4a99981c240763e; ?>
 <?php unset($__componentOriginale0f1cdd055772eb1d4a99981c240763e); ?>
-<?php endif; ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/users/index.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/users/index.blade.php ENDPATH**/ ?>

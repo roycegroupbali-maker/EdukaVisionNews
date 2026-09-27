@@ -75,7 +75,10 @@ class ArticleController extends Controller
      */
     public function show(Article $article): View
     {
-        abort_unless($article->published_at && $article->published_at->lte(now()), 404);
+        abort_unless(
+            $article->status === Article::STATUS_PUBLISHED && $article->published_at && $article->published_at->lte(now()),
+            404
+        );
 
         $article->increment('views');
         ArticleStat::hit($article->id, 'views');

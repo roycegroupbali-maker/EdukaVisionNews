@@ -270,6 +270,7 @@ table.admin-table tr:hover td{ background:#fbfaf7; }
 .badge-gray{ background:var(--paper-alt); color:var(--muted); }
 .badge-gold{ background:rgba(178,137,35,0.18); color:var(--gold-deep); }
 .badge-red{ background:var(--danger-bg); color:var(--pulse-deep); }
+.badge-blue{ background:rgba(27,75,67,0.12); color:var(--teal); }
 
 /* ===== FILTER BAR ===== */
 .filter-bar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; align-items:center; }

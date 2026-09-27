@@ -41,6 +41,19 @@
         <?php endif; ?>
       </div>
     </div>
+    <?php if(auth()->user()->hasPermission('articles.publish')): ?>
+      <div class="stat-card">
+        <div class="stat-label">Berita Menunggu Tinjauan</div>
+        <div class="stat-value"><?php echo e($pendingReview); ?></div>
+        <div class="stat-note">
+          <?php if($pendingReview > 0): ?>
+            <a href="<?php echo e(route('admin.articles.index', ['status' => 'pending'])); ?>">Tinjau sekarang &rarr;</a>
+          <?php else: ?>
+            Tidak ada pengajuan wartawan
+          <?php endif; ?>
+        </div>
+      </div>
+    <?php endif; ?>
   </div>
 
   <div class="panel" style="margin-bottom:22px;">
@@ -57,7 +70,9 @@
       <div class="panel">
         <div class="panel-head">
           <h2>Berita Terbaru Diinput</h2>
-          <a href="<?php echo e(route('admin.articles.create')); ?>" class="btn btn-accent btn-sm">+ Tulis Berita</a>
+          <?php if(auth()->user()->hasPermission('articles.create')): ?>
+            <a href="<?php echo e(route('admin.articles.create')); ?>" class="btn btn-accent btn-sm">+ Tulis Berita</a>
+          <?php endif; ?>
         </div>
         <div class="panel-body">
           <?php $__empty_1 = true; $__currentLoopData = $latestArticles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $a): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -67,7 +82,7 @@
                 <div style="font-size:12px; color:var(--muted-2); margin-top:2px;">
                   <?php echo e($a->category->name ?? '—'); ?> · <?php echo e($a->created_at->translatedFormat('d M Y, H:i')); ?>
 
-                  <?php if(!$a->published_at): ?> · <span class="badge badge-gray">Draf</span> <?php endif; ?>
+                  · <span class="badge <?php echo e($a->status_badge_class); ?>"><?php echo e($a->status_label); ?></span>
                 </div>
               </div>
             </div>
@@ -173,9 +188,15 @@
       <div class="panel">
         <div class="panel-head"><h2>Aksi Cepat</h2></div>
         <div class="panel-body" style="display:flex; flex-direction:column; gap:10px; padding-bottom:20px;">
-          <a href="<?php echo e(route('admin.articles.create')); ?>" class="btn btn-primary btn-block">+ Tulis Berita Baru</a>
-          <a href="<?php echo e(route('admin.ads.create')); ?>" class="btn btn-ghost btn-block">+ Upload Iklan Baru</a>
-          <a href="<?php echo e(route('admin.categories.index')); ?>" class="btn btn-ghost btn-block">Kelola Kategori</a>
+          <?php if(auth()->user()->hasPermission('articles.create')): ?>
+            <a href="<?php echo e(route('admin.articles.create')); ?>" class="btn btn-primary btn-block">+ Tulis Berita Baru</a>
+          <?php endif; ?>
+          <?php if(auth()->user()->hasPermission('ads.manage')): ?>
+            <a href="<?php echo e(route('admin.ads.create')); ?>" class="btn btn-ghost btn-block">+ Upload Iklan Baru</a>
+          <?php endif; ?>
+          <?php if(auth()->user()->hasPermission('categories.manage')): ?>
+            <a href="<?php echo e(route('admin.categories.index')); ?>" class="btn btn-ghost btn-block">Kelola Kategori</a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -202,4 +223,4 @@
 <?php if (isset($__componentOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
 <?php $component = $__componentOriginale0f1cdd055772eb1d4a99981c240763e; ?>
 <?php unset($__componentOriginale0f1cdd055772eb1d4a99981c240763e); ?>
-<?php endif; ?>-<?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>

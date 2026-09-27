@@ -32,6 +32,19 @@
         @endif
       </div>
     </div>
+    @if(auth()->user()->hasPermission('articles.publish'))
+      <div class="stat-card">
+        <div class="stat-label">Berita Menunggu Tinjauan</div>
+        <div class="stat-value">{{ $pendingReview }}</div>
+        <div class="stat-note">
+          @if($pendingReview > 0)
+            <a href="{{ route('admin.articles.index', ['status' => 'pending']) }}">Tinjau sekarang &rarr;</a>
+          @else
+            Tidak ada pengajuan wartawan
+          @endif
+        </div>
+      </div>
+    @endif
   </div>
 
   <div class="panel" style="margin-bottom:22px;">
@@ -48,7 +61,9 @@
       <div class="panel">
         <div class="panel-head">
           <h2>Berita Terbaru Diinput</h2>
-          <a href="{{ route('admin.articles.create') }}" class="btn btn-accent btn-sm">+ Tulis Berita</a>
+          @if(auth()->user()->hasPermission('articles.create'))
+            <a href="{{ route('admin.articles.create') }}" class="btn btn-accent btn-sm">+ Tulis Berita</a>
+          @endif
         </div>
         <div class="panel-body">
           @forelse($latestArticles as $a)
@@ -57,7 +72,7 @@
                 <a href="{{ route('admin.articles.edit', $a) }}" style="font-weight:600; color:var(--ink);">{{ $a->title }}</a>
                 <div style="font-size:12px; color:var(--muted-2); margin-top:2px;">
                   {{ $a->category->name ?? '—' }} · {{ $a->created_at->translatedFormat('d M Y, H:i') }}
-                  @if(!$a->published_at) · <span class="badge badge-gray">Draf</span> @endif
+                  · <span class="badge {{ $a->status_badge_class }}">{{ $a->status_label }}</span>
                 </div>
               </div>
             </div>
@@ -163,9 +178,15 @@
       <div class="panel">
         <div class="panel-head"><h2>Aksi Cepat</h2></div>
         <div class="panel-body" style="display:flex; flex-direction:column; gap:10px; padding-bottom:20px;">
-          <a href="{{ route('admin.articles.create') }}" class="btn btn-primary btn-block">+ Tulis Berita Baru</a>
-          <a href="{{ route('admin.ads.create') }}" class="btn btn-ghost btn-block">+ Upload Iklan Baru</a>
-          <a href="{{ route('admin.categories.index') }}" class="btn btn-ghost btn-block">Kelola Kategori</a>
+          @if(auth()->user()->hasPermission('articles.create'))
+            <a href="{{ route('admin.articles.create') }}" class="btn btn-primary btn-block">+ Tulis Berita Baru</a>
+          @endif
+          @if(auth()->user()->hasPermission('ads.manage'))
+            <a href="{{ route('admin.ads.create') }}" class="btn btn-ghost btn-block">+ Upload Iklan Baru</a>
+          @endif
+          @if(auth()->user()->hasPermission('categories.manage'))
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-ghost btn-block">Kelola Kategori</a>
+          @endif
         </div>
       </div>
     </div>
@@ -182,4 +203,4 @@
   </script>
   @vite(['resources/js/admin/dashboard-charts.js'])
 
-</x-admin-layout>-
+</x-admin-layout>

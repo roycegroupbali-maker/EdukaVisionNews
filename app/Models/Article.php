@@ -13,17 +13,47 @@ class Article extends Model
 {
     use HasFactory;
 
+    /**
+     * Alur status verifikasi berita:
+     * draft   -> masih dikerjakan penulis, belum diajukan
+     * pending -> diajukan wartawan, menunggu tinjauan editor
+     * revisi  -> dikembalikan editor, perlu diperbaiki lalu diajukan ulang
+     * published -> sudah disetujui editor & tayang ke publik
+     */
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_REVISION = 'revisi';
+
+    public const STATUS_PUBLISHED = 'published';
+
+    /** @return array<string, string> */
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_DRAFT => 'Draf',
+            self::STATUS_PENDING => 'Menunggu Tinjauan',
+            self::STATUS_REVISION => 'Perlu Revisi',
+            self::STATUS_PUBLISHED => 'Tayang',
+        ];
+    }
+
     protected $fillable = [
         'category_id', 'title', 'slug', 'subcategory', 'excerpt', 'content',
-        'author', 'read_minutes', 'views', 'shares', 'art_color1', 'art_color2', 'art_pattern',
+        'author', 'author_id', 'editor_id', 'status',
+        'read_minutes', 'views', 'shares', 'art_color1', 'art_color2', 'art_pattern',
         'image_path', 'image_caption', 'image_source', 'image_alt', 'tags',
         'youtube_url', 'image_link',
         'recipe_minutes', 'recipe_servings', 'recipe_difficulty',
         'is_featured', 'is_sponsored', 'published_at',
+        'submitted_at', 'reviewed_at', 'review_note',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'reviewed_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_sponsored' => 'boolean',
     ];
@@ -38,9 +68,48 @@ class Article extends Model
         return $this->hasMany(ArticleStat::class);
     }
 
+    /**
+     * Wartawan/penulis yang membuat berita ini (bisa null untuk berita lama
+     * sebelum fitur alur verifikasi ada, atau berita yang dibuat via seeder).
+     */
+    public function authorUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Editor yang terakhir meninjau (menyetujui/menolak) berita ini.
+     */
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'editor_id');
+    }
+
     public function scopePublished(Builder $query): Builder
     {
-        return $query->whereNotNull('published_at')->where('published_at', '<=', now());
+        return $query->where('status', self::STATUS_PUBLISHED)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
+    }
+
+    public function scopeStatus(Builder $query, string $status): Builder
+    {
+        return $query->where('status', $status);
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::statuses()[$this->status] ?? $this->status;
+    }
+
+    public function getStatusBadgeClassAttribute(): string
+    {
+        return match ($this->status) {
+            self::STATUS_PUBLISHED => 'badge-green',
+            self::STATUS_PENDING => 'badge-blue',
+            self::STATUS_REVISION => 'badge-red',
+            default => 'badge-gray',
+        };
     }
 
     public function getRouteKeyName(): string

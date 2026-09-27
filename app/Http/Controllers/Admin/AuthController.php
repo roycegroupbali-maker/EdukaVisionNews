@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,10 @@ class AuthController extends Controller
      * nonaktif (is_active = false) sampai dikonfirmasi/diaktifkan oleh
      * admin lain yang sudah aktif, lewat menu "Akun Admin" di panel.
      * Tidak auto-login karena akun belum boleh dipakai dulu.
+     *
+     * Jabatan default untuk pendaftar baru adalah Wartawan (hak akses paling
+     * terbatas: hanya bisa menulis & mengajukan berita). Admin bisa mengubah
+     * jabatannya kapan saja lewat menu "Akun Admin" setelah aktivasi.
      */
     public function register(Request $request): RedirectResponse
     {
@@ -43,6 +48,7 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'is_admin' => true,
             'is_active' => false,
+            'role_id' => Role::where('slug', Role::WARTAWAN)->value('id'),
         ]);
 
         return redirect()
