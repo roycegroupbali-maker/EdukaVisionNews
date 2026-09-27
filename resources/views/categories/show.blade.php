@@ -1,6 +1,11 @@
 @include('partials.header', [
     'pageTitle' => $category->name . ' — EdukaVisionNews',
     'pageDescription' => 'Kumpulan berita terbaru kategori ' . $category->name . ' dari EdukaVisionNews.',
+    'ogKeywords' => $category->name . ', berita ' . strtolower($category->name) . ', EdukaVisionNews',
+    'breadcrumbs' => [
+        ['name' => 'Beranda', 'url' => route('home')],
+        ['name' => $category->name, 'url' => route('category.show', $category->slug)],
+    ],
 ])
 
 <div class="section-band">

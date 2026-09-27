@@ -1,28 +1,114 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+@php
+    // ============ SEO — nilai default & fallback ============
+    // Semua nilai di bawah bisa dioverride per halaman lewat @include('partials.header', [...]).
+    $seoTitle       = $pageTitle ?? 'EdukaVisionNews — Denyut Kabar Hari Ini';
+    $seoDescription = $pageDescription ?? 'Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.';
+    $seoType        = $ogType ?? 'website';
+    $seoCanonical   = $canonical ?? url()->current();
+    $seoRobots      = $robots ?? 'index, follow, max-image-preview:large';
+    $seoImage       = $ogImage ?? asset('images/logo.png');
+    $seoKeywords    = $ogKeywords ?? null;
+@endphp
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $pageTitle ?? 'EdukaVisionNews — Denyut Kabar Hari Ini' }}</title>
-<meta name="description" content="{{ $pageDescription ?? 'Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.' }}">
+<title>{{ $seoTitle }}</title>
+<meta name="description" content="{{ $seoDescription }}">
+@if($seoKeywords)
+<meta name="keywords" content="{{ $seoKeywords }}">
+@endif
+<meta name="robots" content="{{ $seoRobots }}">
+<meta name="googlebot" content="{{ $seoRobots }}">
+<meta name="author" content="{{ $ogAuthor ?? 'Redaksi EdukaVisionNews' }}">
 <meta name="theme-color" content="#0D1B3A">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<link rel="canonical" href="{{ url()->current() }}">
+<link rel="canonical" href="{{ $seoCanonical }}">
 <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+<link rel="apple-touch-icon" href="{{ asset('images/logo-icon.png') }}">
 
 {{-- Open Graph / Twitter Card, dipakai saat artikel dibagikan ke media sosial --}}
 <meta property="og:site_name" content="EdukaVisionNews">
-<meta property="og:type" content="website">
-<meta property="og:title" content="{{ $pageTitle ?? 'EdukaVisionNews — Denyut Kabar Hari Ini' }}">
-<meta property="og:description" content="{{ $pageDescription ?? 'Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.' }}">
-<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="{{ $seoType }}">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="{{ $seoTitle }}">
+<meta property="og:description" content="{{ $seoDescription }}">
+<meta property="og:url" content="{{ $seoCanonical }}">
+<meta property="og:image" content="{{ $seoImage }}">
+<meta property="og:image:alt" content="{{ $ogImageAlt ?? $seoTitle }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $pageTitle ?? 'EdukaVisionNews — Denyut Kabar Hari Ini' }}">
-<meta name="twitter:description" content="{{ $pageDescription ?? 'Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.' }}">
+<meta name="twitter:title" content="{{ $seoTitle }}">
+<meta name="twitter:description" content="{{ $seoDescription }}">
+<meta name="twitter:image" content="{{ $seoImage }}">
+
+@if($seoType === 'article')
+{{-- Meta Open Graph khusus artikel berita, membantu Google News & crawler sosial --}}
+<meta property="article:published_time" content="{{ $ogPublishedTime ?? '' }}">
+<meta property="article:modified_time" content="{{ $ogModifiedTime ?? $ogPublishedTime ?? '' }}">
+<meta property="article:author" content="{{ $ogAuthor ?? 'Redaksi EdukaVisionNews' }}">
+<meta property="article:section" content="{{ $ogSection ?? '' }}">
+@foreach(($ogTags ?? []) as $ogTag)
+<meta property="article:tag" content="{{ $ogTag }}">
+@endforeach
+@endif
+
+{{-- JSON-LD: identitas organisasi + kotak pencarian situs (sitewide, dipakai Google untuk Sitelinks Search Box & Knowledge Panel) --}}
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'NewsMediaOrganization',
+            '@id' => url('/#organization'),
+            'name' => 'EdukaVisionNews',
+            'url' => url('/'),
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => asset('images/logo.png'),
+            ],
+            'sameAs' => [],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => url('/#website'),
+            'name' => 'EdukaVisionNews',
+            'url' => url('/'),
+            'publisher' => ['@id' => url('/#organization')],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => url('/cari') . '?q={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
+        ],
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+
+@isset($breadcrumbs)
+{{-- JSON-LD: breadcrumb, membantu Google menampilkan jejak navigasi di hasil pencarian --}}
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => collect($breadcrumbs)->values()->map(fn ($crumb, $i) => [
+        '@type' => 'ListItem',
+        'position' => $i + 1,
+        'name' => $crumb['name'],
+        'item' => $crumb['url'],
+    ])->all(),
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+@endisset
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 {{-- Font Google (Fraunces, Inter, IBM Plex Mono) sudah di-import lewat resources/css/site.css --}}
 @vite(['resources/css/app.css', 'resources/css/site.css', 'resources/js/site.js'])
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
 @include('partials.accessibility-widget')

@@ -1,9 +1,25 @@
+@php
+    $articleTags = collect($article->tags_array);
+    $articleImage = $article->image_url ?? asset('images/logo.png');
+@endphp
+
 @include('partials.header', [
     'pageTitle' => $article->title . ' — EdukaVisionNews',
     'pageDescription' => $article->excerpt,
     'ogType' => 'article',
+    'ogImage' => $articleImage,
+    'ogImageAlt' => $article->image_alt ?? $article->title,
+    'ogAuthor' => $article->author,
     'ogPublishedTime' => $article->published_at?->toIso8601String(),
+    'ogModifiedTime' => $article->updated_at?->toIso8601String(),
     'ogSection' => $article->category->name,
+    'ogTags' => $articleTags,
+    'ogKeywords' => $articleTags->implode(', '),
+    'breadcrumbs' => [
+        ['name' => 'Beranda', 'url' => route('home')],
+        ['name' => $article->category->name, 'url' => route('category.show', $article->category->slug)],
+        ['name' => $article->title, 'url' => route('article.show', $article->slug)],
+    ],
 ])
 
 <script type="application/ld+json">
@@ -12,9 +28,14 @@
     '@type' => 'NewsArticle',
     'headline' => $article->title,
     'description' => $article->excerpt,
+    'image' => [$articleImage],
     'datePublished' => $article->published_at?->toIso8601String(),
     'dateModified' => $article->updated_at?->toIso8601String(),
-    'author' => ['@type' => 'Person', 'name' => $article->author],
+    'inLanguage' => 'id-ID',
+    'author' => [
+        '@type' => 'Person',
+        'name' => $article->author,
+    ],
     'publisher' => [
         '@type' => 'Organization',
         'name' => 'EdukaVisionNews',
@@ -22,7 +43,9 @@
     ],
     'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => url()->current()],
     'articleSection' => $article->category->name,
-], JSON_UNESCAPED_UNICODE) !!}
+    'keywords' => $articleTags->implode(', ') ?: null,
+    'wordCount' => str_word_count(strip_tags($article->content)),
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
 
 <div class="section-band">

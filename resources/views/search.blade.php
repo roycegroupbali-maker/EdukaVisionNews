@@ -1,5 +1,7 @@
 @include('partials.header', [
-    'pageTitle' => 'Hasil Pencarian: ' . $query . ' — EdukaVisionNews',
+    'pageTitle' => ($query !== '' ? 'Hasil Pencarian: ' . $query . ' — EdukaVisionNews' : 'Cari Berita — EdukaVisionNews'),
+    'pageDescription' => 'Cari berita, resep, dan artikel di EdukaVisionNews.',
+    'robots' => 'noindex, follow',
     'query' => $query,
 ])
 

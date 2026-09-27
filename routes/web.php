@@ -22,6 +22,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+// robots.txt dibuat dinamis (bukan file statis) supaya baris "Sitemap:" selalu
+// memakai APP_URL yang benar, sama di lokal maupun produksi.
+Route::get('/robots.txt', function () {
+    // /cari dan /lacak-berita sengaja TIDAK di-Disallow di sini: keduanya sudah
+    // ditandai <meta name="robots" content="noindex, follow"> di halamannya
+    // masing-masing. Membiarkan crawler mengaksesnya (bukan Disallow) supaya
+    // tag noindex itu benar-benar terbaca dan halaman dikeluarkan dari index,
+    // alih-alih hanya "diblokir" tanpa pernah bisa di-deindex.
+    $lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /admin',
+        '',
+        'Sitemap: '.url('/sitemap.xml'),
+    ];
+
+    return response(implode("\n", $lines), 200)
+        ->header('Content-Type', 'text/plain');
+})->name('robots');
+
 Route::get('/', [ArticleController::class, 'home'])->name('home');
 Route::get('/cari', [ArticleController::class, 'search'])->name('search');
 Route::get('/kategori/{slug}', [ArticleController::class, 'category'])->name('category.show');

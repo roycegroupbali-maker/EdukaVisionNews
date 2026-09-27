@@ -1,6 +1,7 @@
 @include('partials.header', [
     'pageTitle' => 'Lacak Pengajuan Berita — EdukaVisionNews',
     'pageDescription' => 'Cek status usulan berita yang kamu kirimkan ke redaksi EdukaVisionNews menggunakan nomor tiket dan email.',
+    'robots' => 'noindex, follow',
 ])
 
 <section class="section-band news-submission-page">
