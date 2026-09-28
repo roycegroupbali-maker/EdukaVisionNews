@@ -1,6 +1,11 @@
 @php
     $me = auth()->user();
     $canPublish = $me->hasPermission('articles.publish');
+    $canDeleteAny = $me->hasPermission('articles.delete');
+    // Berita yang boleh dihapus user ini (sama dengan aturan tombol Hapus per baris).
+    $isDeletable = fn ($a) => $canDeleteAny
+        || ($a->author_id === $me->id && in_array($a->status, [\App\Models\Article::STATUS_DRAFT, \App\Models\Article::STATUS_REVISION], true));
+    $showBulk = $articles->contains(fn ($a) => $isDeletable($a));
 @endphp
 
 <x-admin-layout :page-title="'Berita'" :page-subtitle="$canPublish ? 'Kelola semua berita, tinjau pengajuan wartawan' : 'Berita yang Anda tulis & ajukan'">
@@ -37,11 +42,22 @@
     @endif
   </div>
 
+  @if($showBulk)
+    <div id="bulkBar" style="display:none; align-items:center; gap:12px; flex-wrap:wrap; padding:10px 14px; margin-bottom:12px; border-radius:8px; background:rgba(200,60,60,0.08); border:1px solid rgba(200,60,60,0.25);">
+      <span><strong id="bulkCount">0</strong> berita dipilih</span>
+      <button type="button" id="bulkDeleteBtn" class="btn btn-danger btn-sm">Hapus Terpilih</button>
+      <button type="button" id="bulkCancelBtn" class="btn btn-ghost btn-sm">Batal</button>
+    </div>
+  @endif
+
   <div class="panel">
     <div class="table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
+            @if($showBulk)
+              <th style="width:36px;"><input type="checkbox" id="checkAll" title="Pilih semua di halaman ini"></th>
+            @endif
             <th></th>
             <th>Judul</th>
             <th>Kategori</th>
@@ -54,6 +70,13 @@
         <tbody>
           @forelse($articles as $article)
             <tr>
+              @if($showBulk)
+                <td style="width:36px;">
+                  @if($isDeletable($article))
+                    <input type="checkbox" class="row-check" value="{{ $article->id }}">
+                  @endif
+                </td>
+              @endif
               <td style="width:52px;">
                 <div style="width:48px; height:36px; border-radius:4px; overflow:hidden; background:var(--paper-alt);">
                   @include('partials.art', ['article' => $article, 'viewbox' => '0 0 48 36'])
@@ -112,7 +135,7 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="7"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
+            <tr><td colspan="{{ $showBulk ? 8 : 7 }}"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
           @endforelse
         </tbody>
       </table>
@@ -128,8 +151,58 @@
     <input type="hidden" name="review_note" id="rejectNoteInput">
   </form>
 
+  @if($showBulk)
+    <!-- Form tersembunyi untuk hapus massal — id berita yang dicentang diisi lewat JS -->
+    <form method="POST" action="{{ route('admin.articles.bulk-destroy') }}" id="bulkDeleteForm" style="display:none;">
+      @csrf
+      @method('DELETE')
+    </form>
+  @endif
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // ----- Hapus massal (centang) -----
+      var bulkForm = document.getElementById('bulkDeleteForm');
+      if (bulkForm) {
+        var checkAll = document.getElementById('checkAll');
+        var bar = document.getElementById('bulkBar');
+        var countEl = document.getElementById('bulkCount');
+        var rows = Array.prototype.slice.call(document.querySelectorAll('.row-check'));
+
+        function refresh() {
+          var n = rows.filter(function (c) { return c.checked; }).length;
+          countEl.textContent = n;
+          bar.style.display = n > 0 ? 'flex' : 'none';
+          checkAll.checked = n > 0 && n === rows.length;
+          checkAll.indeterminate = n > 0 && n < rows.length;
+        }
+
+        checkAll.addEventListener('change', function () {
+          rows.forEach(function (c) { c.checked = checkAll.checked; });
+          refresh();
+        });
+        rows.forEach(function (c) { c.addEventListener('change', refresh); });
+
+        document.getElementById('bulkCancelBtn').addEventListener('click', function () {
+          rows.forEach(function (c) { c.checked = false; });
+          refresh();
+        });
+
+        document.getElementById('bulkDeleteBtn').addEventListener('click', function () {
+          var selected = rows.filter(function (c) { return c.checked; });
+          if (!selected.length) return;
+          if (!window.confirm('Hapus ' + selected.length + ' berita terpilih? Tindakan ini tidak bisa dibatalkan.')) return;
+          selected.forEach(function (c) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = c.value;
+            bulkForm.appendChild(input);
+          });
+          bulkForm.submit();
+        });
+      }
+
       document.querySelectorAll('.js-reject-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var note = window.prompt('Catatan revisi untuk wartawan (wajib diisi, jelaskan apa yang perlu diperbaiki):');

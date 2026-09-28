@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AccountController as AdminAccountController;
 use App\Http\Controllers\Admin\AdController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\ArticleTrashController as AdminArticleTrashController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
@@ -108,6 +109,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        // Hapus massal (centang beberapa berita). Harus didaftarkan SEBELUM resource
+        // supaya "bulk-destroy" tidak dianggap sebagai {article}.
+        Route::delete('/articles/bulk-destroy', [AdminArticleController::class, 'bulkDestroy'])
+            ->name('articles.bulk-destroy');
+
+        // Tempat Sampah Berita — HANYA Super Admin (dicek lagi di controller).
+        Route::get('/tempat-sampah', [AdminArticleTrashController::class, 'index'])->name('trash.index');
+        Route::patch('/tempat-sampah/pulihkan', [AdminArticleTrashController::class, 'restore'])->name('trash.restore');
+        Route::delete('/tempat-sampah/hapus-permanen', [AdminArticleTrashController::class, 'forceDelete'])->name('trash.force-delete');
 
         Route::resource('articles', AdminArticleController::class)->except(['show']);
         Route::patch('/articles/{article}/toggle-featured', [AdminArticleController::class, 'toggleFeatured'])

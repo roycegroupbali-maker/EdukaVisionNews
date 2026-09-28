@@ -45,6 +45,18 @@
           @endif
         @endif
       </a>
+      @if($__me->isSuperAdmin())
+        @php $__trashCount = \App\Models\Article::onlyTrashed()->count(); @endphp
+        <a href="{{ route('admin.trash.index') }}" @class(['active' => request()->routeIs('admin.trash.*')]) style="display:flex; align-items:center; justify-content:space-between;">
+          <span style="display:flex; align-items:center; gap:10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+            Tempat Sampah
+          </span>
+          @if($__trashCount > 0)
+            <span class="badge badge-gold" style="font-size:10.5px;">{{ $__trashCount }}</span>
+          @endif
+        </a>
+      @endif
       @if($__me->hasPermission('categories.manage'))
         <a href="{{ route('admin.categories.index') }}" @class(['active' => request()->routeIs('admin.categories.*')])>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h9"/></svg>

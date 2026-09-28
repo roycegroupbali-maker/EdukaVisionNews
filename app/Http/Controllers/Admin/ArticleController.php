@@ -133,13 +133,55 @@ class ArticleController extends Controller
 
         abort_unless($user->hasPermission('articles.delete') || $canDeleteOwn, 403, 'Anda tidak memiliki izin menghapus berita ini.');
 
-        if ($article->image_path) {
-            Storage::disk('public')->delete($article->image_path);
-        }
-
-        $article->delete();
+        // Soft delete: hilang dari web, tapi masuk Tempat Sampah (bisa dipulihkan
+        // Super Admin). File gambar TIDAK dihapus supaya pemulihan utuh.
+        $this->moveToTrash($article, $user->id);
 
         return back()->with('status', 'Berita berhasil dihapus.');
+    }
+
+    /**
+     * Hapus banyak berita sekaligus dari daftar (checkbox). Aturan izinnya
+     * SAMA dengan hapus satuan: pemegang izin "articles.delete" boleh menghapus
+     * berita apa pun; selain itu hanya draf/revisi milik sendiri. Berita yang
+     * tidak boleh dihapus user ini dilewati (tidak ikut terhapus).
+     */
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:100'],
+            'ids.*' => ['integer', 'exists:articles,id'],
+        ], [
+            'ids.required' => 'Pilih minimal satu berita yang ingin dihapus.',
+            'ids.min' => 'Pilih minimal satu berita yang ingin dihapus.',
+        ]);
+
+        $canDeleteAll = $user->hasPermission('articles.delete');
+        $deleted = 0;
+        $skipped = 0;
+
+        foreach (Article::whereIn('id', $data['ids'])->get() as $article) {
+            $canDeleteOwn = $article->author_id === $user->id
+                && in_array($article->status, [Article::STATUS_DRAFT, Article::STATUS_REVISION], true);
+
+            if (! $canDeleteAll && ! $canDeleteOwn) {
+                $skipped++;
+
+                continue;
+            }
+
+            $this->moveToTrash($article, $user->id);
+            $deleted++;
+        }
+
+        $message = "{$deleted} berita berhasil dihapus.";
+        if ($skipped > 0) {
+            $message .= " {$skipped} berita dilewati karena Anda tidak memiliki izin menghapusnya.";
+        }
+
+        return back()->with('status', $message);
     }
 
     /**
@@ -359,13 +401,23 @@ class ArticleController extends Controller
         return $data;
     }
 
+    /**
+     * Pindahkan berita ke Tempat Sampah (soft delete) & catat penghapusnya.
+     */
+    private function moveToTrash(Article $article, int $userId): void
+    {
+        // toBase() supaya updated_at tidak ikut berubah.
+        Article::whereKey($article->id)->toBase()->update(['deleted_by' => $userId]);
+        $article->delete();
+    }
+
     private function uniqueSlug(string $title, ?string $preferred, ?int $ignoreId = null): string
     {
         $base = Str::slug($preferred ?: $title);
         $slug = $base;
         $i = 1;
 
-        while (Article::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+        while (Article::withTrashed()->where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
             $slug = "{$base}-{$i}";
             $i++;
         }

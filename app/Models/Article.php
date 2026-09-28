@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Alur status verifikasi berita:
@@ -108,6 +109,14 @@ class Article extends Model
     public function editor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'editor_id');
+    }
+
+    /**
+     * Akun yang menghapus berita ini (terisi saat masuk tempat sampah).
+     */
+    public function deletedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function scopePublished(Builder $query): Builder

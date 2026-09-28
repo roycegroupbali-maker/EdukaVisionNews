@@ -1,6 +1,11 @@
 <?php
     $me = auth()->user();
     $canPublish = $me->hasPermission('articles.publish');
+    $canDeleteAny = $me->hasPermission('articles.delete');
+    // Berita yang boleh dihapus user ini (sama dengan aturan tombol Hapus per baris).
+    $isDeletable = fn ($a) => $canDeleteAny
+        || ($a->author_id === $me->id && in_array($a->status, [\App\Models\Article::STATUS_DRAFT, \App\Models\Article::STATUS_REVISION], true));
+    $showBulk = $articles->contains(fn ($a) => $isDeletable($a));
 ?>
 
 <?php if (isset($component)) { $__componentOriginale0f1cdd055772eb1d4a99981c240763e = $component; } ?>
@@ -46,11 +51,22 @@
     <?php endif; ?>
   </div>
 
+  <?php if($showBulk): ?>
+    <div id="bulkBar" style="display:none; align-items:center; gap:12px; flex-wrap:wrap; padding:10px 14px; margin-bottom:12px; border-radius:8px; background:rgba(200,60,60,0.08); border:1px solid rgba(200,60,60,0.25);">
+      <span><strong id="bulkCount">0</strong> berita dipilih</span>
+      <button type="button" id="bulkDeleteBtn" class="btn btn-danger btn-sm">Hapus Terpilih</button>
+      <button type="button" id="bulkCancelBtn" class="btn btn-ghost btn-sm">Batal</button>
+    </div>
+  <?php endif; ?>
+
   <div class="panel">
     <div class="table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
+            <?php if($showBulk): ?>
+              <th style="width:36px;"><input type="checkbox" id="checkAll" title="Pilih semua di halaman ini"></th>
+            <?php endif; ?>
             <th></th>
             <th>Judul</th>
             <th>Kategori</th>
@@ -63,6 +79,13 @@
         <tbody>
           <?php $__empty_1 = true; $__currentLoopData = $articles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $article): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <tr>
+              <?php if($showBulk): ?>
+                <td style="width:36px;">
+                  <?php if($isDeletable($article)): ?>
+                    <input type="checkbox" class="row-check" value="<?php echo e($article->id); ?>">
+                  <?php endif; ?>
+                </td>
+              <?php endif; ?>
               <td style="width:52px;">
                 <div style="width:48px; height:36px; border-radius:4px; overflow:hidden; background:var(--paper-alt);">
                   <?php echo $__env->make('partials.art', ['article' => $article, 'viewbox' => '0 0 48 36'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
@@ -123,7 +146,7 @@
               </td>
             </tr>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-            <tr><td colspan="7"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
+            <tr><td colspan="<?php echo e($showBulk ? 8 : 7); ?>"><div class="empty-state"><h3>Belum ada berita</h3><p>Mulai tulis berita pertama sesuai kategori yang diinginkan.</p></div></td></tr>
           <?php endif; ?>
         </tbody>
       </table>
@@ -139,8 +162,58 @@
     <input type="hidden" name="review_note" id="rejectNoteInput">
   </form>
 
+  <?php if($showBulk): ?>
+    <!-- Form tersembunyi untuk hapus massal — id berita yang dicentang diisi lewat JS -->
+    <form method="POST" action="<?php echo e(route('admin.articles.bulk-destroy')); ?>" id="bulkDeleteForm" style="display:none;">
+      <?php echo csrf_field(); ?>
+      <?php echo method_field('DELETE'); ?>
+    </form>
+  <?php endif; ?>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // ----- Hapus massal (centang) -----
+      var bulkForm = document.getElementById('bulkDeleteForm');
+      if (bulkForm) {
+        var checkAll = document.getElementById('checkAll');
+        var bar = document.getElementById('bulkBar');
+        var countEl = document.getElementById('bulkCount');
+        var rows = Array.prototype.slice.call(document.querySelectorAll('.row-check'));
+
+        function refresh() {
+          var n = rows.filter(function (c) { return c.checked; }).length;
+          countEl.textContent = n;
+          bar.style.display = n > 0 ? 'flex' : 'none';
+          checkAll.checked = n > 0 && n === rows.length;
+          checkAll.indeterminate = n > 0 && n < rows.length;
+        }
+
+        checkAll.addEventListener('change', function () {
+          rows.forEach(function (c) { c.checked = checkAll.checked; });
+          refresh();
+        });
+        rows.forEach(function (c) { c.addEventListener('change', refresh); });
+
+        document.getElementById('bulkCancelBtn').addEventListener('click', function () {
+          rows.forEach(function (c) { c.checked = false; });
+          refresh();
+        });
+
+        document.getElementById('bulkDeleteBtn').addEventListener('click', function () {
+          var selected = rows.filter(function (c) { return c.checked; });
+          if (!selected.length) return;
+          if (!window.confirm('Hapus ' + selected.length + ' berita terpilih? Tindakan ini tidak bisa dibatalkan.')) return;
+          selected.forEach(function (c) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = c.value;
+            bulkForm.appendChild(input);
+          });
+          bulkForm.submit();
+        });
+      }
+
       document.querySelectorAll('.js-reject-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var note = window.prompt('Catatan revisi untuk wartawan (wajib diisi, jelaskan apa yang perlu diperbaiki):');
