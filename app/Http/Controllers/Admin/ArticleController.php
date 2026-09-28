@@ -316,14 +316,21 @@ class ArticleController extends Controller
             'image_link' => ['nullable', 'url', 'max:500', 'regex:~^https?://~i'],
             'youtube_url' => ['nullable', 'url', 'max:255', 'regex:~^https?://((www|m|music)\.)?(youtube\.com|youtu\.be)/~i'],
             'tags' => ['nullable', 'string', 'max:500'],
-            'art_color1' => ['required', 'string', 'max:20'],
-            'art_color2' => ['required', 'string', 'max:20'],
-            'art_pattern' => ['required', Rule::in(self::PATTERNS)],
+            // Gambar generatif (warna & pola) tidak lagi diisi lewat form — kartunya
+            // sudah dihapus karena berita memakai upload foto. Aturannya dibuat
+            // 'sometimes' (bukan dihapus) supaya: berita lama tetap memakai nilai
+            // yang sudah tersimpan, berita baru memakai default kolom database
+            // (#14213D / #2a3f75 / wave), dan kalau suatu saat form-nya dikembalikan,
+            // inputnya tetap divalidasi.
+            'art_color1' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'art_color2' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'art_pattern' => ['sometimes', 'nullable', Rule::in(self::PATTERNS)],
             'recipe_minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
             'recipe_servings' => ['nullable', 'integer', 'min:1', 'max:100'],
             'recipe_difficulty' => ['nullable', 'string', 'max:50'],
             'is_featured' => ['nullable', 'boolean'],
             'is_sponsored' => ['nullable', 'boolean'],
+            'comments_enabled' => ['nullable', 'boolean'],
             'published_at' => ['nullable', 'date'],
             'publish_now' => ['nullable', 'boolean'],
             'workflow_action' => ['nullable', 'string', Rule::in(['draft', 'submit', 'publish'])],
@@ -338,6 +345,14 @@ class ArticleController extends Controller
         $data['read_minutes'] = $data['read_minutes'] ?? '' ?: 4;
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_sponsored'] = $request->boolean('is_sponsored');
+        $data['comments_enabled'] = $request->boolean('comments_enabled');
+
+        // Jangan biarkan nilai kosong menimpa warna/pola yang sudah ada.
+        foreach (['art_color1', 'art_color2', 'art_pattern'] as $artKey) {
+            if (array_key_exists($artKey, $data) && ($data[$artKey] === null || $data[$artKey] === '')) {
+                unset($data[$artKey]);
+            }
+        }
 
         unset($data['publish_now'], $data['image'], $data['remove_image'], $data['workflow_action']);
 

@@ -46,6 +46,7 @@ class Role extends Model
             'running_texts.manage' => 'Mengelola running text (teks berjalan)',
             'ads.manage' => 'Mengelola iklan / ads',
             'news_submissions.manage' => 'Mengelola pengajuan berita dari pembaca publik',
+            'comments.manage' => 'Memoderasi komentar pembaca (setujui, sembunyikan, hapus)',
             'stats.view' => 'Melihat & mengekspor laporan statistik',
             'users.manage' => 'Mengaktifkan/menonaktifkan akun & mengatur jabatan pengguna panel',
             'roles.manage' => 'Membuat, mengubah, dan menghapus jabatan beserta hak aksesnya',

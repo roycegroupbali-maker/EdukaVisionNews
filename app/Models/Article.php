@@ -48,6 +48,7 @@ class Article extends Model
         'recipe_minutes', 'recipe_servings', 'recipe_difficulty',
         'is_featured', 'is_sponsored', 'published_at',
         'submitted_at', 'reviewed_at', 'review_note',
+        'comments_enabled',
     ];
 
     protected $casts = [
@@ -56,6 +57,7 @@ class Article extends Model
         'reviewed_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_sponsored' => 'boolean',
+        'comments_enabled' => 'boolean',
     ];
 
     public function category(): BelongsTo
@@ -66,6 +68,29 @@ class Article extends Model
     public function stats(): HasMany
     {
         return $this->hasMany(ArticleStat::class);
+    }
+
+    /**
+     * Semua catatan like (anti-spam) untuk berita ini. Fitur tentative,
+     * lihat config('features.likes_enabled').
+     */
+    public function likesRecords(): HasMany
+    {
+        return $this->hasMany(ArticleLike::class);
+    }
+
+    /** Seluruh komentar (semua status) — dipakai di panel moderasi admin. */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /** Komentar yang sudah disetujui & boleh tampil di halaman publik. */
+    public function approvedComments(): HasMany
+    {
+        return $this->hasMany(Comment::class)
+            ->where('status', Comment::STATUS_APPROVED)
+            ->latest();
     }
 
     /**
@@ -115,6 +140,41 @@ class Article extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Versi HTML aman dari isi berita, siap dirender langsung dengan {!! !!}
+     * di halaman detail. Mendukung dua bentuk data pada kolom `content`:
+     *
+     * 1. Berita lama / belum pernah disunting rich text editor: teks polos,
+     *    paragraf dipisah baris kosong -> tiap paragraf otomatis dibungkus
+     *    <p> dan di-escape (nl2br untuk baris tunggal di dalam paragraf).
+     * 2. Berita baru dari rich text editor (tombol Bold/Italic/Underline):
+     *    kolom sudah berisi HTML minimal (<p>, <strong>, <em>, <u>, dst) ->
+     *    disaring lewat HtmlSanitizer supaya tag/atribut berbahaya apa pun
+     *    tidak pernah bisa lolos ke halaman publik.
+     */
+    public function getContentHtmlAttribute(): string
+    {
+        $raw = (string) $this->content;
+
+        if (trim($raw) === '') {
+            return '';
+        }
+
+        // Heuristik: kalau strip_tags() tidak mengubah apa pun, berarti
+        // kolom ini belum mengandung tag HTML sama sekali -> format lama.
+        $looksLikeHtml = $raw !== strip_tags($raw);
+
+        if (! $looksLikeHtml) {
+            return collect(preg_split("/\r?\n\r?\n/", trim($raw)))
+                ->map(fn ($p) => trim($p))
+                ->filter()
+                ->map(fn ($p) => '<p>'.nl2br(e($p), false).'</p>')
+                ->implode('');
+        }
+
+        return \App\Support\HtmlSanitizer::clean($raw);
     }
 
     /**

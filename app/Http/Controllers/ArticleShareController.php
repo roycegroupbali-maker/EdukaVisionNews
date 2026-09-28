@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ArticleShareController extends Controller
 {
-    private const NETWORKS = ['whatsapp', 'facebook', 'x'];
+    private const NETWORKS = ['whatsapp', 'facebook', 'x', 'telegram'];
 
     /**
      * Hitung share lalu teruskan pembaca ke jaringan sosial yang dipilih.
@@ -29,6 +29,7 @@ class ArticleShareController extends Controller
             'whatsapp' => 'https://wa.me/?text='.rawurlencode($title.' '.$url),
             'facebook' => 'https://www.facebook.com/sharer/sharer.php?u='.rawurlencode($url),
             'x' => 'https://twitter.com/intent/tweet?text='.rawurlencode($title).'&url='.rawurlencode($url),
+            'telegram' => 'https://t.me/share/url?url='.rawurlencode($url).'&text='.rawurlencode($title),
         };
 
         return redirect()->away($target);

@@ -47,9 +47,59 @@
           </div>
 
           <div class="field">
-            <label for="contentInput">Isi Berita</label>
-            <textarea id="contentInput" name="content" required style="min-height:320px;" placeholder="Tulis isi berita di sini. Pisahkan tiap paragraf dengan baris kosong.">{{ old('content', $article->content) }}</textarea>
-            <div class="field-hint">Pisahkan paragraf dengan baris kosong (Enter dua kali) agar tampil rapi di halaman berita.</div>
+            <label for="contentEditor">Isi Berita</label>
+            {{-- Toolbar ringkas bergaya Word: hanya fitur yang relevan untuk menulis
+                 berita. Font/ukuran/warna sengaja TIDAK disediakan supaya tampilan
+                 semua berita tetap seragam mengikuti desain situs. --}}
+            <div class="richtext-toolbar" role="toolbar" aria-label="Format teks isi berita" aria-controls="contentEditor">
+              <div class="richtext-group">
+                <button type="button" class="richtext-btn" data-richtext-cmd="bold" title="Tebal (Ctrl+B)" aria-label="Tebal"><strong>B</strong></button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="italic" title="Miring (Ctrl+I) — cocok untuk istilah asing" aria-label="Miring"><em>I</em></button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="underline" title="Garis bawah (Ctrl+U)" aria-label="Garis bawah"><u>U</u></button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="strikeThrough" title="Coret" aria-label="Coret"><s>abc</s></button>
+              </div>
+              <div class="richtext-group">
+                <button type="button" class="richtext-btn" data-richtext-cmd="insertUnorderedList" title="Daftar berpoin" aria-label="Daftar berpoin">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/><path d="M9 6h12M9 12h12M9 18h12"/></svg>
+                </button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="insertOrderedList" title="Daftar bernomor" aria-label="Daftar bernomor">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 6h11M10 12h11M10 18h11"/><path d="M3.5 4.5 5 4v4M3.5 8h3M3.3 11.5c.7-.9 2.5-.6 2.5.5 0 .9-1.8 1.4-2.5 2h2.7M3.3 16.5h2.5l-1 1.3c.9 0 1.3.5 1.3 1.1 0 .8-.9 1.3-2.5.9"/></svg>
+                </button>
+              </div>
+              <div class="richtext-group">
+                <button type="button" class="richtext-btn" data-richtext-cmd="justifyLeft" title="Rata kiri" aria-label="Rata kiri">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 10h12M3 14h18M3 18h12"/></svg>
+                </button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="justifyCenter" title="Rata tengah" aria-label="Rata tengah">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M6 10h12M3 14h18M6 18h12"/></svg>
+                </button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="justifyRight" title="Rata kanan" aria-label="Rata kanan">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M9 10h12M3 14h18M9 18h12"/></svg>
+                </button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="justifyFull" title="Rata kanan-kiri" aria-label="Rata kanan-kiri">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>
+                </button>
+              </div>
+              <div class="richtext-group">
+                <button type="button" class="richtext-btn" data-richtext-cmd="removeFormat" title="Hapus format teks" aria-label="Hapus format teks">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+                </button>
+              </div>
+              <div class="richtext-group">
+                <button type="button" class="richtext-btn" data-richtext-cmd="undo" title="Urungkan (Ctrl+Z)" aria-label="Urungkan">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+                </button>
+                <button type="button" class="richtext-btn" data-richtext-cmd="redo" title="Ulangi (Ctrl+Y)" aria-label="Ulangi">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+                </button>
+              </div>
+            </div>
+            <div id="contentEditor" class="richtext-editor" contenteditable="true" data-target="contentInput" data-placeholder="Tulis isi berita di sini. Tekan Enter untuk paragraf baru."></div>
+            {{-- Textarea asli TETAP ada (disembunyikan) supaya nama field, validasi,
+                 dan alur simpan di ArticleController tidak berubah sama sekali —
+                 editor di atas hanya sinkron ke sini sebelum form dikirim. --}}
+            <textarea id="contentInput" name="content" required style="display:none;">{{ old('content', $article->content) }}</textarea>
+            <div class="field-hint">Gunakan <strong>B</strong> / <em>I</em> / <u>U</u> untuk menebalkan, memiringkan (mis. istilah bahasa Inggris), atau menggarisbawahi teks. Blok teks dulu, lalu klik tombolnya. Tekan Enter untuk paragraf baru.</div>
             @error('content')<div class="field-error">{{ $message }}</div>@enderror
           </div>
 
@@ -118,6 +168,11 @@
           <div class="field">
             <label for="readMinutes">Estimasi Baca (menit)</label>
             <input type="number" id="readMinutes" name="read_minutes" min="1" max="60" value="{{ old('read_minutes', $article->read_minutes) }}">
+          </div>
+
+          <div class="field checkbox-field">
+            <input type="checkbox" id="commentsEnabled" name="comments_enabled" value="1" @checked(old('comments_enabled', $isEdit ? $article->comments_enabled : true))>
+            <label for="commentsEnabled" style="margin:0;">Izinkan komentar pembaca pada berita ini</label>
           </div>
 
           @if($canPublish)
@@ -202,36 +257,6 @@
           </div>
         </div>
 
-        <div class="form-card">
-          <h3>Gambar Artikel (Generatif) <span style="font-weight:400; font-size:12.5px; color:var(--muted-2);">(dipakai kalau tidak ada foto di atas)</span></h3>
-          <div class="art-preview">
-            <svg id="artPreviewSvg" viewBox="0 0 300 225" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-              <rect width="300" height="225" fill="{{ old('art_color1', $article->art_color1) }}"/>
-            </svg>
-          </div>
-
-          <div class="field">
-            <label>Warna</label>
-            <div class="color-row">
-              <input type="color" id="artColor1" name="art_color1" value="{{ old('art_color1', $article->art_color1) }}">
-              <input type="color" id="artColor2" name="art_color2" value="{{ old('art_color2', $article->art_color2) }}">
-              <span class="field-hint" style="margin:0;">Warna dasar &amp; aksen</span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Pola</label>
-            <div class="pattern-grid">
-              @foreach(['wave' => 'Gelombang', 'circles' => 'Lingkaran', 'triangle' => 'Segitiga', 'grid' => 'Kotak', 'dots' => 'Titik', 'arrow' => 'Panah'] as $val => $label)
-                <label class="pattern-option">
-                  <input type="radio" name="art_pattern" value="{{ $val }}" @checked(old('art_pattern', $article->art_pattern) === $val)>
-                  <span class="pattern-box">{{ $label }}</span>
-                </label>
-              @endforeach
-            </div>
-          </div>
-        </div>
-
         <div class="form-actions">
           <a href="{{ route('admin.articles.index') }}" class="btn btn-ghost">Batal</a>
           @if($canPublish)
@@ -274,6 +299,97 @@
 
       input.addEventListener('input', update);
       update(); // tampilkan preview saat halaman edit dibuka
+    })();
+  </script>
+
+  <script>
+    // Editor Bold/Italic/Underline untuk "Isi Berita". Textarea asli
+    // (#contentInput) TETAP jadi satu-satunya field yang dikirim ke server —
+    // div contenteditable di atasnya hanya UI, disinkronkan ke textarea
+    // setiap kali isinya berubah dan sekali lagi tepat sebelum form disubmit.
+    // Ini sengaja dibuat supaya validasi & alur simpan di ArticleController
+    // tidak perlu diubah sama sekali.
+    (function () {
+      var editor = document.getElementById('contentEditor');
+      var textarea = document.getElementById('contentInput');
+      if (!editor || !textarea) return;
+
+      var toolbar = document.querySelector('.richtext-toolbar[aria-controls="contentEditor"]');
+
+      // Berita lama disimpan sebagai teks polos (paragraf dipisah baris
+      // kosong). Kalau isinya belum pernah disunting lewat editor ini
+      // (belum ada tag HTML sama sekali), ubah dulu jadi <p> per paragraf
+      // supaya nyaman disunting di editor kaya teks ini.
+      function plainTextToHtml(text) {
+        return text
+          .split(/\r?\n\r?\n/)
+          .map(function (p) { return p.trim(); })
+          .filter(Boolean)
+          .map(function (p) {
+            var div = document.createElement('div');
+            div.textContent = p;
+            return '<p>' + div.innerHTML.replace(/\r?\n/g, '<br>') + '</p>';
+          })
+          .join('');
+      }
+
+      var initialValue = textarea.value || '';
+      var looksLikeHtml = /<\/?(p|br|div|strong|b|em|i|u|s|strike|ul|ol|li)[^>]*>/i.test(initialValue);
+      editor.innerHTML = looksLikeHtml ? initialValue : plainTextToHtml(initialValue);
+
+      try {
+        document.execCommand('defaultParagraphSeparator', false, 'p');
+      } catch (e) { /* diamkan kalau browser tidak mendukung */ }
+
+      function sync() {
+        textarea.value = editor.innerHTML;
+      }
+
+      editor.addEventListener('input', sync);
+      editor.addEventListener('blur', sync);
+
+      if (toolbar) {
+        var buttons = toolbar.querySelectorAll('[data-richtext-cmd]');
+
+        buttons.forEach(function (btn) {
+          // mousedown di-cancel supaya klik tombol TIDAK memindahkan fokus
+          // dari editor — kalau fokus pindah, blok teks yang sedang dipilih
+          // hilang dan formatnya tidak akan menempel.
+          btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+
+          btn.addEventListener('click', function () {
+            editor.focus();
+            document.execCommand(btn.getAttribute('data-richtext-cmd'), false, null);
+            sync();
+            refreshActiveState();
+          });
+        });
+
+        // Tombol yang formatnya sedang aktif di posisi kursor/seleksi
+        // (B, I, U, coret, daftar, rata teks) ikut menyala seperti di Word.
+        var stateful = ['bold', 'italic', 'underline', 'strikeThrough',
+          'insertUnorderedList', 'insertOrderedList',
+          'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'];
+
+        function refreshActiveState() {
+          buttons.forEach(function (btn) {
+            var cmd = btn.getAttribute('data-richtext-cmd');
+            if (stateful.indexOf(cmd) === -1) return;
+            var on = false;
+            try { on = document.queryCommandState(cmd); } catch (e) { on = false; }
+            btn.classList.toggle('is-active', on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        }
+
+        document.addEventListener('selectionchange', function () {
+          var sel = window.getSelection();
+          if (sel && sel.anchorNode && editor.contains(sel.anchorNode)) refreshActiveState();
+        });
+      }
+
+      var form = document.getElementById('articleForm');
+      if (form) form.addEventListener('submit', sync);
     })();
   </script>
 

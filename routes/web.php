@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\NewsSubmissionController as AdminNewsSubmissionController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
@@ -13,7 +14,9 @@ use App\Http\Controllers\Admin\RunningTextController as AdminRunningTextControll
 use App\Http\Controllers\Admin\StatReportController as AdminStatReportController;
 use App\Http\Controllers\AdClickController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleLikeController;
 use App\Http\Controllers\ArticleShareController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NewsSubmissionController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SitemapController;
@@ -53,6 +56,18 @@ Route::get('/iklan/{ad}/klik', AdClickController::class)->name('ads.click');
 // Tombol share di halaman berita — hitung share lalu teruskan ke jaringan sosial.
 Route::get('/berita/{article:slug}/bagikan/{platform}', [ArticleShareController::class, 'redirect'])->name('article.share');
 Route::post('/berita/{article:slug}/bagikan-salin', [ArticleShareController::class, 'copy'])->name('article.share.copy');
+
+// Like/unlike berita (fitur tentative, lihat config('features.likes_enabled')).
+// Throttle sebagai lapisan tambahan anti-spam di atas constraint UNIQUE di database.
+Route::post('/berita/{article:slug}/suka', [ArticleLikeController::class, 'toggle'])
+    ->middleware('throttle:20,1')
+    ->name('article.like');
+
+// Kirim komentar baru pada berita — selalu masuk "pending" dulu, tampil
+// setelah disetujui admin/editor. Throttle membatasi spam per IP.
+Route::post('/berita/{article:slug}/komentar', [CommentController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('article.comments.store');
 
 // Form "Ajukan Berita" — menggantikan tombol Berlangganan di halaman utama.
 Route::get('/ajukan-berita', [NewsSubmissionController::class, 'create'])->name('news-submission.create');
@@ -123,6 +138,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/pengajuan-berita/{newsSubmission}', [AdminNewsSubmissionController::class, 'show'])->name('news-submissions.show');
         Route::patch('/pengajuan-berita/{newsSubmission}/status', [AdminNewsSubmissionController::class, 'updateStatus'])->name('news-submissions.update-status');
         Route::delete('/pengajuan-berita/{newsSubmission}', [AdminNewsSubmissionController::class, 'destroy'])->name('news-submissions.destroy');
+
+        // Moderasi komentar pembaca — setujui, sembunyikan, atau hapus.
+        Route::middleware('permission:comments.manage')->group(function () {
+            Route::get('/komentar', [AdminCommentController::class, 'index'])->name('comments.index');
+            Route::patch('/komentar/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+            Route::patch('/komentar/{comment}/hide', [AdminCommentController::class, 'hide'])->name('comments.hide');
+            Route::delete('/komentar/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+        });
 
         // Pengaturan Akun — dikunci lewat konfirmasi ulang kata sandi.
         // Layar "Akses Terbatas" muncul kalau sesi konfirmasi belum ada/sudah kedaluwarsa.

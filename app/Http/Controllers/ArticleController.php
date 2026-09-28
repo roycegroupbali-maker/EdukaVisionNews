@@ -82,7 +82,7 @@ class ArticleController extends Controller
 
         $article->increment('views');
         ArticleStat::hit($article->id, 'views');
-        $article->load('category');
+        $article->load(['category', 'approvedComments']);
 
         $related = Article::published()
             ->with('category')

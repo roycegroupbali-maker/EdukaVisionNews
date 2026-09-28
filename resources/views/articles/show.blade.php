@@ -90,10 +90,27 @@
       <a class="share-btn share-x" href="{{ route('article.share', [$article->slug, 'x']) }}" target="_blank" rel="noopener" aria-label="Bagikan ke X">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M13.6 10.6 21 2h-2l-6.4 7.3L7.6 2H2l7.8 11.2L2 22h2l6.8-7.7L16.4 22H22l-8.4-11.4Zm-2.4 2.7-.8-1.1L4 3.5h2.6l5 7.2.8 1.1 6.9 9.7h-2.6l-5.5-7.2Z"/></svg>
       </a>
+      <a class="share-btn share-telegram" href="{{ route('article.share', [$article->slug, 'telegram']) }}" target="_blank" rel="noopener" aria-label="Bagikan ke Telegram">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21.9 4.3 18.7 19.8c-.24 1.1-.87 1.36-1.76.85l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.98 9.06-8.19c.4-.35-.08-.55-.6-.2L6.2 12.8l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.6 2.94c.89-.33 1.66.2 1.3 1.36Z"/></svg>
+      </a>
       <button type="button" class="share-btn share-copy" data-copy-btn aria-label="Salin tautan berita">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         <span class="share-copy-label">Salin Tautan</span>
       </button>
+
+      @if(config('features.likes_enabled'))
+        <button type="button"
+                class="share-btn like-btn"
+                id="likeBtn"
+                data-like-url="{{ route('article.like', $article->slug) }}"
+                data-article-slug="{{ $article->slug }}"
+                aria-pressed="false"
+                aria-label="Suka berita ini"
+                style="width:auto; padding:0 14px; border-radius:100px; gap:6px;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14Z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          <span id="likeCount">{{ number_format($article->likes) }}</span>
+        </button>
+      @endif
     </div>
 
     {{-- Gambar utama. Jika image_link diisi, gambar bisa diklik dan membuka tautan di tab baru. --}}
@@ -118,10 +135,12 @@
       </p>
     @endif
 
+    {{-- content_html sudah disaring lewat App\Support\HtmlSanitizer (whitelist
+         tag p/br/strong/b/em/i/u/ul/ol/li, semua atribut dibuang) — aman
+         dirender langsung. Mendukung berita lama (teks polos) maupun berita
+         baru yang disunting lewat rich text editor Bold/Italic/Underline. --}}
     <div class="article-body" style="font-family:'Fraunces', serif; font-size:18px; line-height:1.8; color:var(--ink,#1a1a1a);">
-      @foreach($article->paragraphs as $p)
-        <p style="margin-bottom:20px;">{{ $p }}</p>
-      @endforeach
+      {!! $article->content_html !!}
     </div>
 
     {{-- Video YouTube. Awalnya hanya thumbnail + tombol play (ringan); pemutar YouTube baru dimuat saat diklik. --}}
@@ -196,6 +215,64 @@
       @foreach($related as $r)
         @include('partials.card', ['article' => $r])
       @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+{{-- Komentar sengaja diletakkan paling bawah (setelah "Artikel Terkait"),
+     mengikuti pola umum portal berita (detik.com, dst): isi berita → tag →
+     artikel terkait → komentar → footer. --}}
+@if(config('features.comments_enabled') && $article->comments_enabled)
+<section class="section-band" id="komentar">
+  <div class="wrap" style="max-width:760px;">
+    <div class="section-head">
+      <h2 class="section-title"><span class="bar"></span> Komentar ({{ number_format($article->approvedComments->count()) }})</h2>
+    </div>
+
+    @if(session('status'))
+      <div class="comment-flash">{{ session('status') }}</div>
+    @endif
+
+    <form method="POST" action="{{ route('article.comments.store', $article->slug) }}" class="comment-form">
+      @csrf
+      {{-- Honeypot anti-spam: disembunyikan dari manusia lewat CSS (lihat
+           .comment-honeypot), bot pengisi form otomatis biasanya tetap
+           mengisi field ini walau tersembunyi. --}}
+      <div class="comment-honeypot" aria-hidden="true">
+        <label for="commentWebsite">Website</label>
+        <input type="text" id="commentWebsite" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="comment-row">
+        <div class="comment-field">
+          <label for="commentName">Nama</label>
+          <input type="text" id="commentName" name="name" required maxlength="100" value="{{ old('name') }}" placeholder="Nama kamu">
+          @error('name')<div class="comment-field-error">{{ $message }}</div>@enderror
+        </div>
+        <div class="comment-field">
+          <label for="commentBody">Komentar</label>
+          <textarea id="commentBody" name="body" required minlength="3" maxlength="2000" placeholder="Tulis komentar kamu…">{{ old('body') }}</textarea>
+          @error('body')<div class="comment-field-error">{{ $message }}</div>@enderror
+        </div>
+      </div>
+
+      <button type="submit" class="comment-submit-btn">Kirim Komentar</button>
+      <p class="comment-note">Komentar akan tampil setelah disetujui moderator.</p>
+    </form>
+
+    <div class="comment-list">
+      @forelse($article->approvedComments as $comment)
+        <div class="comment-item">
+          <div class="comment-meta">
+            <span class="comment-name">{{ $comment->name }}</span>
+            <span class="comment-date">{{ $comment->created_at->translatedFormat('d F Y, H:i') }}</span>
+          </div>
+          <p class="comment-body">{{ $comment->body }}</p>
+        </div>
+      @empty
+        <p class="comment-empty">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+      @endforelse
     </div>
   </div>
 </section>

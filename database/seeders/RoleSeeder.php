@@ -38,6 +38,7 @@ class RoleSeeder extends Seeder
                     'categories.manage',
                     'running_texts.manage',
                     'news_submissions.manage',
+                    'comments.manage',
                     'stats.view',
                 ],
                 'is_system' => true,

@@ -45,6 +45,19 @@
         </div>
       </div>
     @endif
+    @if(auth()->user()->hasPermission('comments.manage'))
+      <div class="stat-card">
+        <div class="stat-label">Komentar Menunggu Moderasi</div>
+        <div class="stat-value">{{ $pendingComments }}</div>
+        <div class="stat-note">
+          @if($pendingComments > 0)
+            <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}">Moderasi sekarang &rarr;</a>
+          @else
+            Tidak ada komentar menunggu
+          @endif
+        </div>
+      </div>
+    @endif
   </div>
 
   <div class="panel" style="margin-bottom:22px;">

@@ -20,6 +20,7 @@ import {
 } from './modules/misc-widgets.js';
 import { initAccessibilityWidget } from './modules/accessibility.js';
 import { initArticleShare } from './modules/article-share.js';
+import { initArticleLike } from './modules/article-like.js';
 
 function initSite() {
   initReadingProgress();
@@ -35,6 +36,7 @@ function initSite() {
   initMobileAdDismiss();
   initAccessibilityWidget();
   initArticleShare();
+  initArticleLike();
 }
 
 if (document.readyState === 'loading') {

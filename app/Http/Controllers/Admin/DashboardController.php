@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ad;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\NewsSubmission;
 use Illuminate\View\View;
 
@@ -20,6 +21,7 @@ class DashboardController extends Controller
         $totalAds = Ad::count();
         $activeAds = Ad::active()->count();
         $pendingSubmissions = NewsSubmission::status(NewsSubmission::STATUS_PENDING)->count();
+        $pendingComments = Comment::status(Comment::STATUS_PENDING)->count();
 
         $articlesPerCategory = Category::withCount('articles')
             ->withSum('articles', 'views')
@@ -44,7 +46,7 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact(
             'totalArticles', 'publishedArticles', 'draftArticles', 'pendingReview',
-            'totalAds', 'activeAds', 'pendingSubmissions', 'articlesPerCategory',
+            'totalAds', 'activeAds', 'pendingSubmissions', 'pendingComments', 'articlesPerCategory',
             'latestArticles', 'mostViewed', 'mostShared'
         ));
     }
