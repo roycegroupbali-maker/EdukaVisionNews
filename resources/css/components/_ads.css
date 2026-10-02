@@ -118,3 +118,34 @@
     padding-top:18px; margin-top:18px; border-top:1px solid rgba(251,248,243,0.08);
   }
 
+
+  /* ===== BINGKAI GAMBAR IKLAN =====
+     Bingkai mengikuti rasio slot; gambar diatur lewat object-fit, object-position
+     dan scale (diisi dari pengaturan di admin: mode, titik fokus, zoom). */
+  .ad-leaderboard.has-image,
+  .ad-midpage.has-image,
+  .ad-rect.has-image{
+    background:none; border:none; padding:0; min-height:0; align-items:stretch; gap:6px;
+  }
+  .ad-leaderboard.has-image{ margin-top:22px; }
+  .ad-midpage.has-image{ margin:8px 0 56px; }
+  .ad-rect.has-image{ min-height:0; }
+  .ad-leaderboard.has-image .ad-eyebrow,
+  .ad-midpage.has-image .ad-eyebrow,
+  .ad-rect.has-image .ad-eyebrow{ justify-content:flex-start; }
+
+  .ad-frame{
+    position:relative; display:block; width:100%; overflow:hidden;
+    border-radius:6px; background:#e9ecf0;
+    aspect-ratio:var(--ad-ratio, 970 / 90);
+  }
+  .ad-frame > img{
+    position:absolute; inset:0; width:100%; height:100%; display:block;
+    border-radius:0; margin:0;
+  }
+  .ad-leaderboard.has-image .ad-frame{ max-width:970px; margin-inline:auto; }
+  .ad-midpage.has-image .ad-frame{ max-width:728px; margin-inline:auto; }
+  .ad-rect.has-image .ad-frame{ max-width:300px; margin-inline:auto; }
+  @media (max-width:700px){
+    .ad-frame{ aspect-ratio:var(--ad-ratio-m, var(--ad-ratio, 970 / 90)); }
+  }

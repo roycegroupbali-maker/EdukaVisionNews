@@ -22,8 +22,22 @@ class Ad extends Model
         'mobile_bar' => 'Sticky Bar Mobile',
     ];
 
+    /** Rasio bingkai tiap slot (lebar/tinggi) — dipakai halaman publik & editor di admin. */
+    public const SLOT_RATIOS = [
+        'leaderboard' => ['desktop' => '970 / 90', 'mobile' => '4 / 1'],
+        'rectangle' => ['desktop' => '300 / 600', 'mobile' => '300 / 600'],
+        'midpage' => ['desktop' => '728 / 250', 'mobile' => '16 / 7'],
+        'mobile_bar' => ['desktop' => '320 / 50', 'mobile' => '320 / 50'],
+    ];
+
+    public const FITS = [
+        'cover' => 'Isi penuh bingkai (sisi berlebih dipotong)',
+        'contain' => 'Tampilkan gambar utuh (bisa ada ruang kosong)',
+        'fill' => 'Regangkan mengikuti bingkai',
+    ];
+
     protected $fillable = [
-        'title', 'slot', 'image_path', 'target_url', 'cta_text', 'advertiser',
+        'title', 'slot', 'image_path', 'fit', 'pos_x', 'pos_y', 'zoom', 'target_url', 'cta_text', 'advertiser',
         'is_active', 'starts_at', 'ends_at', 'sort_order', 'impressions', 'clicks',
     ];
 
@@ -52,6 +66,17 @@ class Ad extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
+    }
+
+    /** CSS untuk <img> di dalam bingkai iklan: mode fit, titik fokus, dan zoom. */
+    public function getImageStyleAttribute(): string
+    {
+        $fit = array_key_exists($this->fit, self::FITS) ? $this->fit : 'cover';
+        $x = max(0, min(100, (int) ($this->pos_x ?? 50)));
+        $y = max(0, min(100, (int) ($this->pos_y ?? 50)));
+        $zoom = max(100, min(300, (int) ($this->zoom ?? 100))) / 100;
+
+        return "object-fit:{$fit};object-position:{$x}% {$y}%;transform-origin:{$x}% {$y}%;transform:scale({$zoom});";
     }
 
     public function getSlotLabelAttribute(): string

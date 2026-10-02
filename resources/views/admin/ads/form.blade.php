@@ -16,14 +16,53 @@
 
           <div class="field">
             <label for="adImageInput">Gambar Iklan</label>
-            @if($isEdit && $ad->image_path)
-              <img id="adImagePreview" src="{{ $ad->image_url }}" alt="{{ $ad->title }}" class="ad-image-preview">
-            @else
-              <img id="adImagePreview" src="" alt="" class="ad-image-preview" style="display:none;">
-            @endif
             <input type="file" id="adImageInput" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
-            <div class="field-hint">Format JPG/PNG/WEBP/GIF, maksimal 4MB. {{ $isEdit ? 'Kosongkan jika tidak ingin mengganti gambar.' : '' }} Rasio disarankan mengikuti ukuran slot yang dipilih.</div>
+            <div class="field-hint">Format JPG/PNG/WEBP/GIF, maksimal 20MB. {{ $isEdit ? 'Kosongkan jika tidak ingin mengganti gambar.' : '' }}</div>
             @error('image')<div class="field-error">{{ $message }}</div>@enderror
+          </div>
+
+          {{-- Editor posisi gambar: bingkai pratinjau memakai rasio slot yang sama dengan halaman publik. --}}
+          @php
+            $fitVal = old('fit', $ad->fit ?: 'cover');
+            $xVal = (int) old('pos_x', $ad->pos_x ?? 50);
+            $yVal = (int) old('pos_y', $ad->pos_y ?? 50);
+            $zVal = (int) old('zoom', $ad->zoom ?? 100);
+          @endphp
+          <div class="field">
+            <label>Atur Tampilan Gambar</label>
+            <div class="ad-editor" id="adEditor" data-ratios='@json(\App\Models\Ad::SLOT_RATIOS)'>
+              <div class="ad-editor-frame" id="adEditorFrame" style="--ad-ratio: 970 / 90;">
+                <img id="adImagePreview" src="{{ $isEdit && $ad->image_path ? $ad->image_url : '' }}" alt="{{ $ad->title }}" draggable="false" style="{{ $isEdit && $ad->image_path ? '' : 'display:none;' }}">
+                <span class="ad-editor-empty" id="adEditorEmpty" @if($isEdit && $ad->image_path) style="display:none;" @endif>Pilih gambar untuk melihat pratinjau</span>
+              </div>
+              <div class="field-hint">Tarik (drag) gambar di dalam bingkai untuk menggeser posisinya. Bingkai mengikuti ukuran slot yang dipilih.</div>
+
+              <div class="ad-editor-controls">
+                <div class="field">
+                  <label for="adFit">Cara gambar mengisi bingkai</label>
+                  <select id="adFit" name="fit">
+                    @foreach(\App\Models\Ad::FITS as $k => $label)
+                      <option value="{{ $k }}" @selected($fitVal === $k)>{{ $label }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="adZoom">Zoom: <span id="adZoomVal">{{ $zVal }}</span>%</label>
+                  <input type="range" id="adZoom" name="zoom" min="100" max="300" step="5" value="{{ $zVal }}">
+                </div>
+                <div class="field">
+                  <label for="adPosX">Posisi kiri–kanan: <span id="adPosXVal">{{ $xVal }}</span>%</label>
+                  <input type="range" id="adPosX" name="pos_x" min="0" max="100" value="{{ $xVal }}">
+                </div>
+                <div class="field">
+                  <label for="adPosY">Posisi atas–bawah: <span id="adPosYVal">{{ $yVal }}</span>%</label>
+                  <input type="range" id="adPosY" name="pos_y" min="0" max="100" value="{{ $yVal }}">
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost" id="adEditorReset">Reset ke tengah</button>
+            </div>
+            @error('fit')<div class="field-error">{{ $message }}</div>@enderror
+            @error('zoom')<div class="field-error">{{ $message }}</div>@enderror
           </div>
 
           <div class="field">
@@ -98,5 +137,73 @@
       </div>
     </div>
   </form>
+
+  <script>
+  (function () {
+    var editor = document.getElementById('adEditor');
+    if (!editor) return;
+    var ratios = JSON.parse(editor.getAttribute('data-ratios'));
+    var frame = document.getElementById('adEditorFrame');
+    var img = document.getElementById('adImagePreview');
+    var empty = document.getElementById('adEditorEmpty');
+    var slot = document.getElementById('adSlot');
+    var fit = document.getElementById('adFit');
+    var zoom = document.getElementById('adZoom');
+    var px = document.getElementById('adPosX');
+    var py = document.getElementById('adPosY');
+    var labels = { zoom: document.getElementById('adZoomVal'), x: document.getElementById('adPosXVal'), y: document.getElementById('adPosYVal') };
+
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function apply() {
+      var x = +px.value, y = +py.value, z = +zoom.value / 100;
+      img.style.objectFit = fit.value;
+      img.style.objectPosition = x + '% ' + y + '%';
+      img.style.transformOrigin = x + '% ' + y + '%';
+      img.style.transform = 'scale(' + z + ')';
+      labels.zoom.textContent = zoom.value;
+      labels.x.textContent = x;
+      labels.y.textContent = y;
+      var has = img.getAttribute('src');
+      empty.style.display = has ? 'none' : '';
+    }
+
+    function applyRatio() {
+      var r = ratios[slot.value] || ratios.leaderboard;
+      frame.style.setProperty('--ad-ratio', r.desktop);
+    }
+
+    [fit, zoom, px, py].forEach(function (el) { el.addEventListener('input', apply); });
+    slot.addEventListener('change', applyRatio);
+    document.getElementById('adImageInput').addEventListener('change', function () { setTimeout(apply, 50); });
+
+    document.getElementById('adEditorReset').addEventListener('click', function () {
+      px.value = 50; py.value = 50; zoom.value = 100; fit.value = 'cover'; apply();
+    });
+
+    // Tarik gambar untuk menggeser titik fokus
+    var drag = null;
+    frame.addEventListener('pointerdown', function (e) {
+      if (!img.getAttribute('src')) return;
+      drag = { x: e.clientX, y: e.clientY, px: +px.value, py: +py.value };
+      frame.setPointerCapture(e.pointerId);
+      frame.classList.add('dragging');
+    });
+    frame.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var rect = frame.getBoundingClientRect();
+      // Tarik ke kanan = bagian kiri gambar terlihat (nilai % turun), seperti menggeser kertas.
+      px.value = clamp(Math.round(drag.px - (e.clientX - drag.x) / rect.width * 100), 0, 100);
+      py.value = clamp(Math.round(drag.py - (e.clientY - drag.y) / rect.height * 100), 0, 100);
+      apply();
+    });
+    function end() { drag = null; frame.classList.remove('dragging'); }
+    frame.addEventListener('pointerup', end);
+    frame.addEventListener('pointercancel', end);
+
+    applyRatio();
+    apply();
+  })();
+  </script>
 
 </x-admin-layout>

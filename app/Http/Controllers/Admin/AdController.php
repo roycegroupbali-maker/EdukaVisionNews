@@ -81,6 +81,10 @@ class AdController extends Controller
             'title' => ['required', 'string', 'max:150'],
             'slot' => ['required', 'string', 'in:'.implode(',', array_keys(Ad::SLOTS))],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:20480'],
+            'fit' => ['nullable', 'in:'.implode(',', array_keys(Ad::FITS))],
+            'pos_x' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'pos_y' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'zoom' => ['nullable', 'integer', 'min:100', 'max:300'],
             'target_url' => ['nullable', 'url', 'max:255'],
             'cta_text' => ['nullable', 'string', 'max:50'],
             'advertiser' => ['nullable', 'string', 'max:150'],
@@ -93,6 +97,10 @@ class AdController extends Controller
         unset($data['image']);
         $data['is_active'] = $request->boolean('is_active');
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['fit'] = $data['fit'] ?? 'cover';
+        $data['pos_x'] = $data['pos_x'] ?? 50;
+        $data['pos_y'] = $data['pos_y'] ?? 50;
+        $data['zoom'] = $data['zoom'] ?? 100;
 
         return $data;
     }

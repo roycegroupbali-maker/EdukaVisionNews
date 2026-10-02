@@ -42,7 +42,7 @@ class Article extends Model
 
     protected $fillable = [
         'category_id', 'title', 'slug', 'subcategory', 'excerpt', 'content',
-        'author', 'author_id', 'editor_id', 'status',
+        'author', 'author_id', 'editor_id', 'editor_name', 'status',
         'read_minutes', 'views', 'shares', 'art_color1', 'art_color2', 'art_pattern',
         'image_path', 'image_caption', 'image_source', 'image_alt', 'tags',
         'youtube_url', 'image_link',
@@ -253,5 +253,35 @@ class Article extends Model
             ->unique()
             ->values()
             ->all();
+    }
+
+    /**
+     * Nama reporter untuk byline: isian "Reporter" di form, atau nama akun
+     * penulis kalau kosong.
+     */
+    public function getReporterNameAttribute(): string
+    {
+        return $this->author ?: ($this->authorUser?->name ?: 'Redaksi EdukaVisionNews');
+    }
+
+    /**
+     * Nama editor untuk byline: isian "Editor" di form, atau nama akun editor
+     * yang menyetujui. Null kalau belum ada editor sama sekali.
+     */
+    public function getEditorDisplayNameAttribute(): ?string
+    {
+        return $this->editor_name ?: $this->editor?->name;
+    }
+
+    /** Tanggal gaya tvOne: "Jumat, 2 Oktober 2026 - 00:01 WIB". */
+    public function getBylineDateAttribute(): string
+    {
+        $date = $this->published_at;
+
+        if (! $date) {
+            return '';
+        }
+
+        return $date->copy()->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, j F Y - H:i').' WIB';
     }
 }

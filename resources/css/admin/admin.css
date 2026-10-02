@@ -402,3 +402,15 @@ table.admin-table tfoot td{ border-bottom:none; border-top:1.5px solid var(--pap
   .filter-bar{ gap:8px; }
   .filter-bar input[type="text"]{ min-width:0; flex:1 1 160px; }
 }
+/* Editor posisi gambar iklan */
+.ad-editor-frame{
+  position:relative; width:100%; overflow:hidden; border-radius:8px;
+  border:1px dashed var(--paper-line); background:var(--paper-alt);
+  aspect-ratio:var(--ad-ratio, 970 / 90); cursor:grab; touch-action:none; user-select:none;
+}
+.ad-editor-frame.dragging{ cursor:grabbing; }
+.ad-editor-frame > img{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.ad-editor-empty{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--muted-2); padding:8px; text-align:center; }
+.ad-editor-controls{ display:grid; grid-template-columns:1fr 1fr; gap:4px 16px; margin-top:12px; }
+.ad-editor-controls input[type=range]{ width:100%; }
+@media (max-width:700px){ .ad-editor-controls{ grid-template-columns:1fr; } }

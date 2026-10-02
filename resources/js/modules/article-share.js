@@ -51,7 +51,7 @@ export function initArticleShare() {
       });
       const data = await res.json();
       if (data && typeof data.shares === 'number' && shareCountEl) {
-        shareCountEl.textContent = data.shares.toLocaleString('id-ID') + ' DIBAGIKAN';
+        shareCountEl.textContent = data.shares.toLocaleString('id-ID') + ' dibagikan';
       }
     } catch (err) {
       // Diamkan saja kalau gagal — menyalin tautan tetap berhasil untuk pengguna.

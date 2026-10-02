@@ -9,7 +9,7 @@
     'ogType' => 'article',
     'ogImage' => $articleImage,
     'ogImageAlt' => $article->image_alt ?? $article->title,
-    'ogAuthor' => $article->author,
+    'ogAuthor' => $article->reporter_name,
     'ogPublishedTime' => $article->published_at?->toIso8601String(),
     'ogModifiedTime' => $article->updated_at?->toIso8601String(),
     'ogSection' => $article->category->name,
@@ -34,7 +34,7 @@
     'inLanguage' => 'id-ID',
     'author' => [
         '@type' => 'Person',
-        'name' => $article->author,
+        'name' => $article->reporter_name,
     ],
     'publisher' => [
         '@type' => 'Organization',
@@ -67,16 +67,22 @@
     <h1 class="display" style="font-size:clamp(28px,4vw,44px); line-height:1.15; margin:14px 0 12px;">{{ $article->title }}</h1>
     <p class="feature-dek" style="font-size:18px; margin-bottom:16px;">{{ $article->excerpt }}</p>
 
-    <div class="byline" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:18px;">
-      <span>{{ strtoupper($article->author) }}</span>
-      <span>·</span>
-      <span>{{ $article->readable_date }}</span>
-      <span>·</span>
-      <span>{{ $article->read_minutes }} MENIT BACA</span>
-      <span>·</span>
-      <span>{{ number_format($article->views) }} DIBACA</span>
-      <span>·</span>
-      <span id="shareCount">{{ number_format($article->shares) }} DIBAGIKAN</span>
+    {{-- Byline gaya tvOne: Reporter & Editor, lalu tanggal, lalu statistik --}}
+    <div class="article-byline">
+      <div class="byline-people">
+        <span class="byline-item"><span class="byline-label">Reporter :</span> <strong>{{ $article->reporter_name }}</strong></span>
+        @if($article->editor_display_name)
+          <span class="byline-item"><span class="byline-label">Editor :</span> <strong>{{ $article->editor_display_name }}</strong></span>
+        @endif
+      </div>
+      <div class="byline-date">{{ $article->byline_date }}</div>
+      <div class="byline-stats">
+        <span>{{ $article->read_minutes }} menit baca</span>
+        <span>·</span>
+        <span>{{ number_format($article->views) }} dibaca</span>
+        <span>·</span>
+        <span id="shareCount">{{ number_format($article->shares) }} dibagikan</span>
+      </div>
     </div>
 
     <div class="share-row" data-article-slug="{{ $article->slug }}" data-copy-url="{{ route('article.share.copy', $article->slug) }}" data-article-url="{{ route('article.show', $article->slug) }}">

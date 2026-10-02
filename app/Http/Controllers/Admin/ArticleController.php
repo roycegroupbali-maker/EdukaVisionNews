@@ -349,6 +349,7 @@ class ArticleController extends Controller
             'excerpt' => ['required', 'string', 'max:500'],
             'content' => ['required', 'string'],
             'author' => ['nullable', 'string', 'max:100'],
+            'editor_name' => ['nullable', 'string', 'max:100'],
             'read_minutes' => ['nullable', 'integer', 'min:1', 'max:60'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:8192'],
             'remove_image' => ['nullable', 'boolean'],
@@ -384,6 +385,7 @@ class ArticleController extends Controller
         ]);
 
         $data['author'] = $data['author'] ?? '' ?: 'Redaksi EdukaVisionNews';
+        $data['editor_name'] = trim((string) ($data['editor_name'] ?? '')) ?: null;
         $data['read_minutes'] = $data['read_minutes'] ?? '' ?: 4;
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_sponsored'] = $request->boolean('is_sponsored');

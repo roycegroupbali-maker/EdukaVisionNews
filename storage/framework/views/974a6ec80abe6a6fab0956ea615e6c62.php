@@ -1,26 +1,36 @@
-@php
+<?php
     $isEdit = $isEdit ?? false;
     $action = $isEdit ? route('admin.articles.update', $article) : route('admin.articles.store');
     $me = auth()->user();
     $canPublish = $me->hasPermission('articles.publish');
-@endphp
+?>
 
-<x-admin-layout :page-title="$isEdit ? 'Edit Berita' : 'Tulis Berita Baru'" :page-subtitle="'Pilih kategori lalu isi konten beritanya'">
+<?php if (isset($component)) { $__componentOriginale0f1cdd055772eb1d4a99981c240763e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale0f1cdd055772eb1d4a99981c240763e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin-layout','data' => ['pageTitle' => $isEdit ? 'Edit Berita' : 'Tulis Berita Baru','pageSubtitle' => 'Pilih kategori lalu isi konten beritanya']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('admin-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['page-title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isEdit ? 'Edit Berita' : 'Tulis Berita Baru'),'page-subtitle' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('Pilih kategori lalu isi konten beritanya')]); ?>
 
-  @if($isEdit && $article->status === \App\Models\Article::STATUS_REVISION && $article->review_note)
+  <?php if($isEdit && $article->status === \App\Models\Article::STATUS_REVISION && $article->review_note): ?>
     <div class="admin-flash error">
-      <strong>Catatan revisi dari editor:</strong> {{ $article->review_note }}
+      <strong>Catatan revisi dari editor:</strong> <?php echo e($article->review_note); ?>
+
     </div>
-  @endif
-  @if($isEdit && $article->status === \App\Models\Article::STATUS_PENDING)
+  <?php endif; ?>
+  <?php if($isEdit && $article->status === \App\Models\Article::STATUS_PENDING): ?>
     <div class="admin-flash" style="background:rgba(27,75,67,0.10); color:var(--teal); border-color:rgba(27,75,67,0.25);">
       Berita ini sedang <strong>menunggu tinjauan editor</strong>. Anda masih bisa mengubahnya, tapi tidak perlu mengajukan ulang kecuali diminta.
     </div>
-  @endif
+  <?php endif; ?>
 
-  <form method="POST" action="{{ $action }}" enctype="multipart/form-data" id="articleForm">
-    @csrf
-    @if($isEdit) @method('PUT') @endif
+  <form method="POST" action="<?php echo e($action); ?>" enctype="multipart/form-data" id="articleForm">
+    <?php echo csrf_field(); ?>
+    <?php if($isEdit): ?> <?php echo method_field('PUT'); ?> <?php endif; ?>
     <input type="hidden" name="workflow_action" id="workflowAction" value="draft">
 
     <div class="form-grid">
@@ -30,27 +40,46 @@
 
           <div class="field">
             <label for="titleInput">Judul Berita</label>
-            <input type="text" id="titleInput" name="title" value="{{ old('title', $article->title) }}" required maxlength="255" placeholder="Judul berita yang menarik…">
-            @error('title')<div class="field-error">{{ $message }}</div>@enderror
+            <input type="text" id="titleInput" name="title" value="<?php echo e(old('title', $article->title)); ?>" required maxlength="255" placeholder="Judul berita yang menarik…">
+            <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="slugInput">Slug URL <span style="font-weight:400; color:var(--muted-2);">(opsional, otomatis dari judul)</span></label>
-            <input type="text" id="slugInput" name="slug" value="{{ old('slug', $article->slug) }}" maxlength="255" placeholder="judul-berita-otomatis">
-            @error('slug')<div class="field-error">{{ $message }}</div>@enderror
+            <input type="text" id="slugInput" name="slug" value="<?php echo e(old('slug', $article->slug)); ?>" maxlength="255" placeholder="judul-berita-otomatis">
+            <?php $__errorArgs = ['slug'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="excerptInput">Ringkasan / Excerpt</label>
-            <textarea id="excerptInput" name="excerpt" required maxlength="500" style="min-height:80px;" placeholder="Ringkasan singkat yang tampil di daftar berita…">{{ old('excerpt', $article->excerpt) }}</textarea>
-            @error('excerpt')<div class="field-error">{{ $message }}</div>@enderror
+            <textarea id="excerptInput" name="excerpt" required maxlength="500" style="min-height:80px;" placeholder="Ringkasan singkat yang tampil di daftar berita…"><?php echo e(old('excerpt', $article->excerpt)); ?></textarea>
+            <?php $__errorArgs = ['excerpt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="contentEditor">Isi Berita</label>
-            {{-- Toolbar ringkas bergaya Word: hanya fitur yang relevan untuk menulis
-                 berita. Font/ukuran/warna sengaja TIDAK disediakan supaya tampilan
-                 semua berita tetap seragam mengikuti desain situs. --}}
+            
             <div class="richtext-toolbar" role="toolbar" aria-label="Format teks isi berita" aria-controls="contentEditor">
               <div class="richtext-group">
                 <button type="button" class="richtext-btn" data-richtext-cmd="bold" title="Tebal (Ctrl+B)" aria-label="Tebal"><strong>B</strong></button>
@@ -95,17 +124,22 @@
               </div>
             </div>
             <div id="contentEditor" class="richtext-editor" contenteditable="true" data-target="contentInput" data-placeholder="Tulis isi berita di sini. Tekan Enter untuk paragraf baru."></div>
-            {{-- Textarea asli TETAP ada (disembunyikan) supaya nama field, validasi,
-                 dan alur simpan di ArticleController tidak berubah sama sekali —
-                 editor di atas hanya sinkron ke sini sebelum form dikirim. --}}
-            <textarea id="contentInput" name="content" required style="display:none;">{{ old('content', $article->content) }}</textarea>
+            
+            <textarea id="contentInput" name="content" required style="display:none;"><?php echo e(old('content', $article->content)); ?></textarea>
             <div class="field-hint">Gunakan <strong>B</strong> / <em>I</em> / <u>U</u> untuk menebalkan, memiringkan (mis. istilah bahasa Inggris), atau menggarisbawahi teks. Blok teks dulu, lalu klik tombolnya. Tekan Enter untuk paragraf baru.</div>
-            @error('content')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['content'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="youtubeUrl">Video YouTube <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
-            <input type="url" id="youtubeUrl" name="youtube_url" maxlength="255" value="{{ old('youtube_url', $article->youtube_url) }}" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx">
+            <input type="url" id="youtubeUrl" name="youtube_url" maxlength="255" value="<?php echo e(old('youtube_url', $article->youtube_url)); ?>" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx">
             <div class="field-hint">Video akan disematkan (embed) di bawah isi berita. Mendukung link youtube.com/watch, youtu.be, dan Shorts.</div>
             <div id="ytPreview" style="display:none; margin-top:10px;">
               <div style="position:relative; aspect-ratio:16/9; max-width:320px; border-radius:8px; overflow:hidden; background:#000;">
@@ -117,7 +151,14 @@
               <div class="field-hint" style="margin-top:6px;">Preview thumbnail video. Jika tidak ada foto berita, thumbnail ini juga dipakai sebagai gambar utama dan gambar di daftar berita.</div>
             </div>
             <div id="ytPreviewError" class="field-error" style="display:none;">Link ini belum dikenali sebagai video YouTube. Pastikan formatnya youtube.com/watch?v=…, youtu.be/…, atau youtube.com/shorts/…</div>
-            @error('youtube_url')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['youtube_url'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
         </div>
 
@@ -126,16 +167,16 @@
           <div class="form-row">
             <div class="field">
               <label for="recipeMinutes">Waktu Masak (menit)</label>
-              <input type="number" id="recipeMinutes" name="recipe_minutes" min="1" max="600" value="{{ old('recipe_minutes', $article->recipe_minutes) }}">
+              <input type="number" id="recipeMinutes" name="recipe_minutes" min="1" max="600" value="<?php echo e(old('recipe_minutes', $article->recipe_minutes)); ?>">
             </div>
             <div class="field">
               <label for="recipeServings">Porsi</label>
-              <input type="number" id="recipeServings" name="recipe_servings" min="1" max="100" value="{{ old('recipe_servings', $article->recipe_servings) }}">
+              <input type="number" id="recipeServings" name="recipe_servings" min="1" max="100" value="<?php echo e(old('recipe_servings', $article->recipe_servings)); ?>">
             </div>
           </div>
           <div class="field">
             <label for="recipeDifficulty">Tingkat Kesulitan</label>
-            <input type="text" id="recipeDifficulty" name="recipe_difficulty" maxlength="50" value="{{ old('recipe_difficulty', $article->recipe_difficulty) }}" placeholder="Mudah / Sedang / Sulit">
+            <input type="text" id="recipeDifficulty" name="recipe_difficulty" maxlength="50" value="<?php echo e(old('recipe_difficulty', $article->recipe_difficulty)); ?>" placeholder="Mudah / Sedang / Sulit">
           </div>
         </div>
       </div>
@@ -148,44 +189,51 @@
             <label for="categorySelect">Kategori</label>
             <select id="categorySelect" name="category_id" required>
               <option value="">— Pilih kategori —</option>
-              @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" @selected((string) old('category_id', $article->category_id) === (string) $cat->id)>{{ $cat->name }}</option>
-              @endforeach
+              <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($cat->id); ?>" <?php if((string) old('category_id', $article->category_id) === (string) $cat->id): echo 'selected'; endif; ?>><?php echo e($cat->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
-            @error('category_id')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="subcategoryInput">Label Sub-kategori <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
-            <input type="text" id="subcategoryInput" name="subcategory" maxlength="100" value="{{ old('subcategory', $article->subcategory) }}" placeholder="mis. Ekonomi, Sains">
+            <input type="text" id="subcategoryInput" name="subcategory" maxlength="100" value="<?php echo e(old('subcategory', $article->subcategory)); ?>" placeholder="mis. Ekonomi, Sains">
           </div>
 
           <div class="field">
             <label for="authorInput">Reporter</label>
-            <input type="text" id="authorInput" name="author" maxlength="100" value="{{ old('author', $article->author) }}" placeholder="mis. Tim EdukaVisionNews">
+            <input type="text" id="authorInput" name="author" maxlength="100" value="<?php echo e(old('author', $article->author)); ?>" placeholder="mis. Tim EdukaVisionNews">
             <div class="field-hint">Tampil di atas berita sebagai "Reporter : ...".</div>
           </div>
 
           <div class="field">
             <label for="editorNameInput">Editor <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
-            <input type="text" id="editorNameInput" name="editor_name" maxlength="100" value="{{ old('editor_name', $article->editor_name) }}" placeholder="{{ $article->editor?->name ?: 'Otomatis: nama editor yang menyetujui' }}">
+            <input type="text" id="editorNameInput" name="editor_name" maxlength="100" value="<?php echo e(old('editor_name', $article->editor_name)); ?>" placeholder="<?php echo e($article->editor?->name ?: 'Otomatis: nama editor yang menyetujui'); ?>">
             <div class="field-hint">Tampil sebagai "Editor : ...". Kosongkan agar memakai nama akun editor yang menyetujui berita.</div>
           </div>
 
           <div class="field">
             <label for="readMinutes">Estimasi Baca (menit)</label>
-            <input type="number" id="readMinutes" name="read_minutes" min="1" max="60" value="{{ old('read_minutes', $article->read_minutes) }}">
+            <input type="number" id="readMinutes" name="read_minutes" min="1" max="60" value="<?php echo e(old('read_minutes', $article->read_minutes)); ?>">
           </div>
 
           <div class="field checkbox-field">
-            <input type="checkbox" id="commentsEnabled" name="comments_enabled" value="1" @checked(old('comments_enabled', $isEdit ? $article->comments_enabled : true))>
+            <input type="checkbox" id="commentsEnabled" name="comments_enabled" value="1" <?php if(old('comments_enabled', $isEdit ? $article->comments_enabled : true)): echo 'checked'; endif; ?>>
             <label for="commentsEnabled" style="margin:0;">Izinkan komentar pembaca pada berita ini</label>
           </div>
 
-          @if($canPublish)
+          <?php if($canPublish): ?>
             <div class="field">
               <label for="publishedAt">Jadwal Tayang</label>
-              <input type="datetime-local" id="publishedAt" name="published_at" value="{{ old('published_at', optional($article->published_at)->format('Y-m-d\TH:i')) }}">
+              <input type="datetime-local" id="publishedAt" name="published_at" value="<?php echo e(old('published_at', optional($article->published_at)->format('Y-m-d\TH:i'))); ?>">
               <div class="field-hint">Kosongkan &amp; centang "Tayangkan sekarang" untuk publikasi langsung, atau isi tanggal untuk dijadwalkan.</div>
             </div>
 
@@ -193,17 +241,17 @@
               <input type="checkbox" id="publishNow" name="publish_now" value="1">
               <label for="publishNow" style="margin:0;">Tayangkan sekarang</label>
             </div>
-          @else
+          <?php else: ?>
             <div class="field">
               <div class="field-hint">Jabatan Anda tidak bisa menayangkan berita langsung. Ajukan berita ini untuk ditinjau editor — berita akan tayang setelah disetujui.</div>
             </div>
-          @endif
+          <?php endif; ?>
           <div class="field checkbox-field">
-            <input type="checkbox" id="isFeatured" name="is_featured" value="1" @checked(old('is_featured', $article->is_featured))>
+            <input type="checkbox" id="isFeatured" name="is_featured" value="1" <?php if(old('is_featured', $article->is_featured)): echo 'checked'; endif; ?>>
             <label for="isFeatured" style="margin:0;">Jadikan berita headline (hero)</label>
           </div>
           <div class="field checkbox-field">
-            <input type="checkbox" id="isSponsored" name="is_sponsored" value="1" @checked(old('is_sponsored', $article->is_sponsored))>
+            <input type="checkbox" id="isSponsored" name="is_sponsored" value="1" <?php if(old('is_sponsored', $article->is_sponsored)): echo 'checked'; endif; ?>>
             <label for="isSponsored" style="margin:0;">Tandai sebagai Konten Bersponsor</label>
           </div>
         </div>
@@ -213,66 +261,108 @@
 
           <div class="field">
             <label for="articleImageInput">Gambar Berita</label>
-            @if($isEdit && $article->image_path)
-              <img id="articleImagePreview" src="{{ $article->image_url }}" alt="{{ $article->image_alt ?: $article->title }}" class="ad-image-preview">
-            @else
+            <?php if($isEdit && $article->image_path): ?>
+              <img id="articleImagePreview" src="<?php echo e($article->image_url); ?>" alt="<?php echo e($article->image_alt ?: $article->title); ?>" class="ad-image-preview">
+            <?php else: ?>
               <img id="articleImagePreview" src="" alt="" class="ad-image-preview" style="display:none;">
-            @endif
+            <?php endif; ?>
             <input type="file" id="articleImageInput" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
             <div class="field-hint">Format JPG/PNG/WEBP/GIF, maksimal 8MB. Rasio disarankan 16:9.</div>
-            @error('image')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
-            @if($isEdit && $article->image_path)
+            <?php if($isEdit && $article->image_path): ?>
               <div class="field checkbox-field" style="margin-top:10px;">
                 <input type="checkbox" id="removeImage" name="remove_image" value="1">
                 <label for="removeImage" style="margin:0;">Hapus gambar ini &amp; pakai gambar generatif lagi</label>
               </div>
-            @endif
+            <?php endif; ?>
           </div>
 
           <div class="form-row">
             <div class="field">
               <label for="imageCaption">Keterangan Gambar <span style="font-weight:400; color:var(--muted-2);">(caption)</span></label>
-              <input type="text" id="imageCaption" name="image_caption" value="{{ old('image_caption', $article->image_caption) }}" maxlength="255" placeholder="mis. Warga memadati lokasi kejadian, Selasa (1/9).">
-              @error('image_caption')<div class="field-error">{{ $message }}</div>@enderror
+              <input type="text" id="imageCaption" name="image_caption" value="<?php echo e(old('image_caption', $article->image_caption)); ?>" maxlength="255" placeholder="mis. Warga memadati lokasi kejadian, Selasa (1/9).">
+              <?php $__errorArgs = ['image_caption'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
             <div class="field">
               <label for="imageSource">Sumber / Kredit Foto</label>
-              <input type="text" id="imageSource" name="image_source" value="{{ old('image_source', $article->image_source) }}" maxlength="150" placeholder="mis. Foto: Antara / Dok. Istimewa">
-              @error('image_source')<div class="field-error">{{ $message }}</div>@enderror
+              <input type="text" id="imageSource" name="image_source" value="<?php echo e(old('image_source', $article->image_source)); ?>" maxlength="150" placeholder="mis. Foto: Antara / Dok. Istimewa">
+              <?php $__errorArgs = ['image_source'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
           </div>
 
           <div class="field">
             <label for="imageAlt">Teks Alternatif (Alt Text) <span style="font-weight:400; color:var(--muted-2);">(untuk SEO &amp; aksesibilitas)</span></label>
-            <input type="text" id="imageAlt" name="image_alt" value="{{ old('image_alt', $article->image_alt) }}" maxlength="255" placeholder="mis. Petugas BPBD mengevakuasi warga terdampak banjir di Sanur">
-            @error('image_alt')<div class="field-error">{{ $message }}</div>@enderror
+            <input type="text" id="imageAlt" name="image_alt" value="<?php echo e(old('image_alt', $article->image_alt)); ?>" maxlength="255" placeholder="mis. Petugas BPBD mengevakuasi warga terdampak banjir di Sanur">
+            <?php $__errorArgs = ['image_alt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="imageLink">Tautan Gambar <span style="font-weight:400; color:var(--muted-2);">(opsional)</span></label>
-            <input type="url" id="imageLink" name="image_link" maxlength="500" value="{{ old('image_link', $article->image_link) }}" placeholder="https://contoh.com/halaman-tujuan">
+            <input type="url" id="imageLink" name="image_link" maxlength="500" value="<?php echo e(old('image_link', $article->image_link)); ?>" placeholder="https://contoh.com/halaman-tujuan">
             <div class="field-hint">Jika diisi, gambar berita bisa diklik dan akan membuka tautan ini di tab baru.</div>
-            @error('image_link')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['image_link'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="field">
             <label for="tagsInput">Tag Berita <span style="font-weight:400; color:var(--muted-2);">(pisahkan dengan koma)</span></label>
-            <input type="text" id="tagsInput" name="tags" value="{{ old('tags', $article->tags) }}" maxlength="500" placeholder="mis. banjir, sanur, bencana alam, denpasar">
+            <input type="text" id="tagsInput" name="tags" value="<?php echo e(old('tags', $article->tags)); ?>" maxlength="500" placeholder="mis. banjir, sanur, bencana alam, denpasar">
             <div class="field-hint">Tag akan ditampilkan sebagai chip di akhir halaman berita, seperti portal berita pada umumnya.</div>
-            @error('tags')<div class="field-error">{{ $message }}</div>@enderror
+            <?php $__errorArgs = ['tags'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="field-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
         </div>
 
         <div class="form-actions">
-          <a href="{{ route('admin.articles.index') }}" class="btn btn-ghost">Batal</a>
-          @if($canPublish)
+          <a href="<?php echo e(route('admin.articles.index')); ?>" class="btn btn-ghost">Batal</a>
+          <?php if($canPublish): ?>
             <button type="submit" class="btn btn-ghost" onclick="document.getElementById('workflowAction').value='draft';">Simpan sebagai Draf</button>
             <button type="submit" class="btn btn-accent" onclick="document.getElementById('workflowAction').value='publish';">Simpan & Tayangkan</button>
-          @else
+          <?php else: ?>
             <button type="submit" class="btn btn-ghost" onclick="document.getElementById('workflowAction').value='draft';">Simpan sebagai Draf</button>
             <button type="submit" class="btn btn-accent" onclick="document.getElementById('workflowAction').value='submit';">Ajukan untuk Ditinjau</button>
-          @endif
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -400,4 +490,13 @@
     })();
   </script>
 
-</x-admin-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
+<?php $attributes = $__attributesOriginale0f1cdd055772eb1d4a99981c240763e; ?>
+<?php unset($__attributesOriginale0f1cdd055772eb1d4a99981c240763e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale0f1cdd055772eb1d4a99981c240763e)): ?>
+<?php $component = $__componentOriginale0f1cdd055772eb1d4a99981c240763e; ?>
+<?php unset($__componentOriginale0f1cdd055772eb1d4a99981c240763e); ?>
+<?php endif; ?><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/admin/articles/form.blade.php ENDPATH**/ ?>
