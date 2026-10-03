@@ -197,6 +197,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
                     ->name('users.toggle-active');
                 Route::patch('/pengguna-admin/{account}/role', [AdminUserController::class, 'updateRole'])
                     ->name('users.update-role');
+                Route::delete('/pengguna-admin/{account}', [AdminUserController::class, 'destroy'])
+                    ->name('users.destroy');
                 // Akses khusus per akun (override dari default jabatan) —
                 // dicek isSuperAdmin() lagi di controller karena lebih sensitif
                 // daripada sekadar aktif/nonaktifkan atau ganti jabatan.

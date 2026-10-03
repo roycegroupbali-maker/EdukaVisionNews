@@ -69,6 +69,14 @@
                         {{ $account->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                       </button>
                     </form>
+
+                    @if(! $account->is_active && ! $account->isSuperAdmin())
+                      <form method="POST" action="{{ route('admin.users.destroy', $account) }}"
+                        data-confirm="Hapus permanen akun &quot;{{ $account->name }}&quot; ({{ $account->email }})? Tindakan ini tidak bisa dibatalkan.">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                      </form>
+                    @endif
                   </div>
                 @endif
               </td>

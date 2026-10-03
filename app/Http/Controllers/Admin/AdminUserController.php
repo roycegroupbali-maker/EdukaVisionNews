@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
@@ -131,5 +132,44 @@ class AdminUserController extends Controller
                 ? "Akun \"{$account->name}\" berhasil diaktifkan."
                 : "Akun \"{$account->name}\" berhasil dinonaktifkan."
         );
+    }
+
+    /**
+     * Hapus akun admin secara permanen (sehingga emailnya bisa dipakai
+     * mendaftar lagi). Aturan pengamannya:
+     * - tidak boleh menghapus akun sendiri,
+     * - tidak boleh menghapus akun Super Admin,
+     * - akun harus dinonaktifkan dulu (supaya tidak terhapus tanpa sengaja
+     *   dan sesi loginnya sudah pasti tidak aktif).
+     *
+     * Berita/komentar milik akun ini tetap aman: kolom author_id, editor_id,
+     * dan moderated_by otomatis menjadi NULL (nullOnDelete), sedangkan nama
+     * penulis tetap tersimpan di kolom "author" pada tabel berita.
+     */
+    public function destroy(Request $request, User $account): RedirectResponse
+    {
+        if ($account->is($request->user())) {
+            return back()->withErrors(['email' => 'Anda tidak bisa menghapus akun Anda sendiri.']);
+        }
+
+        if ($account->isSuperAdmin()) {
+            return back()->withErrors(['email' => 'Akun Super Admin tidak bisa dihapus.']);
+        }
+
+        if ($account->is_active) {
+            return back()->withErrors(['email' => 'Nonaktifkan akun "'.$account->name.'" terlebih dahulu sebelum menghapusnya.']);
+        }
+
+        $name = $account->name;
+
+        DB::transaction(function () use ($account) {
+            // Bersihkan sisa sesi login & token reset kata sandi milik email ini.
+            DB::table('sessions')->where('user_id', $account->id)->delete();
+            DB::table('password_reset_tokens')->where('email', $account->email)->delete();
+
+            $account->delete();
+        });
+
+        return back()->with('status', "Akun \"{$name}\" berhasil dihapus.");
     }
 }
