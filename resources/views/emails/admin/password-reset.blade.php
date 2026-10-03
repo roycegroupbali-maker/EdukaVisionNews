@@ -1,0 +1,23 @@
+@extends('emails.layout')
+
+@section('title', 'Atur Ulang Kata Sandi — EdukaVisionNews')
+@section('eyebrow', 'Atur Ulang Kata Sandi')
+@section('preheader', 'Gunakan tautan ini untuk membuat kata sandi baru akun admin Anda.')
+@section('footer_note')
+Email ini dikirim otomatis oleh sistem EdukaVisionNews terkait akun panel admin Anda. Mohon tidak membalas langsung ke alamat email ini.
+@endsection
+
+@section('content')
+
+  <h1 style="font-family:'Georgia','Times New Roman',serif; font-size:24px; line-height:1.35; color:#0D1B3A; margin:0 0 14px;">Halo, {{ $user->name }}.<br>Atur ulang kata sandi Anda.</h1>
+  <p style="font-family:'Helvetica Neue', Arial, sans-serif; font-size:14.5px; line-height:1.75; color:#3d3a33; margin:0 0 22px;">Kami menerima permintaan untuk mengatur ulang kata sandi akun panel admin <strong>{{ $user->email }}</strong>. Klik tombol di bawah untuk membuat kata sandi baru.</p>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <tr><td style="background-color:#0D1B3A; border-radius:3px;">
+      <a href="{{ $url }}" class="ev-btn" style="display:inline-block; font-family:'Helvetica Neue', Arial, sans-serif; font-size:13px; font-weight:600; color:#FFFFFF; padding:12px 26px; letter-spacing:0.02em;">Atur Ulang Kata Sandi &rarr;</a>
+    </td></tr>
+  </table>
+  <p style="font-family:'Helvetica Neue', Arial, sans-serif; font-size:12.5px; line-height:1.7; color:#6b675c; margin:0 0 16px;">Tautan ini hanya berlaku <strong>{{ $expireMinutes }} menit</strong> dan hanya bisa dipakai satu kali.</p>
+  <p style="font-family:'Helvetica Neue', Arial, sans-serif; font-size:12.5px; line-height:1.7; color:#6b675c; margin:0 0 16px;">Jika tombol tidak berfungsi, salin dan tempel alamat berikut ke peramban Anda:<br><span style="word-break:break-all; color:#0D1B3A;">{{ $url }}</span></p>
+  <p style="font-family:'Helvetica Neue', Arial, sans-serif; font-size:12.5px; line-height:1.7; color:#6b675c; margin:0 0 16px;"><strong>Tidak merasa meminta ini?</strong> Abaikan email ini &mdash; kata sandi Anda tidak akan berubah. Kami tidak pernah meminta atau mengirim kata sandi Anda lewat email.</p>
+
+@endsection

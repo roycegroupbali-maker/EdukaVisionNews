@@ -44,6 +44,10 @@
     </form>
 
     <p class="admin-auth-foot">
+      <a href="<?php echo e(route('admin.password.request')); ?>">Lupa kata sandi?</a>
+    </p>
+
+    <p class="admin-auth-foot">
       Belum punya akun? <a href="<?php echo e(route('admin.register')); ?>">Daftar di sini</a>.
     </p>
     <p class="admin-auth-foot">© <?php echo e(now()->year); ?> EdukaVisionNews Media Group.</p>

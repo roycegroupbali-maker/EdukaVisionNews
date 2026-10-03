@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\AdminPasswordResetLink;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 
 #[Fillable(['name', 'email', 'password', 'is_admin', 'is_active', 'role_id', 'permissions_override', 'avatar_path'])]
 #[Hidden(['password', 'remember_token'])]
@@ -89,6 +91,15 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): ?string
     {
         return $this->avatar_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar_path) : null;
+    }
+
+    /**
+     * Kirim email reset kata sandi memakai template EdukaVisionNews
+     * (menggantikan notifikasi bawaan Laravel yang memakai route 'password.reset' tanpa prefix admin).
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        Mail::to($this->email)->send(new AdminPasswordResetLink($this, $token));
     }
 
     /**

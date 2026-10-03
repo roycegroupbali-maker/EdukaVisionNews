@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>@yield('title', 'EdukaVisionNews')</title>
+<title><?php echo $__env->yieldContent('title', 'EdukaVisionNews'); ?></title>
 <!--[if mso]>
 <noscript>
   <xml>
@@ -30,7 +30,7 @@
 <body style="margin:0; padding:0; background-color:#F1ECE1;">
 <!-- Preheader (hidden preview text) -->
 <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
-  @yield('preheader', 'EdukaVisionNews — Denyut Kabar Hari Ini')
+  <?php echo $__env->yieldContent('preheader', 'EdukaVisionNews — Denyut Kabar Hari Ini'); ?>
 </div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1ECE1;">
@@ -45,7 +45,7 @@
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td valign="middle" width="40">
-                  <img src="{{ $message->embed(public_path('images/logo-icon.png')) }}" width="34" height="34" alt="EdukaVisionNews" style="display:block; border-radius:3px;">
+                  <img src="<?php echo e($message->embed(public_path('images/logo-icon.png'))); ?>" width="34" height="34" alt="EdukaVisionNews" style="display:block; border-radius:3px;">
                 </td>
                 <td valign="middle" style="padding-left:12px;">
                   <span style="font-family:'Georgia','Times New Roman',serif; font-size:19px; font-weight:700; color:#FFFFFF; letter-spacing:0.2px;">Eduka<span style="color:#D2A63B;">Vision</span>News</span><br>
@@ -64,14 +64,14 @@
         <!-- Eyebrow strip -->
         <tr>
           <td style="background-color:#FBF8F3; padding:12px 40px; border-bottom:1px solid #e4ddcd;" class="ev-px">
-            <span style="font-family:'Courier New', monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8f8a7c;">@yield('eyebrow', 'Permohonan Berita')</span>
+            <span style="font-family:'Courier New', monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8f8a7c;"><?php echo $__env->yieldContent('eyebrow', 'Permohonan Berita'); ?></span>
           </td>
         </tr>
 
         <!-- Content -->
         <tr>
           <td style="padding:36px 40px 8px;" class="ev-px">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
           </td>
         </tr>
 
@@ -85,10 +85,10 @@
               <tr>
                 <td style="font-family:'Helvetica Neue', Arial, sans-serif; font-size:12px; line-height:1.7; color:#9AA6C4;">
                   <strong style="color:#FFFFFF;">EdukaVisionNews</strong> — Portal berita harian: nasional, dunia, bisnis, olahraga, lifestyle, edukasi, dan resep masakan.<br>
-                  @hasSection('footer_note')@yield('footer_note')@else
+                  <?php if (! empty(trim($__env->yieldContent('footer_note')))): ?><?php echo $__env->yieldContent('footer_note'); ?><?php else: ?>
                   Email ini dikirim otomatis oleh sistem kami sehubungan dengan formulir Permohonan Berita yang kamu isi. Mohon tidak membalas langsung ke alamat email ini.
-                  @endif<br><br>
-                  &copy; {{ date('Y') }} EdukaVisionNews. Seluruh hak cipta dilindungi.
+                  <?php endif; ?><br><br>
+                  &copy; <?php echo e(date('Y')); ?> EdukaVisionNews. Seluruh hak cipta dilindungi.
                 </td>
               </tr>
             </table>
@@ -101,4 +101,4 @@
   </tr>
 </table>
 </body>
-</html>
+</html><?php /**PATH /Users/enb/Herd/EdukaVisionNews/resources/views/emails/layout.blade.php ENDPATH**/ ?>

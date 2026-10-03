@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminAccountActivated;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -112,6 +115,15 @@ class AdminUserController extends Controller
         }
 
         $account->update(['is_active' => ! $account->is_active]);
+
+        // Beri tahu pemilik akun lewat email saat akunnya diaktifkan (gagal kirim tidak mengganggu proses).
+        if ($account->is_active) {
+            try {
+                Mail::to($account->email)->send(new AdminAccountActivated($account));
+            } catch (\Throwable $e) {
+                Log::warning('Gagal mengirim email aktivasi akun: '.$e->getMessage(), ['user_id' => $account->id]);
+            }
+        }
 
         return back()->with(
             'status',

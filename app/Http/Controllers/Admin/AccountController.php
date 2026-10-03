@@ -67,6 +67,11 @@ class AccountController extends Controller
         $user->name = $data['name'];
         $user->email = $data['email'];
 
+        // Email diganti -> status verifikasi lama tidak berlaku lagi untuk alamat baru.
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
         if (! empty($data['password'])) {
             $user->password = $data['password'];
         }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\ArticleTrashController as AdminArticleTrashController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\EmailVerificationController as AdminEmailVerificationController;
+use App\Http\Controllers\Admin\PasswordResetController as AdminPasswordResetController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -103,6 +105,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/register', [AdminAuthController::class, 'register'])
             ->middleware('throttle:6,1')
             ->name('register.attempt');
+
+        // Lupa / reset kata sandi
+        Route::get('/forgot-password', [AdminPasswordResetController::class, 'showForgot'])->name('password.request');
+        Route::post('/forgot-password', [AdminPasswordResetController::class, 'sendLink'])
+            ->middleware('throttle:6,1')
+            ->name('password.email');
+        Route::get('/reset-password/{token}', [AdminPasswordResetController::class, 'showReset'])->name('password.reset');
+        Route::post('/reset-password', [AdminPasswordResetController::class, 'reset'])
+            ->middleware('throttle:6,1')
+            ->name('password.update');
     });
 
     Route::middleware(['auth', 'admin'])->group(function () {
@@ -157,6 +169,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('/komentar/{comment}/hide', [AdminCommentController::class, 'hide'])->name('comments.hide');
             Route::delete('/komentar/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
         });
+
+        // Verifikasi email mandiri (opt-in, tidak memblokir login)
+        Route::post('/akun/verifikasi-email', [AdminEmailVerificationController::class, 'send'])
+            ->middleware('throttle:3,1')
+            ->name('account.verification.send');
+        Route::get('/akun/verifikasi-email/{id}/{hash}', [AdminEmailVerificationController::class, 'verify'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('account.verification.verify');
 
         // Pengaturan Akun — dikunci lewat konfirmasi ulang kata sandi.
         // Layar "Akses Terbatas" muncul kalau sesi konfirmasi belum ada/sudah kedaluwarsa.

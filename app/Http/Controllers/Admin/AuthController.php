@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminRegistrationReceived;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
@@ -42,7 +45,7 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -50,6 +53,13 @@ class AuthController extends Controller
             'is_active' => false,
             'role_id' => Role::where('slug', Role::WARTAWAN)->value('id'),
         ]);
+
+        // Email konfirmasi pendaftaran. Kegagalan kirim email tidak boleh menggagalkan pendaftaran.
+        try {
+            Mail::to($user->email)->send(new AdminRegistrationReceived($user));
+        } catch (\Throwable $e) {
+            Log::warning('Gagal mengirim email konfirmasi pendaftaran admin: '.$e->getMessage(), ['user_id' => $user->id]);
+        }
 
         return redirect()
             ->route('admin.login')

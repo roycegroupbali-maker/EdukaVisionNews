@@ -42,6 +42,26 @@
 
     <div class="sticky-side">
       <div class="form-card">
+        <h3>Verifikasi Email</h3>
+        @if($user->email_verified_at)
+          <p style="font-size:13px; color:var(--muted); line-height:1.6;">
+            ✓ Email <strong>{{ $user->email }}</strong> sudah terverifikasi
+            ({{ $user->email_verified_at->translatedFormat('d M Y') }}).
+          </p>
+        @else
+          <p style="font-size:13px; color:var(--muted); line-height:1.6;">
+            Email <strong>{{ $user->email }}</strong> belum diverifikasi. Verifikasi bersifat
+            opsional dan tidak memengaruhi login. Kami akan mengirim tautan ke email ini
+            hanya saat kamu menekan tombol di bawah.
+          </p>
+          <form method="POST" action="{{ route('admin.account.verification.send') }}">
+            @csrf
+            <button type="submit" class="btn btn-accent">Kirim email verifikasi</button>
+          </form>
+        @endif
+      </div>
+
+      <div class="form-card">
         <h3>Keamanan</h3>
         <p style="font-size:13px; color:var(--muted); line-height:1.6;">
           Halaman ini dikunci dengan konfirmasi kata sandi. Setelah beberapa waktu tidak
